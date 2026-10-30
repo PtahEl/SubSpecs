@@ -1,0 +1,62 @@
+- !<AssetImportMetadata/1d15d733-7a97-4077-ae7a-d2d8e3b3d383>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 307fc9c4-f350-4ac9-8a6f-880e73f268f7
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 307fc9c4-f350-4ac9-8a6f-880e73f268f7
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 9eff4acd-4515-41ad-94be-bfc46623c81d
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/9eff4acd-4515-41ad-94be-bfc46623c81d>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 03efeda4-b9b2-4740-95e7-596db426a7f2
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    holdSeconds: false
+    loopDemo: false
+    loopPauseSeconds: false
+    startLanguage: false
+    wordsPerSecond: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - holdSeconds: !<float> 3.000000
+      wordsPerSecond: 2.800000
+      loopDemo: true
+      loopPauseSeconds: !<float> 8.000000
+      startLanguage: es
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"Caption — Demo mode"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input float holdSeconds = 3 {"hint":"Seconds a card keeps the last words readable after its speaker stops talking", "widget":"slider", "min":1, "max":10, "step":0.5}'
+    - '// @input float wordsPerSecond = 2.8 {"hint":"Speaking speed of the scripted demo voices", "widget":"slider", "min":1, "max":6, "step":0.1}'
+    - '// @input bool loopDemo = true {"hint":"Replay the conversation after it ends"}'
+    - '// @input float loopPauseSeconds = 8 {"hint":"Pause before the conversation replays", "widget":"slider", "min":2, "max":30, "step":1}'
+    - '// @input string startLanguage = "es" {"hint":"Translation language shown at start", "widget":"combobox", "values":[{"label":"Off", "value":"off"}, {"label":"Español", "value":"es"}, {"label":"Français", "value":"fr"}, {"label":"日本語", "value":"ja"}]}'
+    - '// @ui {"widget":"group_end"}'
