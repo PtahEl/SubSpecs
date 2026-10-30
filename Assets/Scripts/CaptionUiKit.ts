@@ -101,28 +101,9 @@ export function makeImage(parent: SceneObject, name: string, material: Material,
   return visual
 }
 
-// Soft dark outline so words stay readable over a busy background seen through glass cards.
-const TEXT_OUTLINE_SIZE = 0.3
-const TEXT_OUTLINE_ALPHA = 0.85
-const TEXT_SHADOW_ALPHA = 0.6
-const TEXT_SHADOW_OFFSET = new vec2(0.04, -0.04)
-
-export function addTextOutline(t: Text): void {
-  t.outlineSettings.enabled = true
-  t.outlineSettings.size = TEXT_OUTLINE_SIZE
-  t.dropshadowSettings.enabled = true
-  t.dropshadowSettings.offset = TEXT_SHADOW_OFFSET
-  setTextAlpha(t, t.textFill.color.w)
-}
-
 export function setTextAlpha(t: Text, alpha: number): void {
   const c = t.textFill.color
   t.textFill.color = new vec4(c.x, c.y, c.z, alpha)
-  // The outline and shadow fade with the words, or they would linger as a dark ghost.
-  if (t.outlineSettings.enabled) {
-    t.outlineSettings.fill.color = new vec4(0, 0, 0, TEXT_OUTLINE_ALPHA * alpha)
-    t.dropshadowSettings.fill.color = new vec4(0, 0, 0, TEXT_SHADOW_ALPHA * alpha)
-  }
 }
 
 // Forward lift for labels drawn on a Button face, so the face doesn't occlude glyphs.

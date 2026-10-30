@@ -12,24 +12,6 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
-## Oct 30, 2026: speaker cards become "liquid glass"
-
-![Before and after: the solid dark card hides Sophie's sweater; the glass card shows her through it](history/screenshots/2026-10-30-card-liquid-glass.png)
-
-- The speaker cards are now like a sheet of glass instead of a solid dark panel: very see-through, with
-  a slight cool tint, a soft light sheen at the top left, and a thin bright edge so you can still see
-  the card's shape. Corners stay rounded. Hovering over a card makes it a touch brighter.
-- **Why:** subs should never block the person you are talking to. On the glasses the dark panel was
-  already see-through, but in Preview and in the demo video it hid people. Now Sophie, her sweater and
-  her hands show clearly through her card.
-- The words stay solid white, with a soft dark edge and shadow so they are easy to read even over a
-  bright, busy background. Each speaker's color stays on their label and dot.
-- There is no blur behind the card: SPECS cannot blur the real world, and it would slow the glasses down.
-- Fixed along the way: with a see-through card, the people could be drawn on top of the words. The
-  cards are now drawn last, so the words are always in front.
-- The start card and language bar are unchanged.
-- **Checked:** no errors in Lens Studio's Preview, and all 8 automated tests pass on the first try.
-
 ## Oct 30, 2026: the SubSpecs logo is in the Lens
 
 ![The start card with the white SubSpecs logo at the top](history/screenshots/2026-10-30-logo-start-card.png)
