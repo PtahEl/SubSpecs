@@ -1,13 +1,11 @@
 import {scenariosIndex} from "Leaf.lspkg/Scenarios/decorator/ScenarioIndexDecorator"
 import {ScenarioMetadata} from "Leaf.lspkg/Scenarios/scenario/ScenarioMetadata"
-import {
-  OnboardingStartsDemoScenario,
-  ThreeSpeakersThreeCardsScenario,
-  CardHoldAndReturnScenario,
-  DragCardOverFigureScenario,
-  LanguageSwitchScenario,
-  LanguagePickerReachIKScenario
-} from "./CaptionScenarios"
+import {OnboardingStartsDemoScenario} from "./OnboardingStartsDemoScenario"
+import {ThreeSpeakersThreeCardsScenario} from "./ThreeSpeakersThreeCardsScenario"
+import {CardHoldAndReturnScenario} from "./CardHoldAndReturnScenario"
+import {DragCardOverFigureScenario} from "./DragCardOverFigureScenario"
+import {LanguageSwitchScenario} from "./LanguageSwitchScenario"
+import {LanguagePickerReachIKScenario} from "./LanguagePickerReachIKScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.

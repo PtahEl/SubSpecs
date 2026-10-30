@@ -6,8 +6,9 @@ import {InteractableManipulation} from "SpectaclesInteractionKit.lspkg/Component
 import {DemoLine, LanguageCode, translationOf} from "./CaptionDemoScript"
 import {makeText, setTextAlpha, speakerColor, withAlpha, faceCamera} from "./CaptionUiKit"
 
-export const CARD_DISTANCE_CM = 100
-export const CARD_WIDTH = 26
+// Specs shows about 32 degrees across (about 64 cm at 110 cm), so three cards side by side fit.
+export const CARD_DISTANCE_CM = 110
+export const CARD_WIDTH = 19
 export const CARD_HEIGHT = 16
 
 const PAD = 1.4
@@ -133,6 +134,8 @@ export class SpeakerCard {
     manipulation.setNewInteractable(interactable)
     manipulation.setCanRotate(false)
     manipulation.setCanScale(false)
+    // Move 1:1 with the hand: Z stretch would fling the card into the wearer's face or far away.
+    manipulation.enableStretchZ = false
     manipulation.onManipulationStart.add(() => {
       this.dragging = true
       this.placed = true

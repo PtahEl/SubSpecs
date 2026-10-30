@@ -39,3 +39,9 @@ ls-live-instance.json*
 .env.*
 *token*
 .claude/settings.local.json
+
+# Added by Lens Studio (LEAF plugin)
+leaf_plugin_settings.json
+
+# Generated scene snapshot (VirtualScene tool)
+.virtual-scene.json

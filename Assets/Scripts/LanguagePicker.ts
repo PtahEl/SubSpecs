@@ -3,6 +3,7 @@
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
+import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import {DEMO_LANGUAGES, LanguageCode} from "./CaptionDemoScript"
 import {makeButton, makeText, WHITE} from "./CaptionUiKit"
 
@@ -78,6 +79,11 @@ export class LanguagePicker {
     this.refreshSelection()
 
     plate.onInitialized.add(() => {
+      // The background is only a backdrop: its own collider would catch reaches meant for the buttons.
+      const collider = this.root.getComponent("Physics.ColliderComponent")
+      if (collider) collider.enabled = false
+      const plateTarget = this.root.getComponent(Interactable.getTypeName())
+      if (plateTarget) plateTarget.enabled = false
       this.ready = true
       this.root.enabled = this.wantVisible
     })

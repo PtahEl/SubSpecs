@@ -74,7 +74,10 @@ export class CaptionController extends BaseScriptComponent {
 
     this.createEvent("OnStartEvent").bind(() => {
       placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
-      placeInFrontOfCamera(this.picker.root, this.camera, 0, -24, PICKER_DISTANCE_CM)
+      // Low in the view but inside it: the view's bottom edge is about 18 degrees down.
+      placeInFrontOfCamera(this.picker.root, this.camera, 0, -15, PICKER_DISTANCE_CM)
+      // The picker is about 49 cm wide; at 60 cm the view is only about 35 cm wide.
+      this.picker.root.getTransform().setLocalScale(vec3.one().uniformScale(0.62))
     })
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -135,7 +138,8 @@ export class CaptionController extends BaseScriptComponent {
     if (!card.placed) {
       // A new speaker's card appears in an arc in front of the wearer, a little below
       // eye level, until the wearer moves it. After that it keeps its spot.
-      const angle = ((line.speaker - 2) * 28 * Math.PI) / 180
+      // 10.2 degrees apart keeps all three inside the view with a small gap between them.
+      const angle = ((line.speaker - 2) * 10.2 * Math.PI) / 180
       placeInFrontOfCamera(
         card.root,
         this.camera,
