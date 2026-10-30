@@ -9,6 +9,27 @@ status: approved
 ## The one spatial moment
 A wearer who is hard of hearing is at a conference during the break. Walking through a loud corridor he sees a friend he hasn't seen in years. Normally it would be too loud to engage, but he points to his SPECS and reads his friend's words in a sub card placed over his friend. Two more people join the conversation, each gets their own card, and he stays engaged and in the moment instead of missing it or making everyone yell.
 
+## Second scenario: hospital intake (added Oct 30)
+The wearer hears fine: she is an intake worker at a hospital next to an international airport, where patients
+arrive every day speaking languages she doesn't. Wearing SPECS at the intake desk, she asks her usual
+questions in English; each patient's answers appear on their own card in their language, with the English
+translation underneath, and the facts she needs for the intake form (allergies, medicines, pain level, how
+long, symptoms) stand out in a highlight color. She stops guessing, fills the form faster and more
+accurately, and can help start the right treatment sooner, which can save lives. This shows SubSpecs isn't
+only for people who are deaf or hard of hearing: anyone who works with people across a language barrier
+benefits.
+
+- People in the demo: the same three figures, recast as patients. A Japanese traveler with chest pain, a
+  French-speaking woman having an allergic reaction, and a Spanish-speaking father describing his child's
+  symptoms. Only the patients are subbed; the worker's own questions are not shown (she hears them).
+- Choosing it: the start card offers two buttons, "Conference corridor" and "Hospital intake".
+- Translation: Auto (the default) detects each patient's language and translates into English. Picking a
+  language by hand works as in the corridor scenario.
+- Highlights: in the English translation, intake facts are shown in a highlight color. In Demo mode which
+  words are highlighted is scripted; in Live mode the server would mark them.
+- Privacy matters even more here: subs are shown only to the wearer, audio is never stored, speakers are
+  anonymous numbers.
+
 ## Why it belongs on glasses
 - Uses: leaves your body free (eyes up on the people, not down at a phone); draws in the world (each person's words sit where the wearer placed them, over or beside that person).
 - Why it's better than the phone or laptop version: a phone transcript is one undivided wall of text you have to look down at, so you lose faces and lose track of who said what. On glasses the wearer keeps eye contact and each speaker's words stay with that speaker. The wearer already wears prescription glasses, and hearing aids are uncomfortable for him.
@@ -51,6 +72,8 @@ Each one can be checked in Lens Studio's preview.
 3. A card hides about 3 seconds after its speaker stops talking, and returns to the same spot when that speaker talks again.
 4. Pinching a different language on the language picker changes the translation under the cards, including the most recent lines.
 5. The onboarding card shows what SubSpecs does and the privacy note, and pinching Start begins the demo conversation.
+6. The start card offers "Conference corridor" and "Hospital intake"; pinching "Hospital intake" begins the hospital conversation, and each of the three patients gets their own card showing their language detected (Japanese, French, Spanish) with the English translation underneath.
+7. In the hospital scenario, the intake facts in each English translation (allergies, medicines, pain level, how long, symptoms) appear in a highlight color, and other words don't.
 
 Server criterion (checked outside the preview, with the SubSpecs server): at least 80% of words transcribed correctly on a multi-speaker test clip. "That is better than the wearer never being able to understand in the first place." (Measured on Oct 29: about 98% on a two-speaker clip.)
 
