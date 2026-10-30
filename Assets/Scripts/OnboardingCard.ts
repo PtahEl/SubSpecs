@@ -13,7 +13,7 @@ const CONTENT_Z = 0.6
 export const ONBOARDING_BODY =
   "Live captions for every voice around you. Each new speaker gets their own color-coded card. " +
   "Pinch and drag a card over the person talking; it stays there for the rest of the conversation. " +
-  "Pick a language at the bottom to translate."
+  "Anyone speaking another language is translated automatically; pick a language at the bottom to change it."
 
 export const PRIVACY_NOTE =
   "Privacy: captions are shown only to you. Audio is never stored. " +

@@ -3,7 +3,15 @@
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {InteractableManipulation} from "SpectaclesInteractionKit.lspkg/Components/Interaction/InteractableManipulation/InteractableManipulation"
-import {DemoLine, LanguageCode, translationOf} from "./CaptionDemoScript"
+import {
+  DemoLine,
+  LanguageCode,
+  SPOKEN_LANGUAGE_NAMES,
+  WEARER_LANGUAGE,
+  spokenLanguageOf,
+  spokenText,
+  translationFor
+} from "./CaptionDemoScript"
 import {makeText, setTextAlpha, speakerColor, withAlpha, faceCamera} from "./CaptionUiKit"
 
 // Specs shows about 32 degrees across (about 64 cm at 110 cm), so three cards side by side fit.
@@ -37,6 +45,7 @@ export class SpeakerCard {
 
   private speakerLabel: Text
   private badge: Text
+  private languageTag: Text
   private currentText: Text
   private translationText: Text
   private previousText: Text
@@ -51,7 +60,7 @@ export class SpeakerCard {
   private holdRemaining = 0
   private previousAge = -1
   private badgeAge = -1
-  private language: LanguageCode = "es"
+  private language: LanguageCode = "auto"
 
   constructor(parent: SceneObject, speaker: number, private camera: Transform) {
     this.speaker = speaker
@@ -92,6 +101,16 @@ export class SpeakerCard {
       color
     })
     this.badge.getSceneObject().enabled = false
+    // Shown while the speaker talks in a language other than the wearer's, in the same
+    // corner as the "New speaker detected" badge, once that has faded.
+    this.languageTag = makeText(content, "LanguageTag", "", {
+      role: "Caption",
+      distanceCm: d,
+      rect: Rect.create(-1, INNER_RIGHT, top - 2.2, top),
+      align: HorizontalAlignment.Right,
+      color: new vec4(1, 1, 1, 0.8)
+    })
+    this.languageTag.getSceneObject().enabled = false
 
     // Newest line on top, its translation underneath, the older line below fading away.
     this.currentText = makeText(content, "CurrentLine", "", {
@@ -168,6 +187,10 @@ export class SpeakerCard {
     return this.previousText.textFill.color.w
   }
 
+  get languageTagText(): string {
+    return this.languageTag.getSceneObject().enabled ? this.languageTag.text : ""
+  }
+
   get badgeVisible(): boolean {
     return this.badge.getSceneObject().enabled
   }
@@ -189,12 +212,12 @@ export class SpeakerCard {
   // top, and the line they said before moves underneath and fades away.
   speak(line: DemoLine, isNewSpeaker: boolean): void {
     if (this.line !== null) {
-      this.previousText.text = this.line.en
+      this.previousText.text = spokenText(this.line)
       this.previousAge = 0
       setTextAlpha(this.previousText, PREVIOUS_ALPHA)
     }
     this.line = line
-    this.words = line.en.split(" ")
+    this.words = spokenText(line).split(" ")
     this.revealed = 0
     this.typeClock = 0
     this.typing = true
@@ -207,6 +230,9 @@ export class SpeakerCard {
       this.badge.getSceneObject().enabled = true
       setTextAlpha(this.badge, 1)
     }
+    const spoken = spokenLanguageOf(line)
+    this.languageTag.text = spoken === WEARER_LANGUAGE ? "" : SPOKEN_LANGUAGE_NAMES[spoken] + " detected"
+    this.refreshLanguageTag()
     this.show()
   }
 
@@ -255,6 +281,7 @@ export class SpeakerCard {
       if (fade >= 1) {
         this.badgeAge = -1
         this.badge.getSceneObject().enabled = false
+        this.refreshLanguageTag()
       }
     }
 
@@ -263,15 +290,20 @@ export class SpeakerCard {
 
   private finishLine(): void {
     this.typing = false
-    this.currentText.text = this.line.en
+    this.currentText.text = spokenText(this.line)
     setTextAlpha(this.currentText, 1)
     this.refreshTranslation()
   }
 
   private refreshTranslation(): void {
     // Translations arrive with the final line, as they would from the Caption server.
-    const show = this.language !== "off" && this.line !== null && !this.typing
-    this.translationText.getSceneObject().enabled = show
-    this.translationText.text = show ? translationOf(this.line, this.language) : ""
+    const show = this.line !== null && !this.typing
+    const text = show ? translationFor(this.line, this.language) : ""
+    this.translationText.getSceneObject().enabled = text !== ""
+    this.translationText.text = text
+  }
+
+  private refreshLanguageTag(): void {
+    this.languageTag.getSceneObject().enabled = this.languageTag.text !== "" && this.badgeAge < 0
   }
 }

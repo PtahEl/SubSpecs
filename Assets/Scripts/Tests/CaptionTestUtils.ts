@@ -5,7 +5,7 @@ import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLe
 import {findInteractablesByName} from "Leaf.lspkg/Interactors/InteractableUtils"
 import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import {CaptionController} from "../CaptionController"
-import {DEMO_LINES, DemoLine} from "../CaptionDemoScript"
+import {DEMO_LINES, DemoLine, spokenText} from "../CaptionDemoScript"
 
 export function controller(): CaptionController {
   const so = findSceneObjectByName("CaptionController")
@@ -31,8 +31,9 @@ export async function ensureDemoRunning(start: () => Promise<void>): Promise<voi
   await waitFor("demo running", () => controller().isRunning, 3000)
 }
 
-export function lineForText(en: string): DemoLine | undefined {
-  return DEMO_LINES.find((l) => l.en === en)
+// The demo line whose words (as spoken) are `text`.
+export function lineForText(text: string): DemoLine | undefined {
+  return DEMO_LINES.find((l) => spokenText(l) === text)
 }
 
 export function distance(a: vec3, b: vec3): number {

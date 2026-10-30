@@ -1,5 +1,6 @@
-// Small panel at the bottom of the view: pinch a language to translate the captions,
-// plus the mode status (Demo / Live / Reconnecting).
+// Small panel at the bottom of the view: Auto (detect other languages and translate them),
+// Off, or pinch a language to translate everything into it; plus the mode status
+// (Demo / Live / Reconnecting).
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
@@ -9,7 +10,7 @@ import {makeButton, makeText, WHITE} from "./CaptionUiKit"
 
 export const PICKER_DISTANCE_CM = 60
 
-const BUTTON_W = 7.2
+const BUTTON_W = 6.6
 const BUTTON_H = 3.0
 const GAP = 0.8
 const LABEL_W = 7.5
@@ -28,6 +29,8 @@ export class LanguagePicker {
   private statusText: Text
   private ready = false
   private wantVisible = false
+  // Full width in cm before any scaling.
+  readonly width: number
 
   constructor(parent: SceneObject, initial: LanguageCode) {
     this.selected = initial
@@ -37,6 +40,7 @@ export class LanguagePicker {
 
     const count = DEMO_LANGUAGES.length
     const width = PAD * 2 + LABEL_W + count * BUTTON_W + (count + 1) * GAP + STATUS_W
+    this.width = width
     const height = BUTTON_H + PAD * 2
     const plate = this.root.createComponent(BackPlate.getTypeName()) as BackPlate
     plate.style = "dark"

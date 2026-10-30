@@ -10,9 +10,9 @@ which sits on the `CaptionController` scene object.
 | File | What it does |
 |---|---|
 | `CaptionController.ts` | Runs Demo mode: plays the scripted lines on a timer, sends each to its speaker's card, places a new speaker's card in an arc about 1.1 m in front and a little below eye level (10.2 degrees apart, so all three fit the view), loops the conversation. Inspector settings: hold seconds (3), words per second (2.8), loop, loop pause, start language. |
-| `CaptionDemoScript.ts` | The conversation: 10 lines, speakers 1 (old friend), 2 and 3, with Spanish, French and Japanese translations. Gaps are longer than the 3 s hold so cards visibly hide and come back. |
-| `SpeakerCard.ts` | One UI Kit BackPlate card per speaker (19 x 16 cm at 1.1 m): color and number, live line typed word by word, final line, translation underneath, the previous line below fading away, and a "New speaker detected" label that fades after about 2 s. Pinch and drag to move it (SIK InteractableManipulation, no rotate, scale or Z stretch, so it moves 1:1 with the hand). Lights up on hover. Hides after the hold time and returns to the same spot. |
-| `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label. Only the buttons are pinch targets; the background panel is not. Shown after Start. |
+| `CaptionDemoScript.ts` | The conversation: 10 lines, speakers 1 (old friend) and 2 speak English, speaker 3 speaks Spanish, with pre-written English, Spanish, French and Japanese text. `translationFor` decides what goes under each caption for the current setting. Gaps are longer than the 3 s hold so cards visibly hide and come back. |
+| `SpeakerCard.ts` | One UI Kit BackPlate card per speaker (19 x 16 cm at 1.1 m): color and number, live line typed word by word, final line, translation underneath, the previous line below fading away, a "Spanish detected" tag when the speaker isn't speaking the wearer's language, and a "New speaker detected" label that fades after about 2 s. Pinch and drag to move it (SIK InteractableManipulation, no rotate, scale or Z stretch, so it moves 1:1 with the hand). Lights up on hover. Hides after the hold time and returns to the same spot. |
+| `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Auto (default) / Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label. Only the buttons are pinch targets; the background panel is not. Shown after Start. |
 | `OnboardingCard.ts` | Centered card about 1 m away: what Caption does, the privacy note, Start button. |
 | `CaptionUiKit.ts` | Shared text sizes, speaker colors, and text, button and placement helpers. |
 
@@ -23,6 +23,16 @@ rigged models when they arrive.
 
 No AsrModule, ASRMLModule or VoiceML is used anywhere (they turn on Bystander Speech Rejection).
 
+## Auto translation
+
+Auto (the default) keeps captions in the wearer's language (English in the demo). When someone
+speaks another language, their card shows what they said, a "Spanish detected" tag, and the
+English translation underneath. English speakers get no translation line. Picking a language by
+hand overrides Auto and translates everyone into that language (no line when the speaker already
+speaks it); pinching Auto brings detection back. In Demo mode detection is scripted. In Live mode
+the Caption server must report the language it hears (confirm the server's speech model does this,
+or add a language-identification step before translation).
+
 ## The Specs view is narrow
 
 Measured in Preview: the Specs display is about 32 degrees wide and 37 degrees tall (about 58 cm
@@ -31,7 +41,7 @@ Keep new UI inside that.
 
 ## Done criteria (checked in Lens Studio's Preview, Oct 29 evening)
 
-All six LEAF scenarios pass when run in index order in Preview (each run resets the Lens and
+All seven LEAF scenarios pass when run in index order in Preview (each run resets the Lens and
 presses Start itself). Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
 in `LeafIndex.ts` on the `LeafIndex` scene object.
 
@@ -43,6 +53,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 4. Picking another language changes the translation, including recent lines | `c4-language-switch` | Pass (French, Spanish, Japanese) | Japanese text renders correctly |
 | 5. Onboarding shows what Caption does and the privacy note; Start begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
 | Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass | |
+| Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).

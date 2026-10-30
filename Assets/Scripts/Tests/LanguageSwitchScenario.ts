@@ -5,7 +5,7 @@ import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
 import {sleep} from "Leaf.lspkg/Utils/common/Utils"
 import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLeafInteractor"
-import {translationOf} from "../CaptionDemoScript"
+import {translationFor} from "../CaptionDemoScript"
 import {controller, ensureDemoRunning, finishedLine, interactable, pressStart, waitFor} from "./CaptionTestUtils"
 
 @component
@@ -23,7 +23,7 @@ export class LanguageSwitchScenario extends Scenario {
       for (const s of [1, 2, 3]) {
         const line = finishedLine(s)
         if (line === null) continue
-        expect(c.getCard(s).translationLineText).toBe(translationOf(line, code))
+        expect(c.getCard(s).translationLineText).toBe(translationFor(line, code))
         checked++
       }
       expect(checked).toBeGreaterThan(0)

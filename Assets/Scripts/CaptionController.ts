@@ -3,13 +3,14 @@
 // Demo mode never uses AsrModule (it would turn on Bystander Speech Rejection).
 
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
-import {DEMO_LINES, LanguageCode} from "./CaptionDemoScript"
+import {DEMO_LINES, LanguageCode, spokenText} from "./CaptionDemoScript"
 import {SpeakerCard, CARD_DISTANCE_CM} from "./SpeakerCard"
 import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
 import {placeInFrontOfCamera} from "./CaptionUiKit"
 
 const SPEAKER_COUNT = 3
+const PICKER_FIT_WIDTH_CM = 31
 
 @component
 export class CaptionController extends BaseScriptComponent {
@@ -39,13 +40,14 @@ export class CaptionController extends BaseScriptComponent {
   @hint("Translation language shown at start")
   @widget(
     new ComboBoxWidget([
+      new ComboBoxItem("Auto (detect and translate)", "auto"),
       new ComboBoxItem("Off", "off"),
       new ComboBoxItem("Español", "es"),
       new ComboBoxItem("Français", "fr"),
       new ComboBoxItem("日本語", "ja")
     ])
   )
-  startLanguage: string = "es"
+  startLanguage: string = "auto"
   @ui.group_end
   private camera: Transform
   private cards: SpeakerCard[] = []
@@ -76,8 +78,9 @@ export class CaptionController extends BaseScriptComponent {
       placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
       // Low in the view but inside it: the view's bottom edge is about 18 degrees down.
       placeInFrontOfCamera(this.picker.root, this.camera, 0, -15, PICKER_DISTANCE_CM)
-      // The picker is about 49 cm wide; at 60 cm the view is only about 35 cm wide.
-      this.picker.root.getTransform().setLocalScale(vec3.one().uniformScale(0.62))
+      // At 60 cm the view is only about 35 cm wide; shrink the picker to fit with a margin.
+      const scale = Math.min(1, PICKER_FIT_WIDTH_CM / this.picker.width)
+      this.picker.root.getTransform().setLocalScale(vec3.one().uniformScale(scale))
     })
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -120,7 +123,7 @@ export class CaptionController extends BaseScriptComponent {
       }
       if (this.nextLine >= DEMO_LINES.length && this.loopDemo) {
         const last = DEMO_LINES[DEMO_LINES.length - 1]
-        const lastEnds = last.at + last.en.split(" ").length / this.wordsPerSecond
+        const lastEnds = last.at + spokenText(last).split(" ").length / this.wordsPerSecond
         if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) {
           this.clock = 0
           this.nextLine = 0

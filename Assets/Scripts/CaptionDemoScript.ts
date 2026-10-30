@@ -2,7 +2,19 @@
 // Each line arrives on a timer as if spoken. Translations are pre-written for the demo
 // languages; the full language list only exists in Live mode (Caption server).
 
-export type LanguageCode = "off" | "es" | "fr" | "ja"
+// Translation setting. "auto": captions in the wearer's language (English in the demo);
+// anyone speaking another language is detected and translated automatically.
+// The others translate every line into that language.
+export type LanguageCode = "auto" | "off" | "es" | "fr" | "ja"
+
+// A language a speaker can talk in. In Demo mode detection is scripted; in Live mode the
+// Caption server reports the language it hears.
+export type SpokenLanguage = "en" | "es"
+
+// The wearer's own language in Demo mode.
+export const WEARER_LANGUAGE: SpokenLanguage = "en"
+
+export const SPOKEN_LANGUAGE_NAMES: Record<SpokenLanguage, string> = {en: "English", es: "Spanish"}
 
 export interface LanguageOption {
   code: LanguageCode
@@ -10,6 +22,7 @@ export interface LanguageOption {
 }
 
 export const DEMO_LANGUAGES: LanguageOption[] = [
+  {code: "auto", label: "Auto"},
   {code: "off", label: "Off"},
   {code: "es", label: "Español"},
   {code: "fr", label: "Français"},
@@ -21,13 +34,15 @@ export interface DemoLine {
   speaker: number
   // Seconds after the demo starts when this speaker begins talking.
   at: number
+  // The language the speaker talks in (English unless set).
+  spoken?: SpokenLanguage
   en: string
   es: string
   fr: string
   ja: string
 }
 
-// Speaker 1 is the old friend, then speakers 2 and 3 join. Gaps between a speaker's
+// Speaker 1 is the old friend, then speakers 2 and 3 join. Speaker 3 speaks Spanish. Gaps between a speaker's
 // lines are longer than the 3 s hold so each card visibly hides and comes back.
 export const DEMO_LINES: DemoLine[] = [
   {
@@ -65,6 +80,7 @@ export const DEMO_LINES: DemoLine[] = [
   {
     speaker: 3,
     at: 27.0,
+    spoken: "es",
     en: "Mind if I join you? The coffee line is endless.",
     es: "¿Les importa si me uno? La fila del café es interminable.",
     fr: "Je peux me joindre à vous ? La queue pour le café est interminable.",
@@ -81,6 +97,7 @@ export const DEMO_LINES: DemoLine[] = [
   {
     speaker: 3,
     at: 38.0,
+    spoken: "es",
     en: "I did. The live captions demo was amazing.",
     es: "Sí. La demo de subtítulos en vivo fue increíble.",
     fr: "Oui. La démo de sous-titres en direct était incroyable.",
@@ -105,12 +122,31 @@ export const DEMO_LINES: DemoLine[] = [
   {
     speaker: 3,
     at: 54.5,
+    spoken: "es",
     en: "That's brilliant. Let's grab a table and keep talking.",
     es: "Genial. Busquemos una mesa y sigamos hablando.",
     fr: "Génial. Trouvons une table et continuons à parler.",
     ja: "すばらしい。テーブルを取って話を続けましょう。"
   }
 ]
+
+export function spokenLanguageOf(line: DemoLine): SpokenLanguage {
+  return line.spoken ?? "en"
+}
+
+// The words as the speaker said them.
+export function spokenText(line: DemoLine): string {
+  return spokenLanguageOf(line) === "es" ? line.es : line.en
+}
+
+// What goes under the caption for this setting; "" when no translation line is needed.
+export function translationFor(line: DemoLine, language: LanguageCode): string {
+  const spoken = spokenLanguageOf(line)
+  if (language === "off") return ""
+  if (language === "auto") return spoken === WEARER_LANGUAGE ? "" : line.en
+  if (language === spoken) return ""
+  return translationOf(line, language)
+}
 
 export function translationOf(line: DemoLine, language: LanguageCode): string {
   switch (language) {

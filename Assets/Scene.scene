@@ -1132,7 +1132,6 @@
     wordsPerSecond: true
     loopDemo: true
     loopPauseSeconds: true
-    startLanguage: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -1141,7 +1140,7 @@
       wordsPerSecond: 2.800000
       loopDemo: true
       loopPauseSeconds: !<float> 8.000000
-      startLanguage: es
+      startLanguage: auto
   ScriptTypes:
     "":
       {}
