@@ -258,3 +258,6 @@ Assets/**/*.worldmesh !filter !diff !merge text eol=lf linguist-language=yaml me
 Packages/**/*.worldmesh !filter !diff !merge text eol=lf linguist-language=yaml merge=lens-studio-yaml-merge
 
 # Shipped by Lens Studio
+
+# SubSpecs: screen recordings of the Lens working (large files go through Git LFS)
+history/videos/** filter=lfs diff=lfs merge=lfs -text
