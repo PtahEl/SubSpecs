@@ -96,6 +96,16 @@ export class OnboardingCard {
     this.listeners.push(fn)
   }
 
+  // Shown again by the language bar's Switch button, ready for another pick.
+  show(): void {
+    this.started = false
+    this.root.enabled = true
+  }
+
+  get visible(): boolean {
+    return this.root.enabled
+  }
+
   start(scenario: DemoScenarioId): void {
     if (this.started) return
     this.started = true

@@ -1,6 +1,6 @@
 // Small panel at the bottom of the view: Auto (detect other languages and translate them),
 // Off, or pinch a language to translate everything into it; plus the mode status
-// (Demo / Live / Reconnecting).
+// (Demo / Live / Reconnecting) and a Switch button back to the start card.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
@@ -13,8 +13,10 @@ export const PICKER_DISTANCE_CM = 60
 const BUTTON_W = 6.6
 const BUTTON_H = 3.0
 const GAP = 0.8
-const LABEL_W = 7.5
-const STATUS_W = 7.0
+const LABEL_W = 6.5
+const STATUS_W = 5.5
+// "Switch" at the right end goes back to the start card to pick another conversation.
+const SWITCH_W = 6.0
 const PAD = 1.0
 const CONTENT_Z = 0.6
 // Small logo sitting just above the panel's left end, in panel cm before scaling.
@@ -28,6 +30,7 @@ export class LanguagePicker {
   readonly root: SceneObject
   private buttons: {code: LanguageCode; button: Button; label: Text; text: string}[] = []
   private listeners: ((code: LanguageCode) => void)[] = []
+  private switchListeners: (() => void)[] = []
   private selected: LanguageCode
   private statusText: Text
   private ready = false
@@ -43,7 +46,7 @@ export class LanguagePicker {
     this.root.createComponent("Component.Canvas")
 
     const count = DEMO_LANGUAGES.length
-    const width = PAD * 2 + LABEL_W + count * BUTTON_W + (count + 1) * GAP + STATUS_W
+    const width = PAD * 2 + LABEL_W + count * BUTTON_W + (count + 2) * GAP + STATUS_W + SWITCH_W
     this.width = width
     const height = BUTTON_H + PAD * 2
     const plate = this.root.createComponent(BackPlate.getTypeName()) as BackPlate
@@ -80,10 +83,21 @@ export class LanguagePicker {
     this.statusText = makeText(content, "StatusIndicator", "● DEMO", {
       role: "Callout",
       distanceCm: PICKER_DISTANCE_CM,
-      rect: Rect.create(x, width / 2 - PAD, -BUTTON_H / 2, BUTTON_H / 2),
+      rect: Rect.create(x, x + STATUS_W, -BUTTON_H / 2, BUTTON_H / 2),
       align: HorizontalAlignment.Right,
       color: STATUS_DEMO_COLOR
     })
+    x += STATUS_W + GAP
+
+    const {button: switchButton} = makeButton(
+      content,
+      "SwitchButton",
+      "Switch",
+      new vec2(SWITCH_W, BUTTON_H),
+      PICKER_DISTANCE_CM,
+      new vec3(x + SWITCH_W / 2, 0, 0)
+    )
+    switchButton.onTriggerUp.add(() => this.switchListeners.forEach((fn) => fn()))
     this.refreshSelection()
 
     if (logo) {
@@ -121,9 +135,19 @@ export class LanguagePicker {
     this.listeners.forEach((fn) => fn(code))
   }
 
+  // Pinching "Switch" asks to go back to the start card.
+  onSwitch(fn: () => void): void {
+    this.switchListeners.push(fn)
+  }
+
   show(): void {
     this.wantVisible = true
     if (this.ready) this.root.enabled = true
+  }
+
+  hide(): void {
+    this.wantVisible = false
+    if (this.ready) this.root.enabled = false
   }
 
   private refreshSelection(): void {

@@ -30,8 +30,9 @@ translation) is not built yet.
 
 1. Open `CaptionSpecs.esproj` in Lens Studio 5.24 or later. (Internal names still use the project's
    first name, "Caption".)
-2. In the Preview panel, pinch **Start** on the start card.
+2. In the Preview panel, pinch **Conference corridor** or **Hospital intake** on the start card.
 3. Watch the conversation; drag a card over a person; try the language buttons.
+4. To try the other conversation, pinch **Switch** at the right end of the language bar and pick again.
 
 Large files (models, textures, packages) are stored with Git LFS: install it before cloning.
 

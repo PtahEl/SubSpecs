@@ -10,6 +10,7 @@ import {AutoDetectLanguageScenario} from "./AutoDetectLanguageScenario"
 import {FigureTalksWhileSpeakingScenario} from "./FigureTalksWhileSpeakingScenario"
 import {HospitalIntakeStartsScenario} from "./HospitalIntakeStartsScenario"
 import {HospitalHighlightsScenario} from "./HospitalHighlightsScenario"
+import {SwitchScenarioScenario} from "./SwitchScenarioScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.
@@ -26,6 +27,7 @@ export class LeafIndex extends BaseScriptComponent {
     {id: "auto-detect-language", typename: AutoDetectLanguageScenario.getTypeName()},
     {id: "figure-talks-while-speaking", typename: FigureTalksWhileSpeakingScenario.getTypeName()},
     {id: "c6-hospital-intake-starts", typename: HospitalIntakeStartsScenario.getTypeName()},
-    {id: "c7-hospital-highlights", typename: HospitalHighlightsScenario.getTypeName()}
+    {id: "c7-hospital-highlights", typename: HospitalHighlightsScenario.getTypeName()},
+    {id: "switch-scenario", typename: SwitchScenarioScenario.getTypeName()}
   ]
 }

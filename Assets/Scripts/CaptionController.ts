@@ -12,7 +12,7 @@ import {placeInFrontOfCamera} from "./CaptionUiKit"
 import {SpeakerFigures} from "./SpeakerFigures"
 
 const SPEAKER_COUNT = 3
-const PICKER_FIT_WIDTH_CM = 31
+const PICKER_FIT_WIDTH_CM = 32
 
 @component
 export class CaptionController extends BaseScriptComponent {
@@ -89,6 +89,7 @@ export class CaptionController extends BaseScriptComponent {
 
     this.picker.onLanguageChanged((code) => this.cards.forEach((c) => c.setLanguage(code)))
     this.onboarding.onStart((scenario) => this.startDemo(scenario))
+    this.picker.onSwitch(() => this.switchScenario())
     this.figures = new SpeakerFigures(this.speakerFigures ?? [])
 
     this.createEvent("OnStartEvent").bind(() => {
@@ -138,6 +139,24 @@ export class CaptionController extends BaseScriptComponent {
     this.running = true
     this.clock = 0
     this.nextLine = 0
+  }
+
+  // The language bar's Switch: stop the conversation, clear every card and person, and bring
+  // the start card back in front of the wearer. The language setting stays as it is.
+  switchScenario(): void {
+    this.running = false
+    this.clock = 0
+    this.nextLine = 0
+    this.heard.clear()
+    this.cards.forEach((c) => c.reset())
+    this.figures.reset()
+    this.picker.hide()
+    placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
+    this.onboarding.show()
+  }
+
+  get startCardVisible(): boolean {
+    return this.onboarding.visible
   }
 
   private onUpdate(): void {

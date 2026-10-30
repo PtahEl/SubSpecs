@@ -12,6 +12,26 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Oct 30, 2026: a Switch button to change conversations
+
+![The language bar with the green "● DEMO" status and the new Switch button at its right end](history/screenshots/2026-10-30-switch-button.png)
+
+- A small **Switch** button now sits at the right end of the language bar, next to "● DEMO". Pinching
+  it stops the conversation, clears every card (its words, its spot, the "New speaker detected" state
+  and the older line), puts the people back to standing still, hides the language bar and brings the
+  start card back in front of you. Pick **Conference corridor** or **Hospital intake** and that
+  conversation starts from its first line, with no need to restart the Lens.
+- The language you picked is kept across the switch.
+- To make room, the bar's "Translate" label and "● DEMO" status are a little narrower, and the
+  language buttons are about 4% smaller.
+- **Checked:** no errors in Lens Studio's Preview. 10 of the 11 automated tests pass, including a new
+  one that starts the corridor, picks French, pinches Switch, checks everything is cleared, then picks
+  Hospital intake and checks all three patients start fresh with French kept. The one that fails is
+  the full-arm reach test for the language buttons: since Lens Studio was restarted today, the
+  simulated arm can't settle on any button, even on the language bar exactly as it was before Switch,
+  so this change isn't the cause. It passed every run yesterday and needs a rerun after restarting
+  Lens Studio.
+
 ## Oct 30, 2026: second demo, the hospital intake desk
 
 ![The Japanese and French patients' cards with intake facts highlighted in the English translation](history/screenshots/2026-10-30-hospital-intake.png)

@@ -261,6 +261,28 @@ export class SpeakerCard {
     this.show()
   }
 
+  // Back to a card that has heard nothing: hidden, empty, and placed afresh in the arc when its
+  // speaker next talks. The language setting is kept.
+  reset(): void {
+    this.line = null
+    this.words = []
+    this.revealed = 0
+    this.typing = false
+    this.typeClock = 0
+    this.holdRemaining = 0
+    this.previousAge = -1
+    this.badgeAge = -1
+    this.placed = false
+    this.dragging = false
+    this.currentText.text = ""
+    this.previousText.text = ""
+    this.badge.getSceneObject().enabled = false
+    this.languageTag.text = ""
+    this.refreshLanguageTag()
+    this.refreshTranslation()
+    this.hide()
+  }
+
   show(): void {
     this.wantVisible = true
     if (this.ready) this.root.enabled = true

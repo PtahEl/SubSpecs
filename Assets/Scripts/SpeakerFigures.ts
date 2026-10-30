@@ -51,6 +51,14 @@ export class SpeakerFigures {
     })
   }
 
+  // Everyone back to standing still (the next update pauses them on the first frame).
+  reset(): void {
+    this.players.forEach((player, i) => {
+      this.talking[i] = false
+      if (player) player.playClipAt(TALKING_CLIP, 0)
+    })
+  }
+
   isTalking(speaker: number): boolean {
     return this.talking[speaker - 1] === true
   }
