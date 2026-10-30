@@ -29,6 +29,7 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     holdSeconds: false
+    logoMaterial: false
     loopDemo: false
     loopPauseSeconds: false
     speakerFigures: false
@@ -50,11 +51,12 @@
       startLanguage: es
       speakerFigures: !<reference.SceneObject[]>
         []
+      logoMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
   InputLines:
-    - '// @ui {"widget":"label", "label":"Subspecs — Demo mode"}'
+    - '// @ui {"widget":"label", "label":"SubSpecs — Demo mode"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"group_start", "label":"Settings"}'
     - '// @input float holdSeconds = 3 {"hint":"Seconds a card keeps the last words readable after its speaker stops talking", "widget":"slider", "min":1, "max":10, "step":0.5}'
@@ -64,3 +66,4 @@
     - '// @input string startLanguage = "auto" {"hint":"Translation language shown at start", "widget":"combobox", "values":[{"label":"Auto (detect and translate)", "value":"auto"}, {"label":"Off", "value":"off"}, {"label":"Español", "value":"es"}, {"label":"Français", "value":"fr"}, {"label":"日本語", "value":"ja"}]}'
     - '// @ui {"widget":"group_end"}'
     - '// @input SceneObject[] speakerFigures = {} {"hint":"Demo stand-in people for speakers 1, 2 and 3; each plays its Talking animation while speaking"}'
+    - '// @input Asset.Material logoMaterial {"hint":"SubSpecs logo material (white logo, see-through background) for the start card and the small logo above the language bar"}'

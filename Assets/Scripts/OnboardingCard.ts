@@ -1,7 +1,7 @@
-// Start card: what Subspecs does, the privacy note, and the Start button.
+// Start card: what SubSpecs does, the privacy note, and the Start button.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
-import {makeButton, makeText} from "./CaptionUiKit"
+import {LOGO_ASPECT, makeButton, makeImage, makeText} from "./CaptionUiKit"
 
 export const ONBOARDING_DISTANCE_CM = 100
 
@@ -9,6 +9,7 @@ const WIDTH = 36
 const HEIGHT = 25
 const PAD = 2.0
 const CONTENT_Z = 0.6
+const LOGO_HEIGHT = 3.8
 
 export const ONBOARDING_BODY =
   "Live subs for every voice around you. Each new speaker gets their own color-coded card. " +
@@ -24,7 +25,8 @@ export class OnboardingCard {
   private listeners: (() => void)[] = []
   private started = false
 
-  constructor(parent: SceneObject) {
+  // `logo` replaces the "SubSpecs" title text when given.
+  constructor(parent: SceneObject, logo?: Material) {
     this.root = global.scene.createSceneObject("OnboardingCard")
     this.root.setParent(parent)
     this.root.createComponent("Component.Canvas")
@@ -42,12 +44,16 @@ export class OnboardingCard {
     const right = WIDTH / 2 - PAD
     const top = HEIGHT / 2 - PAD
 
-    makeText(content, "Title", "Subspecs", {
-      role: "Title2",
-      distanceCm: d,
-      rect: Rect.create(left, right, top - 4, top),
-      align: HorizontalAlignment.Center
-    })
+    if (logo) {
+      makeImage(content, "Logo", logo, new vec2(LOGO_HEIGHT * LOGO_ASPECT, LOGO_HEIGHT), new vec3(0, top - 2, 0))
+    } else {
+      makeText(content, "Title", "SubSpecs", {
+        role: "Title2",
+        distanceCm: d,
+        rect: Rect.create(left, right, top - 4, top),
+        align: HorizontalAlignment.Center
+      })
+    }
     makeText(content, "ModeLabel", "Demo mode · scripted conversation, no server needed", {
       role: "Caption",
       distanceCm: d,

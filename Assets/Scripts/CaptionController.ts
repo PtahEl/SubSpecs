@@ -1,4 +1,4 @@
-// Subspecs — Demo mode. Plays a scripted three-speaker corridor conversation, giving each
+// SubSpecs — Demo mode. Plays a scripted three-speaker corridor conversation, giving each
 // voice its own sub card, with pre-written translations and an onboarding card.
 // Demo mode never uses AsrModule (it would turn on Bystander Speech Rejection).
 
@@ -15,7 +15,7 @@ const PICKER_FIT_WIDTH_CM = 31
 
 @component
 export class CaptionController extends BaseScriptComponent {
-  @ui.label("Subspecs — Demo mode")
+  @ui.label("SubSpecs — Demo mode")
   @ui.separator
   @ui.group_start("Settings")
   @input
@@ -56,6 +56,11 @@ export class CaptionController extends BaseScriptComponent {
   @hint("Demo stand-in people for speakers 1, 2 and 3; each plays its Talking animation while speaking")
   speakerFigures: SceneObject[] = []
 
+  @input
+  @allowUndefined
+  @hint("SubSpecs logo material (white logo, see-through background) for the start card and the small logo above the language bar")
+  logoMaterial: Material
+
   private camera: Transform
   private cards: SpeakerCard[] = []
   private heard = new Set<number>()
@@ -70,8 +75,8 @@ export class CaptionController extends BaseScriptComponent {
   onAwake(): void {
     this.camera = WorldCameraFinderProvider.getInstance().getTransform()
 
-    this.onboarding = new OnboardingCard(this.sceneObject)
-    this.picker = new LanguagePicker(this.sceneObject, this.startLanguage as LanguageCode)
+    this.onboarding = new OnboardingCard(this.sceneObject, this.logoMaterial)
+    this.picker = new LanguagePicker(this.sceneObject, this.startLanguage as LanguageCode, this.logoMaterial)
     for (let i = 1; i <= SPEAKER_COUNT; i++) {
       const card = new SpeakerCard(this.sceneObject, i, this.camera)
       card.setLanguage(this.startLanguage as LanguageCode)

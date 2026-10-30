@@ -1,6 +1,6 @@
 // Demo mode conversation: a scripted conference-corridor chat between three speakers.
 // Each line arrives on a timer as if spoken. Translations are pre-written for the demo
-// languages; the full language list only exists in Live mode (Subspecs server).
+// languages; the full language list only exists in Live mode (SubSpecs server).
 
 // Translation setting. "auto": subs in the wearer's language (English in the demo);
 // anyone speaking another language is detected and translated automatically.
@@ -8,7 +8,7 @@
 export type LanguageCode = "auto" | "off" | "es" | "fr" | "ja"
 
 // A language a speaker can talk in. In Demo mode detection is scripted; in Live mode the
-// Subspecs server reports the language it hears.
+// SubSpecs server reports the language it hears.
 export type SpokenLanguage = "en" | "es"
 
 // The wearer's own language in Demo mode.

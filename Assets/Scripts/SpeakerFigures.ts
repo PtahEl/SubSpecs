@@ -1,5 +1,5 @@
 // Demo mode only: the stand-in people play their Talking animation while their words are
-// appearing on their card, and stand still otherwise. Subspecs itself never needs this:
+// appearing on their card, and stand still otherwise. SubSpecs itself never needs this:
 // on real glasses the people are real.
 
 // Mixamo names the animation in every downloaded FBX "mixamo.com".
@@ -29,7 +29,7 @@ export class SpeakerFigures {
       const clip = player.getClip(TALKING_CLIP)
       // The clip is 5.17 s; longer lines keep the person talking.
       if (clip) clip.playbackMode = PlaybackMode.Loop
-      else print("[Subspecs] no '" + TALKING_CLIP + "' clip on " + player.getSceneObject().name)
+      else print("[SubSpecs] no '" + TALKING_CLIP + "' clip on " + player.getSceneObject().name)
       player.playClipAt(TALKING_CLIP, 0)
     }
   }

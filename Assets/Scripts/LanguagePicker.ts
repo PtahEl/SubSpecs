@@ -6,7 +6,7 @@ import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
 import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import {DEMO_LANGUAGES, LanguageCode} from "./CaptionDemoScript"
-import {makeButton, makeText, WHITE} from "./CaptionUiKit"
+import {LOGO_ASPECT, makeButton, makeImage, makeText, WHITE} from "./CaptionUiKit"
 
 export const PICKER_DISTANCE_CM = 60
 
@@ -17,6 +17,9 @@ const LABEL_W = 7.5
 const STATUS_W = 7.0
 const PAD = 1.0
 const CONTENT_Z = 0.6
+// Small logo sitting just above the panel's left end, in panel cm before scaling.
+const LOGO_HEIGHT = 2.6
+const LOGO_GAP = 0.6
 
 const SELECTED_COLOR = new vec4(0.45, 0.9, 0.55, 1)
 const STATUS_DEMO_COLOR = new vec4(0.45, 0.9, 0.55, 1)
@@ -32,7 +35,8 @@ export class LanguagePicker {
   // Full width in cm before any scaling.
   readonly width: number
 
-  constructor(parent: SceneObject, initial: LanguageCode) {
+  // `logo`, when given, shows as a small SubSpecs logo above the panel's left end.
+  constructor(parent: SceneObject, initial: LanguageCode, logo?: Material) {
     this.selected = initial
     this.root = global.scene.createSceneObject("LanguagePicker")
     this.root.setParent(parent)
@@ -81,6 +85,12 @@ export class LanguagePicker {
       color: STATUS_DEMO_COLOR
     })
     this.refreshSelection()
+
+    if (logo) {
+      const logoW = LOGO_HEIGHT * LOGO_ASPECT
+      makeImage(content, "Logo", logo, new vec2(logoW, LOGO_HEIGHT),
+        new vec3(-width / 2 + PAD + logoW / 2, height / 2 + LOGO_GAP + LOGO_HEIGHT / 2, 0))
+    }
 
     plate.onInitialized.add(() => {
       // The background is only a backdrop: its own collider would catch reaches meant for the buttons.

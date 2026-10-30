@@ -41,6 +41,9 @@ export function withAlpha(c: vec4, a: number): vec4 {
 
 export const WHITE = new vec4(1, 1, 1, 1)
 
+// Width over height of Assets/Branding/SubSpecsLogo_White.png (797 x 286 px).
+export const LOGO_ASPECT = 797 / 286
+
 export interface TextOptions {
   role: TextRole
   distanceCm: number
@@ -68,6 +71,34 @@ export function makeText(parent: SceneObject, name: string, value: string, o: Te
   t.layoutRect = o.rect
   t.textFill.color = o.color ?? WHITE
   return t
+}
+
+// World-space image in cm on a flat quad facing +Z; `material` carries the texture.
+export function makeImage(parent: SceneObject, name: string, material: Material, size: vec2, localPos: vec3): RenderMeshVisual {
+  const so = global.scene.createSceneObject(name)
+  so.setParent(parent)
+  so.getTransform().setLocalPosition(localPos)
+  const w = size.x / 2
+  const h = size.y / 2
+  const mb = new MeshBuilder([
+    {name: "position", components: 3},
+    {name: "normal", components: 3},
+    {name: "texture0", components: 2}
+  ])
+  mb.topology = MeshTopology.Triangles
+  mb.indexType = MeshIndexType.UInt16
+  mb.appendVerticesInterleaved([
+    -w, -h, 0, 0, 0, 1, 0, 0,
+    w, -h, 0, 0, 0, 1, 1, 0,
+    w, h, 0, 0, 0, 1, 1, 1,
+    -w, h, 0, 0, 0, 1, 0, 1
+  ])
+  mb.appendIndices([0, 1, 2, 0, 2, 3])
+  mb.updateMesh()
+  const visual = so.createComponent("Component.RenderMeshVisual") as RenderMeshVisual
+  visual.mesh = mb.getMesh()
+  visual.mainMaterial = material
+  return visual
 }
 
 export function setTextAlpha(t: Text, alpha: number): void {

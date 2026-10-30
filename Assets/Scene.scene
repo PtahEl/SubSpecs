@@ -2547,6 +2547,7 @@
     wordsPerSecond: true
     loopDemo: true
     loopPauseSeconds: true
+    logoMaterial: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2560,6 +2561,7 @@
         - !<reference> 4a6f7ebf-d095-48aa-a672-35ec7a49635c
         - !<reference> 8f3cfd86-5e4f-4527-98e4-aa9cfb6c192f
         - !<reference> a133f1be-85ec-4a67-b32f-6cd4f544cb4a
+      logoMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}
