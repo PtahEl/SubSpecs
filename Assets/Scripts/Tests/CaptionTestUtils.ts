@@ -5,7 +5,7 @@ import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLe
 import {findInteractablesByName} from "Leaf.lspkg/Interactors/InteractableUtils"
 import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import {CaptionController} from "../CaptionController"
-import {DEMO_LINES, DemoLine, spokenText} from "../CaptionDemoScript"
+import {ALL_DEMO_LINES, DemoLine, spokenText} from "../CaptionDemoScript"
 
 export function controller(): CaptionController {
   const so = findSceneObjectByName("CaptionController")
@@ -25,15 +25,15 @@ export async function waitFor(what: string, cond: () => boolean, timeoutMs: numb
   return getTime() - start
 }
 
-// Starts the demo through the Start button if no earlier scenario did.
+// Starts the demo through a start-card button if no earlier scenario did.
 export async function ensureDemoRunning(start: () => Promise<void>): Promise<void> {
   if (!controller().isRunning) await start()
   await waitFor("demo running", () => controller().isRunning, 3000)
 }
 
-// The demo line whose words (as spoken) are `text`.
+// The demo line whose words (as spoken) are `text`, in either conversation.
 export function lineForText(text: string): DemoLine | undefined {
-  return DEMO_LINES.find((l) => spokenText(l) === text)
+  return ALL_DEMO_LINES.find((l) => spokenText(l) === text)
 }
 
 export function distance(a: vec3, b: vec3): number {
@@ -52,8 +52,14 @@ export function interactable(name: string): Interactable {
   return found
 }
 
+// Starts the conference corridor conversation, the one the original scenarios check.
 export async function pressStart(): Promise<void> {
-  await new DefaultLeafInteractor().trigger(interactable("StartButton"))
+  await new DefaultLeafInteractor().trigger(interactable("CorridorButton"))
+  await sleep(300)
+}
+
+export async function pressHospital(): Promise<void> {
+  await new DefaultLeafInteractor().trigger(interactable("HospitalButton"))
   await sleep(300)
 }
 

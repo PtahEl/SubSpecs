@@ -12,6 +12,30 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Oct 30, 2026: second demo, the hospital intake desk
+
+![The Japanese and French patients' cards with intake facts highlighted in the English translation](history/screenshots/2026-10-30-hospital-intake.png)
+
+- The start card now offers two buttons, **Conference corridor** and **Hospital intake**, in place of
+  Start ([screenshot](history/screenshots/2026-10-30-hospital-start-card.png)). The corridor
+  conversation is unchanged.
+- **Hospital intake** shows that SubSpecs helps hearing people too: the wearer works the intake desk at a
+  hospital next to an international airport. The same three people are now patients: Sophie, a Japanese
+  traveler with chest pain; Brian, a Spanish-speaking father describing his six-year-old daughter's fever;
+  and Meghan, a French-speaking woman having a mild allergic reaction to peanuts. Twelve short answers in
+  all; the worker's own questions aren't shown, because she hears them.
+- Auto detects each patient's language ("Japanese detected", "Spanish detected", "French detected") and
+  shows the English translation underneath.
+- The facts an intake form needs (symptoms, how long, pain level, medicines, allergies, weight) show in
+  **lime green** inside the English translation; the other words keep the speaker's color. Lime stands
+  apart from all three speaker colors. Picking another language by hand shows the translation without
+  highlights; Auto brings them back.
+- Japanese subs now appear a few characters at a time as the patient speaks, like the word-by-word typing
+  in the other languages.
+- **Checked:** no errors in Lens Studio's Preview, and all 10 automated tests pass on the first run,
+  including two new ones: the hospital button starts three patients' cards in Japanese, Spanish and French
+  with English underneath, and exactly the scripted facts are highlighted on six answers.
+
 ## Oct 30, 2026: the SubSpecs logo is in the Lens
 
 ![The start card with the white SubSpecs logo at the top](history/screenshots/2026-10-30-logo-start-card.png)

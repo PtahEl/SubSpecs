@@ -1,9 +1,10 @@
-// SubSpecs — Demo mode. Plays a scripted three-speaker corridor conversation, giving each
+// SubSpecs — Demo mode. Plays the scripted three-speaker conversation picked on the start card
+// (conference corridor or hospital intake), giving each
 // voice its own sub card, with pre-written translations and an onboarding card.
 // Demo mode never uses AsrModule (it would turn on Bystander Speech Rejection).
 
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
-import {DEMO_LINES, LanguageCode, spokenText} from "./CaptionDemoScript"
+import {DEMO_SCENARIOS, DemoLine, DemoScenarioId, LanguageCode, spokenWords} from "./CaptionDemoScript"
 import {SpeakerCard, CARD_DISTANCE_CM} from "./SpeakerCard"
 import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
@@ -69,6 +70,8 @@ export class CaptionController extends BaseScriptComponent {
   private figures: SpeakerFigures
 
   private running = false
+  private scenarioId: DemoScenarioId = "corridor"
+  private lines: DemoLine[] = DEMO_SCENARIOS.corridor
   private clock = 0
   private nextLine = 0
 
@@ -85,7 +88,7 @@ export class CaptionController extends BaseScriptComponent {
     }
 
     this.picker.onLanguageChanged((code) => this.cards.forEach((c) => c.setLanguage(code)))
-    this.onboarding.onStart(() => this.startDemo())
+    this.onboarding.onStart((scenario) => this.startDemo(scenario))
     this.figures = new SpeakerFigures(this.speakerFigures ?? [])
 
     this.createEvent("OnStartEvent").bind(() => {
@@ -108,6 +111,10 @@ export class CaptionController extends BaseScriptComponent {
     return this.clock
   }
 
+  get scenario(): DemoScenarioId {
+    return this.scenarioId
+  }
+
   get language(): LanguageCode {
     return this.picker.language
   }
@@ -124,7 +131,9 @@ export class CaptionController extends BaseScriptComponent {
     return this.cards[speaker - 1]
   }
 
-  startDemo(): void {
+  startDemo(scenario: DemoScenarioId = "corridor"): void {
+    this.scenarioId = scenario
+    this.lines = DEMO_SCENARIOS[scenario]
     this.picker.show()
     this.running = true
     this.clock = 0
@@ -135,13 +144,13 @@ export class CaptionController extends BaseScriptComponent {
     const dt = getDeltaTime()
     if (this.running) {
       this.clock += dt
-      while (this.nextLine < DEMO_LINES.length && DEMO_LINES[this.nextLine].at <= this.clock) {
+      while (this.nextLine < this.lines.length && this.lines[this.nextLine].at <= this.clock) {
         this.deliver(this.nextLine)
         this.nextLine++
       }
-      if (this.nextLine >= DEMO_LINES.length && this.loopDemo) {
-        const last = DEMO_LINES[DEMO_LINES.length - 1]
-        const lastEnds = last.at + spokenText(last).split(" ").length / this.wordsPerSecond
+      if (this.nextLine >= this.lines.length && this.loopDemo) {
+        const last = this.lines[this.lines.length - 1]
+        const lastEnds = last.at + spokenWords(last).length / this.wordsPerSecond
         if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) {
           this.clock = 0
           this.nextLine = 0
@@ -153,7 +162,7 @@ export class CaptionController extends BaseScriptComponent {
   }
 
   private deliver(index: number): void {
-    const line = DEMO_LINES[index]
+    const line = this.lines[index]
     const card = this.cards[line.speaker - 1]
     const isNew = !this.heard.has(line.speaker)
     this.heard.add(line.speaker)

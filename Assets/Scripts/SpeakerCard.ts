@@ -8,8 +8,11 @@ import {
   LanguageCode,
   SPOKEN_LANGUAGE_NAMES,
   WEARER_LANGUAGE,
+  highlightedTranslation,
+  joinWords,
   spokenLanguageOf,
   spokenText,
+  spokenWords,
   translationFor
 } from "./CaptionDemoScript"
 import {makeText, setTextAlpha, speakerColor, withAlpha, faceCamera} from "./CaptionUiKit"
@@ -29,6 +32,11 @@ const PREVIOUS_ALPHA = 0.55
 const PREVIOUS_FADE_SECONDS = 2.5
 const BADGE_HOLD_SECONDS = 1.2
 const BADGE_FADE_SECONDS = 0.8
+
+// Intake facts in the English translation (hospital scenario). Lime stands apart from all
+// three speaker colors and reads well on the additive display.
+export const HIGHLIGHT_HEX = "#C6FF4D"
+const HIGHLIGHT_TAG = /<color=[^>]*>(.*?)<\/color>/g
 
 export class SpeakerCard {
   readonly speaker: number
@@ -128,6 +136,7 @@ export class SpeakerCard {
       color: withAlpha(color, 0.95),
       wrap: true
     })
+    this.translationText.enableRichText = true
     this.previousText = makeText(content, "PreviousLine", "", {
       role: "Caption",
       distanceCm: d,
@@ -175,8 +184,24 @@ export class SpeakerCard {
     return this.currentText.text
   }
 
+  // The translation as plain words, without highlight markup.
   get translationLineText(): string {
-    return this.translationText.getSceneObject().enabled ? this.translationText.text : ""
+    return this.translationText.getSceneObject().enabled ? this.translationText.text.replace(HIGHLIGHT_TAG, "$1") : ""
+  }
+
+  // The phrases currently drawn in the highlight color, read back from the Text component.
+  get translationHighlights(): string[] {
+    if (!this.translationText.getSceneObject().enabled) return []
+    const found: string[] = []
+    const text = this.translationText.text
+    let m: RegExpExecArray | null
+    HIGHLIGHT_TAG.lastIndex = 0
+    while ((m = HIGHLIGHT_TAG.exec(text)) !== null) found.push(m[1])
+    return found
+  }
+
+  get translationUsesRichText(): boolean {
+    return this.translationText.enableRichText
   }
 
   get previousLineText(): string {
@@ -217,7 +242,7 @@ export class SpeakerCard {
       setTextAlpha(this.previousText, PREVIOUS_ALPHA)
     }
     this.line = line
-    this.words = spokenText(line).split(" ")
+    this.words = spokenWords(line)
     this.revealed = 0
     this.typeClock = 0
     this.typing = true
@@ -252,7 +277,7 @@ export class SpeakerCard {
       const target = Math.min(this.words.length, Math.floor(this.typeClock * this.wordsPerSecond) + 1)
       if (target !== this.revealed) {
         this.revealed = target
-        this.currentText.text = this.words.slice(0, this.revealed).join(" ")
+        this.currentText.text = joinWords(this.line, this.words.slice(0, this.revealed))
       }
       if (this.revealed >= this.words.length && this.typeClock * this.wordsPerSecond >= this.words.length) {
         this.finishLine()
@@ -300,7 +325,7 @@ export class SpeakerCard {
     const show = this.line !== null && !this.typing
     const text = show ? translationFor(this.line, this.language) : ""
     this.translationText.getSceneObject().enabled = text !== ""
-    this.translationText.text = text
+    this.translationText.text = show ? highlightedTranslation(this.line, text, HIGHLIGHT_HEX) : text
   }
 
   private refreshLanguageTag(): void {

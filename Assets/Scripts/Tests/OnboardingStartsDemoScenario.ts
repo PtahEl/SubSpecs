@@ -1,4 +1,5 @@
-// Criterion 5: the onboarding card explains Caption and the privacy note; Start begins the demo.
+// Criterion 5: the onboarding card explains SubSpecs and the privacy note; "Conference corridor"
+// begins the corridor conversation.
 
 import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
@@ -16,10 +17,14 @@ export class OnboardingStartsDemoScenario extends Scenario {
     expect(textOf("PrivacyNote").includes("Audio is never stored")).toBe(true)
     expect(textOf("PrivacyNote").includes("no face recognition")).toBe(true)
 
+    expect(textOf("CorridorButtonLabel")).toBe("Conference corridor")
+    expect(textOf("HospitalButtonLabel")).toBe("Hospital intake")
+
     await pressStart()
 
     expect(card.enabled).toBe(false)
     expect(controller().isRunning).toBe(true)
+    expect(controller().scenario).toBe("corridor")
     expect(findSceneObjectByName("LanguagePicker").enabled).toBe(true)
     expect(controller().status.includes("DEMO")).toBe(true)
   }

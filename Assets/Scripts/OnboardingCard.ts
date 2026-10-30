@@ -1,7 +1,8 @@
-// Start card: what SubSpecs does, the privacy note, and the Start button.
+// Start card: what SubSpecs does, the privacy note, and a button for each demo conversation.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {LOGO_ASPECT, makeButton, makeImage, makeText} from "./CaptionUiKit"
+import {DemoScenarioId} from "./CaptionDemoScript"
 
 export const ONBOARDING_DISTANCE_CM = 100
 
@@ -10,6 +11,8 @@ const HEIGHT = 25
 const PAD = 2.0
 const CONTENT_Z = 0.6
 const LOGO_HEIGHT = 3.8
+const BUTTON_WIDTH = 15
+const BUTTON_OFFSET = 8
 
 export const ONBOARDING_BODY =
   "Live subs for every voice around you. Each new speaker gets their own color-coded card. " +
@@ -22,7 +25,7 @@ export const PRIVACY_NOTE =
 
 export class OnboardingCard {
   readonly root: SceneObject
-  private listeners: (() => void)[] = []
+  private listeners: ((scenario: DemoScenarioId) => void)[] = []
   private started = false
 
   // `logo` replaces the "SubSpecs" title text when given.
@@ -77,25 +80,26 @@ export class OnboardingCard {
       wrap: true
     })
 
-    const {button} = makeButton(
-      content,
-      "StartButton",
-      "Start",
-      new vec2(12, 3.6),
-      d,
-      new vec3(0, -HEIGHT / 2 + PAD + 1.8, 0)
-    )
-    button.onTriggerUp.add(() => this.start())
+    // One button per scripted conversation, side by side.
+    const buttonY = -HEIGHT / 2 + PAD + 1.8
+    const choices: [string, string, DemoScenarioId, number][] = [
+      ["CorridorButton", "Conference corridor", "corridor", -BUTTON_OFFSET],
+      ["HospitalButton", "Hospital intake", "hospital", BUTTON_OFFSET]
+    ]
+    for (const [name, label, scenario, x] of choices) {
+      const {button} = makeButton(content, name, label, new vec2(BUTTON_WIDTH, 3.6), d, new vec3(x, buttonY, 0))
+      button.onTriggerUp.add(() => this.start(scenario))
+    }
   }
 
-  onStart(fn: () => void): void {
+  onStart(fn: (scenario: DemoScenarioId) => void): void {
     this.listeners.push(fn)
   }
 
-  start(): void {
+  start(scenario: DemoScenarioId): void {
     if (this.started) return
     this.started = true
     this.root.enabled = false
-    this.listeners.forEach((fn) => fn())
+    this.listeners.forEach((fn) => fn(scenario))
   }
 }
