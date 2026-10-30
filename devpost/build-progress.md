@@ -97,8 +97,10 @@ Every done criterion has a test. Logic proven in Preview; feel unproven until re
 
 ## What's left
 
-1. Add the SubSpecs logo (image and 3D model) at start-up and as a small overlay. Drop the files in
-   `Assets/Branding/`.
+1. ~~Add the SubSpecs logo at start-up and as a small overlay.~~ Done Oct 30: a white copy of the logo
+   (`Assets/Branding/SubSpecsLogo_White.png`, unlit material `SubSpecsLogo.mat`, wired to
+   `CaptionController`'s `logoMaterial`) replaces the title on the start card and sits small above the
+   left end of the language bar. No 3D model version was made.
 2. Live mode (streaming to the SubSpecs server) is not built.
 3. Watch it in Interactive Preview yourself and judge the feel (see "After the build: judge it" in
    the design brief).

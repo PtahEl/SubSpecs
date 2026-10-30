@@ -12,6 +12,20 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Oct 30, 2026: the SubSpecs logo is in the Lens
+
+![The start card with the white SubSpecs logo at the top](history/screenshots/2026-10-30-logo-start-card.png)
+
+- The white SubSpecs logo now replaces the "SubSpecs" title at the top of the start card.
+- Once you press Start, a small copy sits just above the left end of the language bar, so the name
+  stays in view without getting in the way of the subs
+  ([screenshot](history/screenshots/2026-10-30-logo-in-view.png)). It is about 4 cm wide at 60 cm away,
+  well inside the glasses' view, readable and the right way round.
+- The logo is drawn white and unlit, because SPECS glasses add light: black would be invisible.
+- **Checked:** no errors in Lens Studio's Preview, and all 8 automated tests pass. The language-picker
+  reach test missed the French button once (the simulated hand was slow to settle, a known flaky miss
+  unrelated to the logo) and passed on its rerun.
+
 ## Oct 30, 2026: on GitHub, with a README and this history page
 
 - The project now lives in a private GitHub repository with its full history from the first commit.
