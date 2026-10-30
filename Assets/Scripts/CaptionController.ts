@@ -8,6 +8,7 @@ import {SpeakerCard, CARD_DISTANCE_CM} from "./SpeakerCard"
 import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
 import {placeInFrontOfCamera} from "./CaptionUiKit"
+import {SpeakerFigures} from "./SpeakerFigures"
 
 const SPEAKER_COUNT = 3
 const PICKER_FIT_WIDTH_CM = 31
@@ -49,11 +50,18 @@ export class CaptionController extends BaseScriptComponent {
   )
   startLanguage: string = "auto"
   @ui.group_end
+
+  @input
+  @allowUndefined
+  @hint("Demo stand-in people for speakers 1, 2 and 3; each plays its Talking animation while speaking")
+  speakerFigures: SceneObject[] = []
+
   private camera: Transform
   private cards: SpeakerCard[] = []
   private heard = new Set<number>()
   private picker: LanguagePicker
   private onboarding: OnboardingCard
+  private figures: SpeakerFigures
 
   private running = false
   private clock = 0
@@ -73,6 +81,7 @@ export class CaptionController extends BaseScriptComponent {
 
     this.picker.onLanguageChanged((code) => this.cards.forEach((c) => c.setLanguage(code)))
     this.onboarding.onStart(() => this.startDemo())
+    this.figures = new SpeakerFigures(this.speakerFigures ?? [])
 
     this.createEvent("OnStartEvent").bind(() => {
       placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
@@ -100,6 +109,10 @@ export class CaptionController extends BaseScriptComponent {
 
   get status(): string {
     return this.picker.status
+  }
+
+  isFigureTalking(speaker: number): boolean {
+    return this.figures.isTalking(speaker)
   }
 
   getCard(speaker: number): SpeakerCard {
@@ -131,6 +144,7 @@ export class CaptionController extends BaseScriptComponent {
       }
     }
     this.cards.forEach((c) => c.update(dt, this.holdSeconds))
+    this.figures.update(this.cards.map((c) => c.isSpeaking))
   }
 
   private deliver(index: number): void {

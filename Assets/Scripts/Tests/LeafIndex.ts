@@ -7,6 +7,7 @@ import {DragCardOverFigureScenario} from "./DragCardOverFigureScenario"
 import {LanguageSwitchScenario} from "./LanguageSwitchScenario"
 import {LanguagePickerReachIKScenario} from "./LanguagePickerReachIKScenario"
 import {AutoDetectLanguageScenario} from "./AutoDetectLanguageScenario"
+import {FigureTalksWhileSpeakingScenario} from "./FigureTalksWhileSpeakingScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.
@@ -20,6 +21,7 @@ export class LeafIndex extends BaseScriptComponent {
     {id: "c2-drag-card-over-figure", typename: DragCardOverFigureScenario.getTypeName()},
     {id: "c4-language-switch", typename: LanguageSwitchScenario.getTypeName()},
     {id: "reach-language-picker-ik", typename: LanguagePickerReachIKScenario.getTypeName()},
-    {id: "auto-detect-language", typename: AutoDetectLanguageScenario.getTypeName()}
+    {id: "auto-detect-language", typename: AutoDetectLanguageScenario.getTypeName()},
+    {id: "figure-talks-while-speaking", typename: FigureTalksWhileSpeakingScenario.getTypeName()}
   ]
 }

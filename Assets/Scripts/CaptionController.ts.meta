@@ -31,6 +31,7 @@
     holdSeconds: false
     loopDemo: false
     loopPauseSeconds: false
+    speakerFigures: false
     startLanguage: false
     wordsPerSecond: false
   ScriptTypesHidden:
@@ -47,6 +48,8 @@
       loopDemo: true
       loopPauseSeconds: !<float> 8.000000
       startLanguage: es
+      speakerFigures: !<reference.SceneObject[]>
+        []
   ScriptTypes:
     -
       {}
@@ -60,3 +63,4 @@
     - '// @input float loopPauseSeconds = 8 {"hint":"Pause before the conversation replays", "widget":"slider", "min":2, "max":30, "step":1}'
     - '// @input string startLanguage = "auto" {"hint":"Translation language shown at start", "widget":"combobox", "values":[{"label":"Auto (detect and translate)", "value":"auto"}, {"label":"Off", "value":"off"}, {"label":"Español", "value":"es"}, {"label":"Français", "value":"fr"}, {"label":"日本語", "value":"ja"}]}'
     - '// @ui {"widget":"group_end"}'
+    - '// @input SceneObject[] speakerFigures = {} {"hint":"Demo stand-in people for speakers 1, 2 and 3; each plays its Talking animation while speaking"}'

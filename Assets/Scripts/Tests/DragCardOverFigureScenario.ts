@@ -3,7 +3,7 @@
 
 import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
-import {findSceneObjectByName, sleep} from "Leaf.lspkg/Utils/common/Utils"
+import {findSceneObject, sleep} from "Leaf.lspkg/Utils/common/Utils"
 import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLeafInteractor"
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
 import {cardText, controller, distance, ensureDemoRunning, interactable, pressStart, waitFor} from "./CaptionTestUtils"
@@ -18,10 +18,14 @@ export class DragCardOverFigureScenario extends Scenario {
     // Drag the card so, as the wearer sees it, it floats just above the friend's head (the
     // face stays visible), at the distance the card already has.
     const cam = WorldCameraFinderProvider.getInstance().getTransform().getWorldPosition()
-    const friend = findSceneObjectByName("StandIn Figure A (friend)")
-    const head = friend.children.find((c) => c.name === "Head")
-    if (!head) throw new Error("Head not found on the friend figure")
+    // The friend is Sophie, speaker 1's figure. Her head's middle is halfway between the
+    // Mixamo head joint and the top-of-head joint (Mixamo varies the "mixamorig" prefix).
+    const friend = controller().speakerFigures[0]
+    if (!friend) throw new Error("No figure wired for speaker 1")
+    const head = findSceneObject((so) => (so.name.endsWith(":Head") ? so : undefined), friend)
+    if (!head || head.getChildrenCount() === 0) throw new Error("Head not found on the friend figure")
     const headPos = head.getTransform().getWorldPosition()
+      .add(head.getChild(0).getTransform().getWorldPosition()).uniformScale(0.5)
     const aim = headPos.add(new vec3(0, 30, 0))
     const from = card.root.getTransform().getWorldPosition()
     const target = cam.add(aim.sub(cam).normalize().uniformScale(distance(from, cam)))

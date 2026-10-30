@@ -15,11 +15,33 @@ which sits on the `CaptionController` scene object.
 | `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Auto (default) / Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label. Only the buttons are pinch targets; the background panel is not. Shown after Start. |
 | `OnboardingCard.ts` | Centered card about 1 m away: what Subspecs does, the privacy note, Start button. |
 | `CaptionUiKit.ts` | Shared text sizes, speaker colors, and text, button and placement helpers. |
+| `SpeakerFigures.ts` | Demo only: each person plays their Talking animation while their speaker's words appear, and holds its first frame (a natural standing pose, not the rig's T-pose) otherwise. The clip loops for long lines. |
 
-Stand-ins: the scene object `STAND-IN Speaker Figures (placeholders)` holds three simple capsule-and-sphere
-figures (A = the friend at x -30, B at x 3, C at x 32; 1.7 to 1.95 m away), all inside the view.
-Their meshes and materials (`StandInFigure*_PBR.mat`) are in `Assets/StandIns/`. Swap them for the
-rigged models when they arrive.
+## Demo people
+
+The scene object `STAND-IN Speaker Figures (placeholders)` holds three Mixamo people (`Assets/People/`),
+wired in speaker order into `CaptionController`'s `speakerFigures` input:
+
+| Speaker | Person | Where (as the wearer sees it) |
+|---|---|---|
+| 1, the old friend | Sophie | left, nearest, about 2.4 m away, 11 degrees left |
+| 2 | Brian | center, farthest, about 3.6 m away |
+| 3, the Spanish speaker | Meghan | right, about 2.8 m away, 10 degrees right |
+
+They stand at different distances with a gap between each in the view, so they never overlap. All are
+real height (176 to 178 cm, eyes at the wearer's eye height) and face the wearer. They only move their
+bodies: there is no voice audio and no lip sync, because Demo mode plays scripted text, not sound.
+They are committed to the repo on purpose so judges see them, and exist only for Demo mode and the
+video: the launched Subspecs app captions real people from real audio, with no models.
+The old capsule figures are still in the scene, disabled (`StandIn Figure A (friend)`, B, C).
+
+Performance: about 144,500 triangles in all (Sophie 53,460, Meghan 48,229, Brian 42,818), 17 skinned
+meshes. The FBX files embed 4096 px textures; Lens Studio caps them at 2048 px. Only the color textures
+are used (normal maps are off), and those were shrunk to 1024 px into `Assets/People/Textures/` and
+used through project-owned materials in `Assets/People/Materials/` (hair and eyelashes cut out their
+see-through edges). Editing the FBX's own materials does not stick: Lens Studio keeps those only in its
+cache. Mixamo also varies the bone prefix (`mixamorig`, `mixamorig1`, `mixamorig12`), so find bones by
+the part after the colon.
 
 No AsrModule, ASRMLModule or VoiceML is used anywhere (they turn on Bystander Speech Rejection).
 
@@ -40,21 +62,22 @@ Measured in Preview: the Specs display is about 32 degrees wide and 37 degrees t
 wide at 1 m). Anything placed wider than about 16 degrees off-center is invisible to the wearer.
 Keep new UI inside that.
 
-## Done criteria (checked in Lens Studio's Preview, Oct 29 evening)
+## Done criteria (checked in Lens Studio's Preview, Oct 30 with the Mixamo people)
 
-All seven LEAF scenarios pass when run in index order in Preview (each run resets the Lens and
+All eight LEAF scenarios pass when run in index order in Preview (each run resets the Lens and
 presses Start itself). Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
 in `LeafIndex.ts` on the `LeafIndex` scene object.
 
 | Criterion | LEAF scenario | Result | Also checked by eye |
 |---|---|---|---|
 | 1. Three voices, three color-coded cards, "New speaker detected" | `c1-three-speakers-three-cards` | Pass | Cards appear inside the view, each with its own color |
-| 2. Drag a card over a figure; next words appear above the previous line in that spot; older line fades | `c2-drag-card-over-figure` | Pass (card moved about 25 cm and sits within 2 degrees of the spot above the friend's head) | Yes |
+| 2. Drag a card over a figure; next words appear above the previous line in that spot; older line fades | `c2-drag-card-over-figure` | Pass (card moved about 24 cm and sits within 1 degree of the spot above Sophie's head) | Yes |
 | 3. Card hides about 3 s after its speaker stops, returns to the same spot | `c3-card-hold-and-return` | Pass (measured 3.00 s) | Yes |
 | 4. Picking another language changes the translation, including recent lines | `c4-language-switch` | Pass (French, Spanish, Japanese) | Japanese text renders correctly |
 | 5. Onboarding shows what Subspecs does and the privacy note; Start begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
-| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass | |
+| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (missed once in about 6 runs on Oct 30: the pinch didn't register; passed on every rerun) | |
 | Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
+| Demo people: a person talks only while their speaker's words appear | `figure-talks-while-speaking` | Pass (about 270 checks over a full round of the conversation) | Yes, see `devpost/screenshots/people-talking-preview.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -74,10 +97,8 @@ Every done criterion has a test. Logic proven in Preview; feel unproven until re
 
 ## What's left
 
-1. Swap the stand-in figures for the Mixamo people in `Assets/People/` (Sophie, Brian, Meghan; FBX with
-   Talking and Idle animations), keep them inside the view, and play Talking while that speaker's subs
-   appear. They are committed to the repo on purpose so judges see them. They exist only for Demo mode
-   and the video: the launched Subspecs app captions real people from real audio, with no models.
+1. Add the Subspecs logo (image and 3D model) at start-up and as a small overlay. Drop the files in
+   `Assets/Branding/`.
 2. Live mode (streaming to the Subspecs server) is not built.
 3. Watch it in Interactive Preview yourself and judge the feel (see "After the build: judge it" in
    the design brief).
