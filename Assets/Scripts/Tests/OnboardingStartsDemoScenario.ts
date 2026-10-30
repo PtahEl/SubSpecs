@@ -12,7 +12,7 @@ export class OnboardingStartsDemoScenario extends Scenario {
     const card = findSceneObjectByName("OnboardingCard")
     expect(card.enabled).toBe(true)
     expect(controller().isRunning).toBe(false)
-    expect(textOf("Description").includes("Live captions for every voice")).toBe(true)
+    expect(textOf("Description").includes("Live subs for every voice")).toBe(true)
     expect(textOf("PrivacyNote").includes("Audio is never stored")).toBe(true)
     expect(textOf("PrivacyNote").includes("no face recognition")).toBe(true)
 

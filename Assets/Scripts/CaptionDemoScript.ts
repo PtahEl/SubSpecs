@@ -1,14 +1,14 @@
 // Demo mode conversation: a scripted conference-corridor chat between three speakers.
 // Each line arrives on a timer as if spoken. Translations are pre-written for the demo
-// languages; the full language list only exists in Live mode (Caption server).
+// languages; the full language list only exists in Live mode (Subspecs server).
 
-// Translation setting. "auto": captions in the wearer's language (English in the demo);
+// Translation setting. "auto": subs in the wearer's language (English in the demo);
 // anyone speaking another language is detected and translated automatically.
 // The others translate every line into that language.
 export type LanguageCode = "auto" | "off" | "es" | "fr" | "ja"
 
 // A language a speaker can talk in. In Demo mode detection is scripted; in Live mode the
-// Caption server reports the language it hears.
+// Subspecs server reports the language it hears.
 export type SpokenLanguage = "en" | "es"
 
 // The wearer's own language in Demo mode.
@@ -98,7 +98,7 @@ export const DEMO_LINES: DemoLine[] = [
     speaker: 3,
     at: 38.0,
     spoken: "es",
-    en: "I did. The live captions demo was amazing.",
+    en: "I did. The live subs demo was amazing.",
     es: "Sí. La demo de subtítulos en vivo fue increíble.",
     fr: "Oui. La démo de sous-titres en direct était incroyable.",
     ja: "見ました。ライブ字幕のデモがすごかったです。"

@@ -296,7 +296,7 @@ export class SpeakerCard {
   }
 
   private refreshTranslation(): void {
-    // Translations arrive with the final line, as they would from the Caption server.
+    // Translations arrive with the final line, as they would from the Subspecs server.
     const show = this.line !== null && !this.typing
     const text = show ? translationFor(this.line, this.language) : ""
     this.translationText.getSceneObject().enabled = text !== ""

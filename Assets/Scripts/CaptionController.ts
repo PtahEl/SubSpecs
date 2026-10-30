@@ -1,5 +1,5 @@
-// Caption — Demo mode. Plays a scripted three-speaker corridor conversation, giving each
-// voice its own caption card, with pre-written translations and an onboarding card.
+// Subspecs — Demo mode. Plays a scripted three-speaker corridor conversation, giving each
+// voice its own sub card, with pre-written translations and an onboarding card.
 // Demo mode never uses AsrModule (it would turn on Bystander Speech Rejection).
 
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
@@ -14,7 +14,7 @@ const PICKER_FIT_WIDTH_CM = 31
 
 @component
 export class CaptionController extends BaseScriptComponent {
-  @ui.label("Caption — Demo mode")
+  @ui.label("Subspecs — Demo mode")
   @ui.separator
   @ui.group_start("Settings")
   @input

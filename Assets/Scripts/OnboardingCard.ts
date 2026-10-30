@@ -1,4 +1,4 @@
-// Start card: what Caption does, the privacy note, and the Start button.
+// Start card: what Subspecs does, the privacy note, and the Start button.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {makeButton, makeText} from "./CaptionUiKit"
@@ -11,12 +11,12 @@ const PAD = 2.0
 const CONTENT_Z = 0.6
 
 export const ONBOARDING_BODY =
-  "Live captions for every voice around you. Each new speaker gets their own color-coded card. " +
+  "Live subs for every voice around you. Each new speaker gets their own color-coded card. " +
   "Pinch and drag a card over the person talking; it stays there for the rest of the conversation. " +
   "Anyone speaking another language is translated automatically; pick a language at the bottom to change it."
 
 export const PRIVACY_NOTE =
-  "Privacy: captions are shown only to you. Audio is never stored. " +
+  "Privacy: subs are shown only to you. Audio is never stored. " +
   "Speakers are anonymous numbers, with no face recognition."
 
 export class OnboardingCard {
@@ -42,7 +42,7 @@ export class OnboardingCard {
     const right = WIDTH / 2 - PAD
     const top = HEIGHT / 2 - PAD
 
-    makeText(content, "Title", "Caption", {
+    makeText(content, "Title", "Subspecs", {
       role: "Title2",
       distanceCm: d,
       rect: Rect.create(left, right, top - 4, top),
