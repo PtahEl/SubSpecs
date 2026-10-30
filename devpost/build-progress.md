@@ -74,7 +74,10 @@ Every done criterion has a test. Logic proven in Preview; feel unproven until re
 
 ## What's left
 
-1. Swap the stand-in figures for the rigged models when they arrive (keep them inside the view).
+1. Swap the stand-in figures for the Mixamo people in `Assets/People/` (Sophie, Brian, Meghan; FBX with
+   Talking and Idle animations), keep them inside the view, and play Talking while that speaker's subs
+   appear. They are committed to the repo on purpose so judges see them. They exist only for Demo mode
+   and the video: the launched Subspecs app captions real people from real audio, with no models.
 2. Live mode (streaming to the Subspecs server) is not built.
 3. Watch it in Interactive Preview yourself and judge the feel (see "After the build: judge it" in
    the design brief).
