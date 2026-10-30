@@ -30,8 +30,9 @@ speaks another language, their card shows what they said, a "Spanish detected" t
 English translation underneath. English speakers get no translation line. Picking a language by
 hand overrides Auto and translates everyone into that language (no line when the speaker already
 speaks it); pinching Auto brings detection back. In Demo mode detection is scripted. In Live mode
-the Caption server must report the language it hears (confirm the server's speech model does this,
-or add a language-identification step before translation).
+the Caption server's Nemotron ASR reports the language of every caption (`lang`), and the server
+skips translating captions already in the chosen language (it sends an empty `translation` with
+`same_language: true`). For Auto, the Lens sets the target to the wearer's language.
 
 ## The Specs view is narrow
 
