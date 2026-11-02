@@ -75,7 +75,38 @@ Each one can be checked in Lens Studio's preview.
 6. The start card offers "Conference corridor" and "Hospital intake"; pinching "Hospital intake" begins the hospital conversation, and each of the three patients gets their own card showing their language detected (Japanese, French, Spanish) with the English translation underneath.
 7. In the hospital scenario, the intake facts in each English translation (allergies, medicines, pain level, how long, symptoms) appear in a highlight color, and other words don't.
 
+Differentiating features (added Nov 2; see "Differentiating features" below):
+
+8. Hospital intake: as patients speak, their highlighted facts fill a small intake form card (Allergies, Medicines, Pain, Since when, Symptoms), each field filled the moment its fact is said.
+9. A card dropped onto a person is pinned to them: when that person moves, the card moves with them and stays above their head.
+10. When someone outside the wearer's view starts talking, a small cue at the edge of the view in that speaker's color points toward them, and disappears once they're in view.
+11. Pinching "Recap" shows a short summary of what each speaker said so far, one line per speaker in their color, and pinching it again hides it.
+12. Hospital intake: after a patient answers, a suggested next question appears for the wearer in English with the patient's language underneath, so the wearer can read it aloud or show it.
+13. Live mode: with the SubSpecs server running, choosing Live streams the microphone to the server and real subs from real speech appear on speaker cards, with the status showing Live, or Reconnecting when the link drops. (Checked with the server, not only in the preview.)
+14. Speaker cards have a "liquid glass" look: a faint, see-through tinted plate with a bright edge, so the person behind stays visible, while the words stay bright and readable.
+
 Server criterion (checked outside the preview, with the SubSpecs server): at least 80% of words transcribed correctly on a multi-speaker test clip. "That is better than the wearer never being able to understand in the first place." (Measured on Oct 29: about 98% on a two-speaker clip.)
+
+## Differentiating features (added Nov 2)
+What sets SubSpecs apart from caption and translation glasses: one card per voice pinned to that
+person, several speakers and languages at once, and understanding the conversation, not just
+transcribing it. Defaults below are CLAD's (default) unless the learner chose them.
+
+1. Intake form auto-fill (hospital): a small form card beside the language bar fills in from the
+   highlighted facts as they're said, with the field flashing briefly when filled (default).
+2. Card follows the person: dropping a card on a figure pins it there; in the demo one patient shifts
+   a step during the conversation and the card follows (default). Real glasses would need people
+   tracking, which stays future work; SubSpecs never identifies anyone.
+3. Who's-talking cue: a soft arrow at the view's edge in the speaker's color. In the demo a fourth
+   voice (a nurse calling from off to the side in the hospital, a passer-by in the corridor) speaks
+   from outside the view (default). Real direction finding is an open question (see Risks).
+4. Conversation recap: a "Recap" button on the language bar; scripted summaries in Demo mode, server
+   summaries in Live mode.
+5. Reply help (hospital): suggested next question in English plus the patient's language, shown small
+   under that patient's card for a few seconds (default).
+6. Live mode end to end: mic audio streamed to the SubSpecs server (no AsrModule), real subs and
+   translation back, status Live / Reconnecting. Demo mode must still carry the demo.
+7. Liquid glass cards: see done criterion 14; no real-time blur (SPECS can't blur the real world).
 
 ## Out of scope
 - Knowing where a speaker is standing (camera vision, face tracking or directional audio). Cards are placed by hand.
