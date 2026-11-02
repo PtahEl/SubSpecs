@@ -1,6 +1,7 @@
 // Shared UI helpers for Caption: type scale, speaker colors, text and button factories.
 
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
+import {RoundedRectangle} from "SpectaclesUIKit.lspkg/Scripts/Visuals/RoundedRectangle/RoundedRectangle"
 
 // ── Type scale — calibrated for the SnapOS system font at 110 cm; pass the panel distance.
 type TextRole =
@@ -99,6 +100,65 @@ export function makeImage(parent: SceneObject, name: string, material: Material,
   visual.mesh = mb.getMesh()
   visual.mainMaterial = material
   return visual
+}
+
+// "Liquid glass" plate: a very see-through, slightly cool tint fading from a light sheen (top
+// left) to a faint smoky blue (bottom right, behind the words, for contrast), with a thin bright
+// rim so the card's shape still reads. No blur: SPECS can't blur the real world, and it would cost
+// frame rate. Hover is a touch brighter.
+export const GLASS_START = new vec2(-1.3, 1.25)
+const GLASS_END = new vec2(1.25, -1.3)
+const GLASS_RIM_CM = 0.12
+// Draw glass panels after the scene (people included); the glass doesn't hide what's behind, so
+// anything drawn later would paint over the words.
+export const GLASS_RENDER_ORDER = 100
+export const GLASS = {
+  normal: {
+    light: new vec4(0.78, 0.88, 1.0, 0.22),
+    clear: new vec4(0.06, 0.1, 0.18, 0.3),
+    rimBright: new vec4(1, 1, 1, 0.85),
+    rimDim: new vec4(0.75, 0.88, 1.0, 0.25)
+  },
+  hover: {
+    light: new vec4(0.85, 0.93, 1.0, 0.3),
+    clear: new vec4(0.12, 0.18, 0.28, 0.35),
+    rimBright: new vec4(1, 1, 1, 1),
+    rimDim: new vec4(0.8, 0.92, 1.0, 0.4)
+  }
+}
+
+// Gives a UI Kit plate (a BackPlate's RoundedRectangle) the liquid glass look.
+export function applyGlass(plate: RoundedRectangle, hover: boolean): void {
+  const g = hover ? GLASS.hover : GLASS.normal
+  plate.gradient = true
+  plate.setBackgroundGradient({
+    type: "Linear",
+    start: GLASS_START,
+    end: GLASS_END,
+    stop0: {enabled: true, color: g.light, percent: 0},
+    stop1: {enabled: true, color: g.clear, percent: 1}
+  })
+  plate.border = true
+  plate.borderSize = GLASS_RIM_CM
+  plate.setBorderGradient({
+    enabled: true,
+    type: "Linear",
+    start: GLASS_START,
+    end: GLASS_END,
+    stop0: {enabled: true, color: g.rimBright, percent: 0},
+    stop1: {enabled: true, color: g.rimDim, percent: 1}
+  })
+}
+
+// Draws everything under `root` after the glass plate on it: each level one step later, so
+// button faces draw over the plate and their labels over the faces.
+export function drawAbove(root: SceneObject, order: number): void {
+  for (let i = 0; i < root.getChildrenCount(); i++) {
+    const child = root.getChild(i)
+    for (const v of child.getComponents("Component.RenderMeshVisual") as RenderMeshVisual[]) v.renderOrder = order
+    for (const t of child.getComponents("Component.Text") as Text[]) t.renderOrder = order + 1
+    drawAbove(child, order + 1)
+  }
 }
 
 // Soft dark outline so words stay readable over a busy background seen through glass cards.

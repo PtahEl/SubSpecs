@@ -6,7 +6,8 @@ import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
 import {Interactable} from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import {DEMO_LANGUAGES, LanguageCode} from "./CaptionDemoScript"
-import {LOGO_ASPECT, makeButton, makeImage, makeText, WHITE} from "./CaptionUiKit"
+import {RoundedRectangle} from "SpectaclesUIKit.lspkg/Scripts/Visuals/RoundedRectangle/RoundedRectangle"
+import {GLASS_RENDER_ORDER, LOGO_ASPECT, addTextOutline, applyGlass, drawAbove, makeButton, makeImage, makeText, WHITE} from "./CaptionUiKit"
 
 export const PICKER_DISTANCE_CM = 60
 
@@ -56,6 +57,8 @@ export class LanguagePicker {
     const plate = this.root.createComponent(BackPlate.getTypeName()) as BackPlate
     plate.style = "dark"
     plate.size = new vec2(width, height)
+    // Liquid glass like the speaker cards, drawn after the people so they never cover the bar.
+    plate.renderOrder = GLASS_RENDER_ORDER
 
     const content = global.scene.createSceneObject("Content")
     content.setParent(this.root)
@@ -123,7 +126,17 @@ export class LanguagePicker {
         new vec3(-width / 2 + PAD + logoW / 2, height / 2 + LOGO_GAP + LOGO_HEIGHT / 2, 0))
     }
 
+    // Everything on the bar draws over the glass; buttons build their faces when they initialize.
+    // Words get the cards' dark outline so they stay readable over whatever is behind the glass.
+    const raise = () => drawAbove(this.root, GLASS_RENDER_ORDER + 1)
+    for (const b of this.buttons) b.button.onInitialized.add(raise)
+    switchButton.onInitialized.add(raise)
+    recap.button.onInitialized.add(raise)
+    this.forEachText(content, (t) => addTextOutline(t))
+
     plate.onInitialized.add(() => {
+      applyGlass(this.root.getComponent(RoundedRectangle.getTypeName()) as RoundedRectangle, false)
+      raise()
       // The background is only a backdrop: its own collider would catch reaches meant for the buttons.
       const collider = this.root.getComponent("Physics.ColliderComponent")
       if (collider) collider.enabled = false
@@ -132,6 +145,11 @@ export class LanguagePicker {
       this.ready = true
       this.root.enabled = this.wantVisible
     })
+  }
+
+  private forEachText(so: SceneObject, fn: (t: Text) => void): void {
+    for (const t of so.getComponents("Component.Text") as Text[]) fn(t)
+    for (let i = 0; i < so.getChildrenCount(); i++) this.forEachText(so.getChild(i), fn)
   }
 
   get language(): LanguageCode {

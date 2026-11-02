@@ -16,7 +16,7 @@ import {
   spokenWords,
   translationFor
 } from "./CaptionDemoScript"
-import {addTextOutline, makeText, setTextAlpha, speakerColor, withAlpha, faceCamera} from "./CaptionUiKit"
+import {GLASS, GLASS_RENDER_ORDER, addTextOutline, applyGlass, makeText, setTextAlpha, speakerColor, withAlpha, faceCamera} from "./CaptionUiKit"
 
 // Specs shows about 32 degrees across (about 64 cm at 110 cm), so three cards side by side fit.
 export const CARD_DISTANCE_CM = 110
@@ -48,30 +48,6 @@ const REPLY_LABEL = "<color=#C6FF4D>Ask:</color> "
 export const HIGHLIGHT_HEX = "#C6FF4D"
 const HIGHLIGHT_TAG = /<color=[^>]*>(.*?)<\/color>/g
 
-// "Liquid glass" plate: a very see-through, slightly cool tint fading from a light sheen (top
-// left) to a faint smoky blue (bottom right, behind the words, for contrast), with a thin bright
-// rim so the card's shape still reads. No blur: SPECS can't blur the real world, and it would cost
-// frame rate. Hover is a touch brighter.
-const GLASS_START = new vec2(-1.3, 1.25)
-const GLASS_END = new vec2(1.25, -1.3)
-const GLASS_RIM_CM = 0.12
-// Draw cards after the scene (people included); the glass plate doesn't hide what's behind, so
-// anything drawn later would paint over the words.
-const CARD_RENDER_ORDER = 100
-const GLASS = {
-  normal: {
-    light: new vec4(0.78, 0.88, 1.0, 0.22),
-    clear: new vec4(0.06, 0.1, 0.18, 0.3),
-    rimBright: new vec4(1, 1, 1, 0.85),
-    rimDim: new vec4(0.75, 0.88, 1.0, 0.25)
-  },
-  hover: {
-    light: new vec4(0.85, 0.93, 1.0, 0.3),
-    clear: new vec4(0.12, 0.18, 0.28, 0.35),
-    rimBright: new vec4(1, 1, 1, 1),
-    rimDim: new vec4(0.8, 0.92, 1.0, 0.4)
-  }
-}
 
 export class SpeakerCard {
   readonly speaker: number
@@ -118,7 +94,7 @@ export class SpeakerCard {
     this.backPlate = this.root.createComponent(BackPlate.getTypeName()) as BackPlate
     this.backPlate.style = "dark"
     this.backPlate.size = new vec2(CARD_WIDTH, CARD_HEIGHT)
-    this.backPlate.renderOrder = CARD_RENDER_ORDER
+    this.backPlate.renderOrder = GLASS_RENDER_ORDER
 
     const content = global.scene.createSceneObject("Content")
     content.setParent(this.root)
@@ -208,32 +184,13 @@ export class SpeakerCard {
 
     for (const t of [this.speakerLabel, this.badge, this.languageTag, this.currentText, this.translationText, this.previousText, this.replyQuestion, this.replyNative]) {
       addTextOutline(t)
-      t.renderOrder = CARD_RENDER_ORDER + 1
+      t.renderOrder = GLASS_RENDER_ORDER + 1
     }
   }
 
   private applyGlass(hover: boolean): void {
     this.glassHover = hover
-    const g = hover ? GLASS.hover : GLASS.normal
-    const plate = this.root.getComponent(RoundedRectangle.getTypeName()) as RoundedRectangle
-    plate.gradient = true
-    plate.setBackgroundGradient({
-      type: "Linear",
-      start: GLASS_START,
-      end: GLASS_END,
-      stop0: {enabled: true, color: g.light, percent: 0},
-      stop1: {enabled: true, color: g.clear, percent: 1}
-    })
-    plate.border = true
-    plate.borderSize = GLASS_RIM_CM
-    plate.setBorderGradient({
-      enabled: true,
-      type: "Linear",
-      start: GLASS_START,
-      end: GLASS_END,
-      stop0: {enabled: true, color: g.rimBright, percent: 0},
-      stop1: {enabled: true, color: g.rimDim, percent: 1}
-    })
+    applyGlass(this.root.getComponent(RoundedRectangle.getTypeName()) as RoundedRectangle, hover)
   }
 
   private onBackPlateReady(): void {

@@ -12,6 +12,21 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: the language bar is liquid glass too
+
+![The language bar at the bottom as a faint glass plate with a bright rim, its buttons and "● DEMO" still clear](history/screenshots/2026-11-02-liquid-glass-bar.png)
+
+- At the founder's request, the **language bar at the bottom** now has the same liquid glass look as
+  the speaker cards: the same faint tinted plate and bright rim, using the same glass code. Its
+  buttons keep their faces and size; "Translate:", the button labels, "● DEMO" and Switch get the
+  same soft outline as the card words; the selected language is still marked "✓" in green. Like the
+  cards, it draws after the people so nobody covers it.
+- **Checked:** no errors in Lens Studio's Preview; the liquid glass test now also checks the bar's
+  glass, its outlined words and the green "✓ Auto". The language, Switch, Recap and full-arm reach
+  tests pass (the reach test after a rerun, as before in this long Lens Studio session).
+
+---
+
 ## Nov 2, 2026: Recap, what everyone has said so far
 
 ![The recap panel in the top left: one line each for Sam, Daniel and Lucía in their colors, with the Recap button above the language bar's right end](history/screenshots/2026-11-02-recap.png)

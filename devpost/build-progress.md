@@ -123,7 +123,9 @@ criterion 13) is built separately.
   smoky blue (30%, bottom right) with a 0.12 cm bright rim; hover uses slightly brighter stops (30% and
   35%). All card text gets a dark outline and shadow (`addTextOutline` in `CaptionUiKit.ts`;
   `setTextAlpha` fades them with the words). Cards and their text use render order 100/101 so the
-  people never draw over the words. `glassLook` reports the plate for the test.
+  people never draw over the words. `glassLook` reports the plate for the test. The glass code
+  (`GLASS`, `applyGlass`, `GLASS_RENDER_ORDER`, `drawAbove`) lives in `CaptionUiKit.ts`; the language bar
+  (`LanguagePicker.ts`) uses it too, with outlined words and its buttons drawn over the glass.
 
 - **Intake form (criterion 8).** `IntakeForm.ts`: a small read-only BackPlate (13 x 10 cm at 60 cm,
   its collider and interactable turned off) placed up and to the right (`INTAKE_RIGHT_CM` 9.9,

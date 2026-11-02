@@ -1,12 +1,14 @@
 // Criterion 14: speaker cards have a "liquid glass" look: a faint, see-through tinted plate with a
 // bright rim, so the person behind stays visible, while the words stay bright and readable.
+// The language bar at the bottom has the same glass.
 
 import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
-import {sleep} from "Leaf.lspkg/Utils/common/Utils"
+import {findSceneObjectByName, sleep} from "Leaf.lspkg/Utils/common/Utils"
+import {RoundedRectangle} from "SpectaclesUIKit.lspkg/Scripts/Visuals/RoundedRectangle/RoundedRectangle"
 import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLeafInteractor"
-import {speakerColor} from "../CaptionUiKit"
-import {cardText, controller, ensureDemoRunning, interactable, pressStart, waitFor} from "./CaptionTestUtils"
+import {GLASS_RENDER_ORDER, speakerColor} from "../CaptionUiKit"
+import {cardText, controller, ensureDemoRunning, interactable, pressStart, textOf, waitFor} from "./CaptionTestUtils"
 
 function seeThrough(c: vec4): boolean {
   return c.w >= 0.15 && c.w <= 0.4
@@ -44,5 +46,21 @@ export class LiquidGlassCardsScenario extends Scenario {
     expect(seeThrough(hoverLook.light)).toBe(true)
     await sleep(200)
     expect(card.glassLook.hover).toBe(false)
+
+    // The language bar is glass too: gradient and rim on, drawn after the scene; its words are
+    // outlined, and the selected language is still marked in green.
+    const bar = findSceneObjectByName("LanguagePicker")
+    const barPlate = bar.getComponent(RoundedRectangle.getTypeName()) as RoundedRectangle
+    expect(barPlate.gradient).toBe(true)
+    expect(barPlate.border).toBe(true)
+    expect(barPlate.renderOrder >= GLASS_RENDER_ORDER).toBe(true)
+    const status = textOf("StatusIndicator")
+    expect(status).toBe("● DEMO")
+    for (const name of ["Lang_autoLabel", "SwitchButtonLabel", "StatusIndicator"]) {
+      const t = findSceneObjectByName(name).getComponent("Component.Text") as Text
+      expect(t.outlineSettings.enabled).toBe(true)
+      expect(t.textFill.color.w).toBe(1)
+    }
+    expect(textOf("Lang_autoLabel")).toBe("✓ Auto")
   }
 }
