@@ -34,6 +34,15 @@ const PREVIOUS_FADE_SECONDS = 2.5
 const BADGE_HOLD_SECONDS = 1.2
 const BADGE_FADE_SECONDS = 0.8
 
+// Reply help (hospital): the card stays up at least this long once an answer with a suggested
+// question is said, so the wearer can read the question out or show it.
+export const REPLY_SECONDS = 6
+const REPLY_TOP = -4.2
+const REPLY_LINE_H = 1.65
+// Smaller than the card's own text: sized as if the card were this far away.
+const REPLY_TEXT_DISTANCE_CM = 90
+const REPLY_LABEL = "<color=#C6FF4D>Ask:</color> "
+
 // Intake facts in the English translation (hospital scenario). Lime stands apart from all
 // three speaker colors and reads well on the additive display.
 export const HIGHLIGHT_HEX = "#C6FF4D"
@@ -84,6 +93,8 @@ export class SpeakerCard {
   private currentText: Text
   private translationText: Text
   private previousText: Text
+  private replyQuestion: Text
+  private replyNative: Text
 
   private line: DemoLine | null = null
   private words: string[] = []
@@ -174,7 +185,27 @@ export class SpeakerCard {
       wrap: true
     })
 
-    for (const t of [this.speakerLabel, this.badge, this.languageTag, this.currentText, this.translationText, this.previousText]) {
+    // Reply help, in the card's bottom strip under the answer (where the older line was; it has
+    // faded by then): the suggested question in English, then in the speaker's language. Below
+    // the plate it would run into the logo above the language bar.
+    const replyTop = REPLY_TOP
+    this.replyQuestion = makeText(content, "ReplyQuestion", "", {
+      role: "Caption",
+      distanceCm: REPLY_TEXT_DISTANCE_CM,
+      rect: Rect.create(INNER_LEFT, INNER_RIGHT, replyTop - REPLY_LINE_H, replyTop),
+      wrap: true
+    })
+    this.replyQuestion.enableRichText = true
+    this.replyNative = makeText(content, "ReplyNative", "", {
+      role: "Caption",
+      distanceCm: REPLY_TEXT_DISTANCE_CM * 0.9,
+      rect: Rect.create(INNER_LEFT, INNER_RIGHT, replyTop - 2 * REPLY_LINE_H, replyTop - REPLY_LINE_H),
+      color: withAlpha(color, 0.95),
+      wrap: true
+    })
+    this.showReply(false)
+
+    for (const t of [this.speakerLabel, this.badge, this.languageTag, this.currentText, this.translationText, this.previousText, this.replyQuestion, this.replyNative]) {
       addTextOutline(t)
       t.renderOrder = CARD_RENDER_ORDER + 1
     }
@@ -277,6 +308,15 @@ export class SpeakerCard {
     return {gradient: plate.gradient, rim: plate.border, hover: this.glassHover, light: g.light, clear: g.clear}
   }
 
+  // The suggested next question shown under the card, as plain words ("" when none).
+  get replyText(): string {
+    return this.replyQuestion.getSceneObject().enabled ? this.replyQuestion.text.replace(REPLY_LABEL, "") : ""
+  }
+
+  get replyNativeText(): string {
+    return this.replyNative.getSceneObject().enabled ? this.replyNative.text : ""
+  }
+
   get badgeVisible(): boolean {
     return this.badge.getSceneObject().enabled
   }
@@ -310,6 +350,7 @@ export class SpeakerCard {
     this.currentText.text = ""
     setTextAlpha(this.currentText, LIVE_ALPHA)
     this.refreshTranslation()
+    this.showReply(false)
 
     if (isNewSpeaker) {
       this.badgeAge = 0
@@ -341,6 +382,7 @@ export class SpeakerCard {
     this.languageTag.text = ""
     this.refreshLanguageTag()
     this.refreshTranslation()
+    this.showReply(false)
     this.hide()
   }
 
@@ -364,7 +406,7 @@ export class SpeakerCard {
       }
       if (this.revealed >= this.words.length && this.typeClock * this.wordsPerSecond >= this.words.length) {
         this.finishLine()
-        this.holdRemaining = holdSeconds
+        this.holdRemaining = this.line.reply ? Math.max(holdSeconds, REPLY_SECONDS) : holdSeconds
       }
     } else if (this.wantVisible && !this.dragging) {
       // Last words stay readable for the hold time after the speaker stops, then hide.
@@ -401,6 +443,21 @@ export class SpeakerCard {
     this.currentText.text = spokenText(this.line)
     setTextAlpha(this.currentText, 1)
     this.refreshTranslation()
+    this.showReply(this.line.reply !== undefined)
+  }
+
+  // Shows the current line's suggested next question under the card, or hides it.
+  private showReply(on: boolean): void {
+    const reply = on ? this.line?.reply : undefined
+    if (reply) {
+      // The question takes the older line's place.
+      this.previousAge = -1
+      this.previousText.text = ""
+    }
+    this.replyQuestion.text = reply ? REPLY_LABEL + reply.en : ""
+    this.replyNative.text = reply ? reply.native : ""
+    this.replyQuestion.getSceneObject().enabled = reply !== undefined
+    this.replyNative.getSceneObject().enabled = reply !== undefined
   }
 
   private refreshTranslation(): void {

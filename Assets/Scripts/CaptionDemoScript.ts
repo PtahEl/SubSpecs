@@ -53,6 +53,9 @@ export interface DemoLine {
   highlights?: string[]
   // What this answer fills in on the patient's intake form, drawn from its highlighted facts.
   intake?: Partial<Record<IntakeField, string>>
+  // Reply help (hospital): a suggested next question for the wearer, in English and in the
+  // patient's own language, shown under the patient's card once this answer is said.
+  reply?: {en: string; native: string}
 }
 
 // The fields on the hospital intake form, in the order shown.
@@ -167,6 +170,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Me duele el pecho. Empezó hace unas dos horas, después de bajar del avión.",
     fr: "J'ai mal à la poitrine. Ça a commencé il y a environ deux heures, en descendant de l'avion.",
     ja: "胸が痛いです。2時間ほど前、飛行機を降りてから始まりました。",
+    reply: {en: "Does the pain spread to your arm, jaw or back?", native: "痛みは腕、あご、背中に広がりますか？"},
     highlights: ["My chest hurts", "about two hours ago"],
     intake: {symptoms: "Chest pain", since: "About 2 hours, after the flight"}
   },
@@ -178,6 +182,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Es mi hija, tiene seis años. Tiene fiebre desde anoche y vomitó dos veces.",
     fr: "C'est ma fille, elle a six ans. Elle a de la fièvre depuis hier soir et a vomi deux fois.",
     ja: "娘です、6歳です。昨夜から熱があって、2回吐きました。",
+    reply: {en: "How high was her temperature?", native: "¿Qué tan alta fue su temperatura?"},
     highlights: ["a fever", "since last night", "threw up twice"],
     intake: {symptoms: "Fever, vomited twice", since: "Last night"}
   },
@@ -189,6 +194,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Creo que mi almuerzo tenía cacahuetes. Se me hinchan los labios y me pica todo el cuerpo.",
     fr: "Je crois qu'il y avait des cacahuètes dans mon déjeuner. Mes lèvres gonflent et ça me gratte partout.",
     ja: "昼食にピーナッツが入っていたと思います。唇が腫れてきて、全身がかゆいです。",
+    reply: {en: "Are you having any trouble breathing?", native: "Avez-vous du mal à respirer ?"},
     highlights: ["peanuts", "My lips are swelling", "itchy all over"],
     intake: {symptoms: "Lips swelling, itchy all over", since: "After lunch", allergies: "Peanuts? (suspected)"}
   },
@@ -200,6 +206,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Se siente apretado, como una presión. Más o menos un 6 de 10.",
     fr: "Ça serre, comme une pression. Environ 6 sur 10.",
     ja: "締め付けられるような圧迫感です。10のうち6くらいです。",
+    reply: {en: "Do you take any medicines?", native: "何かお薬を飲んでいますか？"},
     highlights: ["tight, like pressure", "a 6 out of 10"],
     intake: {pain: "6 / 10, tight pressure"}
   },
@@ -211,6 +218,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Le di ibuprofeno a las seis de la mañana. No es alérgica a nada.",
     fr: "Je lui ai donné de l'ibuprofène à six heures ce matin. Elle n'est allergique à rien.",
     ja: "今朝6時にイブプロフェンを飲ませました。アレルギーは何もありません。",
+    reply: {en: "Does anything hurt her right now?", native: "¿Le duele algo ahora mismo?"},
     highlights: ["ibuprofen at six this morning", "not allergic to anything"],
     intake: {medicines: "Ibuprofen, 6 am", allergies: "None"}
   },
@@ -222,6 +230,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy alérgica a los cacahuetes. Tomé un antihistamínico hace veinte minutos.",
     fr: "Je suis allergique aux arachides. J'ai pris un antihistaminique il y a vingt minutes.",
     ja: "ピーナッツアレルギーです。20分前に抗ヒスタミン薬を飲みました。",
+    reply: {en: "Do you carry an epinephrine pen?", native: "Avez-vous un stylo d'adrénaline sur vous ?"},
     highlights: ["allergic to peanuts", "an antihistamine twenty minutes ago"],
     intake: {allergies: "Peanuts", medicines: "Antihistamine, 20 min ago"}
   },
@@ -233,6 +242,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Tomo medicina para la presión todas las mañanas. Es amlodipino.",
     fr: "Je prends un médicament pour la tension tous les matins. C'est de l'amlodipine.",
     ja: "毎朝、血圧の薬を飲んでいます。アムロジピンです。",
+    reply: {en: "Are you allergic to any medicines?", native: "お薬のアレルギーはありますか？"},
     highlights: ["blood pressure medicine every morning", "amlodipine"],
     intake: {medicines: "Amlodipine (blood pressure), daily"}
   },
@@ -244,6 +254,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Dice que le duele la barriga, aquí abajo a la derecha.",
     fr: "Elle dit qu'elle a mal au ventre, ici en bas à droite.",
     ja: "お腹が痛いと言っています。ここ、右下のあたりです。",
+    reply: {en: "How much does she weigh?", native: "¿Cuánto pesa la niña?"},
     highlights: ["her stomach hurts", "down here on the right"],
     intake: {pain: "Stomach, lower right"}
   },
@@ -255,6 +266,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Respiro bien, pero siento la garganta un poco cerrada.",
     fr: "Je respire bien, mais j'ai la gorge un peu serrée.",
     ja: "呼吸は大丈夫ですが、喉が少し締め付けられる感じがします。",
+    reply: {en: "Has this happened before?", native: "Est-ce déjà arrivé auparavant ?"},
     highlights: ["can breathe fine", "throat feels a little tight"],
     intake: {symptoms: "Lips swelling, itchy, throat a little tight; breathing fine"}
   },
@@ -266,6 +278,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Además, soy alérgico a la penicilina.",
     fr: "Aussi, je suis allergique à la pénicilline.",
     ja: "それと、ペニシリンにアレルギーがあります。",
+    reply: {en: "Please take a seat. A doctor will see you shortly.", native: "お掛けください。すぐに医師が診察します。"},
     highlights: ["allergic to penicillin"],
     intake: {allergies: "Penicillin"}
   },
@@ -277,6 +290,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Pesa unos veinte kilos, por si sirve.",
     fr: "Elle pèse environ vingt kilos, si ça peut aider.",
     ja: "体重は20キロくらいです。参考になれば。",
+    reply: {en: "Thank you. A nurse will call her name soon.", native: "Gracias. Una enfermera la llamará pronto."},
     highlights: ["about twenty kilos"]
   },
   {
@@ -287,6 +301,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Gracias. Esto me pasó una vez antes, hace tres años.",
     fr: "Merci. C'est déjà arrivé une fois, il y a trois ans.",
     ja: "ありがとうございます。3年前にも一度こうなりました。",
+    reply: {en: "Thank you. Please wait here; a nurse is coming.", native: "Merci. Attendez ici, une infirmière arrive."},
     highlights: ["once before, three years ago"]
   }
 ]

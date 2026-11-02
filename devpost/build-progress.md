@@ -84,7 +84,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 13 LEAF scenarios pass when run in index order in Preview (Nov 2; the first eleven also after restarting Lens
+All 14 LEAF scenarios pass in index order in Preview except `reach-language-picker-ik` in the long Nov 2 session (see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -99,12 +99,13 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 5. Onboarding shows what SubSpecs does and the privacy note; "Conference corridor" begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
 | 6. Start card offers both scenarios; "Hospital intake" gives three patients' cards with Japanese, Spanish, French detected and English underneath | `c6-hospital-intake-starts` | Pass | Yes, see `history/screenshots/2026-10-30-hospital-start-card.png` |
 | 7. Intake facts in the English translation are highlighted, other words aren't | `c7-hospital-highlights` | Pass (exact highlighted phrases checked on 6 answers; none when Japanese is picked by hand) | Yes, see `history/screenshots/2026-10-30-hospital-intake.png` |
-| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. Same on Nov 2 with the intake form: failed twice in a long session, passed right after `c4-language-switch`. | |
+| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. Same on Nov 2 with the intake form: failed twice in a long session, passed right after `c4-language-switch`. Then failed 5 times in a row while adding reply help ("Expected fr, received auto"); a PreviewInteractTool pinch on Lang_fr also had no effect, with nothing in front of the bar. Rerun after restarting Lens Studio. | |
 | Switch: "Switch" stops the corridor, clears cards and people, hides the bar, brings back the start card; "Hospital intake" then starts from its first line, language kept | `switch-scenario` | Pass | Yes, see `history/screenshots/2026-10-30-switch-button.png` |
 | Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
 | Demo people: a person talks only while their speaker's words appear | `figure-talks-while-speaking` | Pass (about 270 checks over a full round of the conversation) | Yes, see `devpost/screenshots/people-talking-preview.png` |
 | 14. Liquid glass cards: faint see-through tinted plate with a bright rim; words bright and readable | `c14-liquid-glass-cards` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-liquid-glass-cards.png` |
 | 8. Hospital intake: highlighted facts fill a small intake form (Allergies, Medicines, Pain, Since when, Symptoms) as each is said | `c8-intake-form` | Pass (Nov 2; six answers checked, form inside the view and above every head, hospital only) | Yes, see `history/screenshots/2026-11-02-intake-form.png` |
+| 12. Hospital intake: after an answer, a suggested next question in English with the patient's language underneath | `c12-reply-help` | Pass (Nov 2; script checked for all 12 answers, shown text checked on 3) | Yes, see `history/screenshots/2026-11-02-reply-help.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -130,6 +131,13 @@ criterion 13) is built separately.
   `IntakeForm.fill(line)`; the form switches to the speaker when they start talking
   (`showPatient`), keeps one form per patient, flashes filled fields lime for 1.5 s, empties when the
   conversation loops, and is shown only in the hospital (hidden by Switch).
+
+- **Reply help (criterion 12).** Each hospital line has `reply: {en, native}` in
+  `CaptionDemoScript.ts`. When a card finishes a line with a reply, `SpeakerCard.showReply` fills
+  `ReplyQuestion` ("Ask:" in lime, then the English) and `ReplyNative` (speaker color) in the card's
+  bottom strip (from -4.2 cm, sized as if 90 cm away) and clears the fading older line; the hold
+  becomes at least `REPLY_SECONDS` (6). Not under the plate as the brief suggested: below card 1 it
+  overlapped the logo above the language bar.
 
 ## Fixed in this session
 

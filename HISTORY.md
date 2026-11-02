@@ -12,6 +12,31 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: reply help, a suggested next question
+
+![Brian's card with his answer, then "Ask: Does anything hurt her right now?" and the Spanish "¿Le duele algo ahora mismo?" underneath](history/screenshots/2026-11-02-reply-help.png)
+
+- In **Hospital intake**, once a patient finishes an answer, a **suggested next question** appears at
+  the bottom of their card, under the answer: "**Ask:** Does anything hurt her right now?" in English,
+  and the same question in the patient's own language underneath ("¿Le duele algo ahora mismo?"), in
+  the patient's color. The wearer can read it aloud or turn the card toward the patient.
+- The card stays up for 6 seconds after an answer with a question (3 seconds for everything else), so
+  there's time to read it. The question goes when the card hides or the patient speaks again.
+- Every one of the twelve answers has its own question, scripted to lead toward what the intake form
+  still needs (for example, after the stomach pain answer it asks "How much does she weigh?").
+  The corridor conversation has none.
+- **Changed from the plan:** the plan put the question just under the card. Under the left card it ran
+  into the SubSpecs logo above the language bar, so it sits inside the card's bottom strip instead,
+  where the older line used to fade (it has always faded by the time an answer ends).
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks every hospital answer has a
+  question in both languages, that nothing shows while the patient is still talking, that each of the
+  first three answers (Japanese, Spanish, French) shows exactly its scripted question under the answer,
+  and that it stays up about 6 seconds. 13 of the 14 automated tests pass. The full-arm reach test
+  for the language buttons failed 5 times in this long Lens Studio session. In the same session a
+  simulated pinch on a language button also did nothing, though nothing sits in front of the bar and
+  the tests that press the buttons directly pass. Oct 30 looked the same, and restarting Lens Studio
+  fixed it then. **Rerun it after restarting Lens Studio.**
+
 ## Nov 2, 2026: the intake form fills itself in
 
 ![The hospital intake form in the top right, filled in for patient 2: no allergies, ibuprofen at 6 am, fever since last night](history/screenshots/2026-11-02-intake-form.png)
