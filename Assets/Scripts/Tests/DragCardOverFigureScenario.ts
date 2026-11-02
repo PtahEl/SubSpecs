@@ -38,6 +38,8 @@ export class DragCardOverFigureScenario extends Scenario {
       await sleep(200)
     }
     const placedAt = card.root.getTransform().getWorldPosition()
+    // The card's spot, without the depth effect's small shift toward or away from the wearer.
+    const placedSpot = card.spot
     const offAngle = (Math.acos(placedAt.sub(cam).normalize().dot(aim.sub(cam).normalize())) * 180) / Math.PI
     print("[Caption test] card moved " + distance(placedAt, from).toFixed(1) + " cm; " +
       distance(placedAt, target).toFixed(1) + " cm from the target; " + offAngle.toFixed(1) + " deg from the spot above the head")
@@ -52,7 +54,7 @@ export class DragCardOverFigureScenario extends Scenario {
     await sleep(300)
 
     // Same spot, new words on top, the earlier line underneath and fading.
-    expect(distance(card.root.getTransform().getWorldPosition(), placedAt) < 1.0).toBe(true)
+    expect(distance(card.spot, placedSpot) < 1.0).toBe(true)
     expect(card.previousLineText).toBe(earlier)
     // The new line's box sits above the older line's box on the card.
     expect(cardText(1, "CurrentLine").layoutRect.bottom).toBeGreaterThan(cardText(1, "PreviousLine").layoutRect.top)

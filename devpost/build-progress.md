@@ -85,7 +85,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 16 LEAF scenarios pass in index order in Preview (Nov 2, after Recap; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
+All 17 LEAF scenarios pass in Preview (Nov 2, after the depth effect; c14 and named-speakers on a rerun after adjusting them for the softening; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -109,6 +109,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 12. Hospital intake: after an answer, a suggested next question in English with the patient's language underneath | `c12-reply-help` | Pass (Nov 2; script checked for all 12 answers, shown text checked on 3) | Yes, see `history/screenshots/2026-11-02-reply-help.png` |
 | Named speakers (added Nov 2 at the founder's request): a card shows a speaker's name once they say it; Switch forgets names | `named-speakers` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-named-speakers.png` |
 | 11. Pinching "Recap" shows one short line per speaker in their color, summing up what they said so far; pinching again hides it | `c11-recap` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-recap.png` |
+| Depth effect (added Nov 2 at the founder's request): the speaking card comes slightly forward at full brightness, quiet cards ease back and soften | `depth-effect` | Pass (Nov 2; 4 cm forward / 3 cm back, label 1.0 / 0.7, no drift as seen by the wearer) | Yes, see `history/screenshots/2026-11-02-depth-effect.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -160,6 +161,13 @@ criterion 13) is built separately.
   names from the cards. The `RecapButton` (`LanguagePicker`, `onRecap`, `setRecapOpen`) sits above the
   bar's right end, mirroring the logo, so the bar's buttons keep their size. Cleared when the
   conversation loops; Switch closes and clears it.
+
+- **Depth effect (founder's request).** `SpeakerCard.updateDepth` eases `depthAmount` toward 1 while
+  the card is typing (`isSpeaking`) and 0 otherwise, over `DEPTH_SECONDS` (0.3), smoothstepped. The card
+  slides along the line from the wearer through its spot: `DEPTH_FORWARD_CM` (4) nearer when speaking,
+  `DEPTH_BACK_CM` (3) farther when quiet; the label and finished words fade to `QUIET_ALPHA` (0.7) when
+  quiet. `spot` is the card's place without the shift (tests compare it), `rebase()` is called when a
+  card is placed afresh, and the shift is held while dragging so a dropped card stays where it lands.
 
 ## Fixed in this session
 

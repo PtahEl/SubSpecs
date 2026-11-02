@@ -31,7 +31,9 @@ export class NamedSpeakersScenario extends Scenario {
     expect(label(2)).toBe("● Speaker 2")
     await waitFor("speaker 2 to finish", () => !daniel.isSpeaking, 15000)
     expect(label(2)).toBe("● Daniel")
-    expect(cardText(2, "SpeakerLabel").textFill.color.equal(speakerColor(2))).toBe(true)
+    // Same color (its brightness follows the depth effect).
+    const color = cardText(2, "SpeakerLabel").textFill.color
+    expect(color.x === speakerColor(2).x && color.y === speakerColor(2).y && color.z === speakerColor(2).z).toBe(true)
 
     // The old friend says "I'm Sam" in her third line; Lucía introduces herself in Spanish.
     await waitFor("Sam's name on card 1", () => label(1) === "● Sam", 20000)

@@ -34,6 +34,14 @@ const PREVIOUS_FADE_SECONDS = 2.5
 const BADGE_HOLD_SECONDS = 1.2
 const BADGE_FADE_SECONDS = 0.8
 
+// Depth effect: the card of whoever is speaking comes a little toward the wearer at full
+// brightness; quiet cards ease back a little and soften. Cards only move along the wearer's line
+// of sight, so where a card sits, as the wearer sees it, never changes.
+export const DEPTH_FORWARD_CM = 4
+export const DEPTH_BACK_CM = 3
+const DEPTH_SECONDS = 0.3
+export const QUIET_ALPHA = 0.7
+
 // Reply help (hospital): the card stays up at least this long once an answer with a suggested
 // question is said, so the wearer can read the question out or show it.
 export const REPLY_SECONDS = 6
@@ -61,6 +69,10 @@ export class SpeakerCard {
   private backPlate: BackPlate
   private glassHover = false
   private spokenName = ""
+  // Depth effect: 0 quiet, 1 speaking (eased), and how far along the line of sight the card is
+  // shifted from its spot right now (negative: toward the wearer).
+  private depthAmount = 0
+  private depthOffset = 0
   private ready = false
   private wantVisible = false
 
@@ -275,6 +287,24 @@ export class SpeakerCard {
     return this.replyNative.getSceneObject().enabled ? this.replyNative.text : ""
   }
 
+  // Where the card sits (placed or dropped), without the depth effect's shift.
+  get spot(): vec3 {
+    const eye = this.camera.getWorldPosition()
+    const to = this.root.getTransform().getWorldPosition().sub(eye)
+    return eye.add(to.normalize().uniformScale(to.length - this.depthOffset))
+  }
+
+  // The depth effect now: the shift along the line of sight (cm, negative is toward the wearer)
+  // and how bright the speaker label is.
+  get depth(): {offset: number; labelAlpha: number; wordsAlpha: number} {
+    return {offset: this.depthOffset, labelAlpha: this.speakerLabel.textFill.color.w, wordsAlpha: this.currentText.textFill.color.w}
+  }
+
+  // The card was just placed somewhere new: that is its spot, with no depth shift applied yet.
+  rebase(): void {
+    this.depthOffset = 0
+  }
+
   get badgeVisible(): boolean {
     return this.badge.getSceneObject().enabled
   }
@@ -334,6 +364,8 @@ export class SpeakerCard {
     this.badgeAge = -1
     this.placed = false
     this.dragging = false
+    this.depthAmount = 0
+    this.depthOffset = 0
     this.currentText.text = ""
     this.previousText.text = ""
     this.badge.getSceneObject().enabled = false
@@ -406,7 +438,32 @@ export class SpeakerCard {
       }
     }
 
+    if (this.root.enabled) this.updateDepth(dt)
     if (this.root.enabled && !this.dragging) faceCamera(this.root, this.camera)
+  }
+
+  // Eases the depth effect toward speaking or quiet over about 0.3 s.
+  private updateDepth(dt: number): void {
+    const target = this.typing ? 1 : 0
+    const step = dt / DEPTH_SECONDS
+    this.depthAmount = target > this.depthAmount ? Math.min(1, this.depthAmount + step) : Math.max(0, this.depthAmount - step)
+    const k = this.depthAmount * this.depthAmount * (3 - 2 * this.depthAmount)
+
+    // Slide along the line from the wearer, around the card's spot. While dragged, the hand
+    // moves the card; the shift is kept so it lands where it's dropped.
+    if (!this.dragging) {
+      const offset = DEPTH_BACK_CM + (-DEPTH_FORWARD_CM - DEPTH_BACK_CM) * k
+      const eye = this.camera.getWorldPosition()
+      const to = this.root.getTransform().getWorldPosition().sub(eye)
+      const spotDistance = to.length - this.depthOffset
+      this.root.getTransform().setWorldPosition(eye.add(to.normalize().uniformScale(spotDistance + offset)))
+      this.depthOffset = offset
+    }
+
+    // Quiet cards soften; the live line keeps its own dimmer look while words arrive.
+    const alpha = QUIET_ALPHA + (1 - QUIET_ALPHA) * k
+    setTextAlpha(this.speakerLabel, alpha)
+    if (!this.typing) setTextAlpha(this.currentText, alpha)
   }
 
   private finishLine(): void {

@@ -242,6 +242,7 @@ export class CaptionController extends BaseScriptComponent {
         Math.cos(angle) * CARD_DISTANCE_CM
       )
       card.placed = true
+      card.rebase()
     }
     card.speak(line, isNew)
     this.speaking.set(line.speaker, line)

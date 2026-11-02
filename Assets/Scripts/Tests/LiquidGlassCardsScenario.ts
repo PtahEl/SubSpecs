@@ -8,6 +8,7 @@ import {findSceneObjectByName, sleep} from "Leaf.lspkg/Utils/common/Utils"
 import {RoundedRectangle} from "SpectaclesUIKit.lspkg/Scripts/Visuals/RoundedRectangle/RoundedRectangle"
 import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLeafInteractor"
 import {GLASS_RENDER_ORDER, speakerColor} from "../CaptionUiKit"
+import {QUIET_ALPHA} from "../SpeakerCard"
 import {cardText, controller, ensureDemoRunning, interactable, pressStart, textOf, waitFor} from "./CaptionTestUtils"
 
 function seeThrough(c: vec4): boolean {
@@ -29,12 +30,15 @@ export class LiquidGlassCardsScenario extends Scenario {
     expect(seeThrough(look.clear)).toBe(true)
     expect(look.light.z >= look.light.x).toBe(true)
 
-    // The words: fully opaque white with a dark outline; the speaker label keeps its color.
+    // The words: white with a dark outline, never dimmer than a quiet card's softened words (the
+    // depth effect); the speaker label keeps its color.
     const words = cardText(1, "CurrentLine")
-    expect(words.textFill.color.w).toBe(1)
+    expect(words.textFill.color.w >= QUIET_ALPHA - 0.01).toBe(true)
     expect(words.textFill.color.x).toBe(1)
     expect(words.outlineSettings.enabled).toBe(true)
-    expect(cardText(1, "SpeakerLabel").textFill.color.equal(speakerColor(1))).toBe(true)
+    const label = cardText(1, "SpeakerLabel").textFill.color
+    const color = speakerColor(1)
+    expect(label.x === color.x && label.y === color.y && label.z === color.z).toBe(true)
 
     // Hover makes the glass a touch brighter, and it settles back afterwards.
     const hovering = new DefaultLeafInteractor().hover(interactable("SpeakerCard_1"), 800)

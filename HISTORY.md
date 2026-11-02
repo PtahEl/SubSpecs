@@ -12,6 +12,26 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: the speaking card comes forward
+
+![Daniel's card, speaking, slightly forward and bright; Lucía's quiet card set back with a softer label](history/screenshots/2026-11-02-depth-effect.png)
+
+- At the founder's request, the cards now have a **depth effect**. The card of whoever is speaking
+  comes about 4 cm toward the wearer and stays at full brightness. Cards of people who aren't talking
+  ease back about 3 cm, and their name and words soften to 70% (still readable). It eases over about
+  0.3 seconds, driven only by who is speaking.
+- Cards only slide along the wearer's line of sight, so a card's place, as the wearer sees it, never
+  changes. Dragging, the 3-second hold and hide-and-return work as before.
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks that while Sam talks, her card
+  sits 4 cm nearer than its spot at full brightness, while Daniel's quiet card sits 3 cm back at 70%.
+  Neither moves as seen by the wearer, and Daniel's card comes forward when he talks again. The drag,
+  hold-and-return, liquid glass and named-speaker tests now compare a card's spot and color without
+  the depth shift and softening. All 17 automated tests pass: 14 in the in-order run, the two
+  tests adjusted for the softening on their rerun, and the full-arm reach test on a rerun, as before
+  in this long Lens Studio session.
+
+---
+
 ## Nov 2, 2026: the language bar is liquid glass too
 
 ![The language bar at the bottom as a faint glass plate with a bright rim, its buttons and "● DEMO" still clear](history/screenshots/2026-11-02-liquid-glass-bar.png)
