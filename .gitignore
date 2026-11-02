@@ -45,3 +45,6 @@ leaf_plugin_settings.json
 
 # Generated scene snapshot (VirtualScene tool)
 .virtual-scene.json
+
+# Raw downloads waiting to be imported (e.g. ML models); the imported copy lives in Assets/
+downloads/
