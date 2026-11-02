@@ -18,13 +18,6 @@ import {RecapPanel, RECAP_DISTANCE_CM, RECAP_RIGHT_CM, RECAP_UP_CM} from "./Reca
 const SPEAKER_COUNT = 4
 // Where the voice outside the view is: well past the right edge of the 32 degree view.
 const OFF_VIEW_ANGLE_DEG = 55
-// A card dropped this close to a person's head (as the wearer sees it) is pinned to them.
-export const PIN_ANGLE_DEG = 12
-// Mid-conversation, speaker 2's person takes a step to the wearer's left while talking, so a card
-// pinned to him can be seen following.
-export const STEP_SPEAKER = 2
-const STEP_CM = 22
-export const STEP_AT_SECONDS: Record<DemoScenarioId, number> = {corridor: 34, hospital: 28}
 const PICKER_FIT_WIDTH_CM = 32
 
 @component
@@ -114,7 +107,6 @@ export class CaptionController extends BaseScriptComponent {
     this.picker.onSwitch(() => this.switchScenario())
     this.picker.onRecap(() => this.toggleRecap())
     this.figures = new SpeakerFigures(this.speakerFigures ?? [])
-    this.cards.forEach((card) => (card.onDropped = () => this.pinIfOnPerson(card)))
 
     this.createEvent("OnStartEvent").bind(() => {
       placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
@@ -123,9 +115,6 @@ export class CaptionController extends BaseScriptComponent {
       // At 60 cm the view is only about 35 cm wide; shrink the picker to fit with a margin.
       const scale = Math.min(1, PICKER_FIT_WIDTH_CM / this.picker.width)
       this.picker.root.getTransform().setLocalScale(vec3.one().uniformScale(scale))
-      // The step goes to the wearer's left, across their view.
-      const flat = new vec3(this.camera.right.x, 0, this.camera.right.z).normalize()
-      this.figures.setStep(STEP_SPEAKER, flat.uniformScale(-STEP_CM))
     })
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -161,31 +150,6 @@ export class CaptionController extends BaseScriptComponent {
 
   get intakeForm(): IntakeForm {
     return this.intake
-  }
-
-  // How far the stepping person has stepped aside, 0 to 1.
-  get stepProgress(): number {
-    return this.figures.stepProgress
-  }
-
-  // A card just dropped: if it's on a person (close to their head as the wearer sees it), it's
-  // pinned to them and follows them; anywhere else it stays where it was dropped.
-  private pinIfOnPerson(card: SpeakerCard): void {
-    const eye = this.camera.getWorldPosition()
-    const toCard = card.root.getTransform().getWorldPosition().sub(eye).normalize()
-    let best: SceneObject | null = null
-    let bestAngle = PIN_ANGLE_DEG
-    for (let speaker = 1; speaker <= SPEAKER_COUNT; speaker++) {
-      const head = this.figures.headTop(speaker)
-      const figure = this.figures.figure(speaker)
-      if (!head || !figure) continue
-      const angle = (Math.acos(Math.min(1, toCard.dot(head.sub(eye).normalize()))) * 180) / Math.PI
-      if (angle < bestAngle) {
-        bestAngle = angle
-        best = figure
-      }
-    }
-    if (best) card.pinTo(best)
   }
 
   get speakerCue(): SpeakerCue {
@@ -259,8 +223,6 @@ export class CaptionController extends BaseScriptComponent {
         if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) this.restartConversation()
       }
     }
-    // The person steps first, so a card pinned to them follows in the same frame.
-    this.figures.updateStep(dt, this.running && this.clock >= STEP_AT_SECONDS[this.scenarioId])
     this.cards.forEach((c) => c.update(dt, this.holdSeconds))
     // A line is said once its card stops typing; it then joins the recap and fills the intake form.
     this.speaking.forEach((line, speaker) => {
