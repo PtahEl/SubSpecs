@@ -11,6 +11,7 @@ import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
 import {placeInFrontOfCamera} from "./CaptionUiKit"
 import {SpeakerFigures} from "./SpeakerFigures"
 import {IntakeForm, INTAKE_DISTANCE_CM, INTAKE_RIGHT_CM, INTAKE_UP_CM} from "./IntakeForm"
+import {RecapPanel, RECAP_DISTANCE_CM, RECAP_RIGHT_CM, RECAP_UP_CM} from "./RecapPanel"
 
 const SPEAKER_COUNT = 3
 const PICKER_FIT_WIDTH_CM = 32
@@ -70,7 +71,8 @@ export class CaptionController extends BaseScriptComponent {
   private onboarding: OnboardingCard
   private figures: SpeakerFigures
   private intake: IntakeForm
-  // Lines being spoken now, by speaker; their facts go on the intake form once said.
+  private recap: RecapPanel
+  // Lines being spoken now, by speaker; once said, they go into the recap (and the intake form).
   private speaking = new Map<number, DemoLine>()
 
   private running = false
@@ -85,6 +87,7 @@ export class CaptionController extends BaseScriptComponent {
     this.onboarding = new OnboardingCard(this.sceneObject, this.logoMaterial)
     this.picker = new LanguagePicker(this.sceneObject, this.startLanguage as LanguageCode, this.logoMaterial)
     this.intake = new IntakeForm(this.sceneObject, (patient) => this.cards[patient - 1].name)
+    this.recap = new RecapPanel(this.sceneObject, (speaker) => this.cards[speaker - 1].name)
     for (let i = 1; i <= SPEAKER_COUNT; i++) {
       const card = new SpeakerCard(this.sceneObject, i, this.camera)
       card.setLanguage(this.startLanguage as LanguageCode)
@@ -95,6 +98,7 @@ export class CaptionController extends BaseScriptComponent {
     this.picker.onLanguageChanged((code) => this.cards.forEach((c) => c.setLanguage(code)))
     this.onboarding.onStart((scenario) => this.startDemo(scenario))
     this.picker.onSwitch(() => this.switchScenario())
+    this.picker.onRecap(() => this.toggleRecap())
     this.figures = new SpeakerFigures(this.speakerFigures ?? [])
 
     this.createEvent("OnStartEvent").bind(() => {
@@ -141,6 +145,17 @@ export class CaptionController extends BaseScriptComponent {
     return this.intake
   }
 
+  get recapPanel(): RecapPanel {
+    return this.recap
+  }
+
+  // The language bar's Recap: open the recap in the top left of the view, or close it.
+  toggleRecap(): void {
+    if (!this.recap.visible) placeInFrontOfCamera(this.recap.root, this.camera, RECAP_RIGHT_CM, RECAP_UP_CM, RECAP_DISTANCE_CM)
+    this.recap.toggle()
+    this.picker.setRecapOpen(this.recap.visible)
+  }
+
   startDemo(scenario: DemoScenarioId = "corridor"): void {
     this.scenarioId = scenario
     this.lines = DEMO_SCENARIOS[scenario]
@@ -154,12 +169,13 @@ export class CaptionController extends BaseScriptComponent {
     }
   }
 
-  // From the first line again: empty intake forms, nothing being said.
+  // From the first line again: empty intake forms and recap, nothing being said.
   private restartConversation(): void {
     this.clock = 0
     this.nextLine = 0
     this.speaking.clear()
     this.intake.clear()
+    this.recap.clear()
   }
 
   // The language bar's Switch: stop the conversation, clear every card and person, and bring
@@ -168,6 +184,8 @@ export class CaptionController extends BaseScriptComponent {
     this.running = false
     this.restartConversation()
     this.intake.hide()
+    this.recap.hide()
+    this.picker.setRecapOpen(false)
     this.heard.clear()
     this.cards.forEach((c) => c.reset())
     this.figures.reset()
@@ -195,11 +213,12 @@ export class CaptionController extends BaseScriptComponent {
       }
     }
     this.cards.forEach((c) => c.update(dt, this.holdSeconds))
-    // A line is said once its card stops typing; its facts then fill the intake form.
+    // A line is said once its card stops typing; it then joins the recap and fills the intake form.
     this.speaking.forEach((line, speaker) => {
       if (this.cards[speaker - 1].isSpeaking) return
       this.speaking.delete(speaker)
-      this.intake.fill(line)
+      this.recap.add(line)
+      if (this.scenarioId === "hospital") this.intake.fill(line)
     })
     this.intake.update(dt)
     this.figures.update(this.cards.map((c) => c.isSpeaking))
@@ -225,9 +244,7 @@ export class CaptionController extends BaseScriptComponent {
       card.placed = true
     }
     card.speak(line, isNew)
-    if (this.scenarioId === "hospital") {
-      this.intake.showPatient(line.speaker)
-      this.speaking.set(line.speaker, line)
-    }
+    this.speaking.set(line.speaker, line)
+    if (this.scenarioId === "hospital") this.intake.showPatient(line.speaker)
   }
 }

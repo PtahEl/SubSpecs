@@ -15,6 +15,7 @@ which sits on the `CaptionController` scene object.
 | `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Auto (default) / Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label and a **Switch** button (`SwitchButton`) at the right end. Only the buttons are pinch targets; the background panel is not. Shown once a conversation starts. The bar is 58.6 cm wide before it is scaled down to 32 cm to fit the view. |
 | `OnboardingCard.ts` | Centered card about 1 m away: what SubSpecs does, the privacy note, and two buttons side by side, "Conference corridor" (`CorridorButton`) and "Hospital intake" (`HospitalButton`). Comes back when Switch is pinched. |
 | `CaptionUiKit.ts` | Shared text sizes, speaker colors, and text, button and placement helpers. |
+| `RecapPanel.ts` | The Recap panel: one line per speaker in their color, summing up what they said so far; opened and closed by the Recap button above the language bar. |
 | `IntakeForm.ts` | Hospital only: a small form up and to the right (Allergies, Medicines, Pain, Since when, Symptoms) that fills from each patient's answers as they finish, one form per patient, filled fields flash lime. |
 | `SpeakerFigures.ts` | Demo only: each person plays their Talking animation while their speaker's words appear, and holds its first frame (a natural standing pose, not the rig's T-pose) otherwise. The clip loops for long lines. |
 
@@ -84,7 +85,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 15 LEAF scenarios pass in index order in Preview except `reach-language-picker-ik` in the long Nov 2 session (see its row; the first eleven also passed after restarting Lens
+All 16 LEAF scenarios pass in index order in Preview (Nov 2, after Recap; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -99,7 +100,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 5. Onboarding shows what SubSpecs does and the privacy note; "Conference corridor" begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
 | 6. Start card offers both scenarios; "Hospital intake" gives three patients' cards with Japanese, Spanish, French detected and English underneath | `c6-hospital-intake-starts` | Pass | Yes, see `history/screenshots/2026-10-30-hospital-start-card.png` |
 | 7. Intake facts in the English translation are highlighted, other words aren't | `c7-hospital-highlights` | Pass (exact highlighted phrases checked on 6 answers; none when Japanese is picked by hand) | Yes, see `history/screenshots/2026-10-30-hospital-intake.png` |
-| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. Same on Nov 2 with the intake form: failed twice in a long session, passed right after `c4-language-switch`. Then failed 5 times in a row while adding reply help ("Expected fr, received auto"); a PreviewInteractTool pinch on Lang_fr also had no effect, with nothing in front of the bar. Rerun after restarting Lens Studio. | |
+| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. Same on Nov 2 with the intake form: failed twice in a long session, passed right after `c4-language-switch`. Then failed 5 times in a row while adding reply help ("Expected fr, received auto"); a PreviewInteractTool pinch on Lang_fr also had no effect, with nothing in front of the bar. Passed again in the full run after Recap. | |
 | Switch: "Switch" stops the corridor, clears cards and people, hides the bar, brings back the start card; "Hospital intake" then starts from its first line, language kept | `switch-scenario` | Pass | Yes, see `history/screenshots/2026-10-30-switch-button.png` |
 | Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
 | Demo people: a person talks only while their speaker's words appear | `figure-talks-while-speaking` | Pass (about 270 checks over a full round of the conversation) | Yes, see `devpost/screenshots/people-talking-preview.png` |
@@ -107,6 +108,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 8. Hospital intake: highlighted facts fill a small intake form (Allergies, Medicines, Pain, Since when, Symptoms) as each is said | `c8-intake-form` | Pass (Nov 2; six answers checked, form inside the view and above every head, hospital only) | Yes, see `history/screenshots/2026-11-02-intake-form.png` |
 | 12. Hospital intake: after an answer, a suggested next question in English with the patient's language underneath | `c12-reply-help` | Pass (Nov 2; script checked for all 12 answers, shown text checked on 3) | Yes, see `history/screenshots/2026-11-02-reply-help.png` |
 | Named speakers (added Nov 2 at the founder's request): a card shows a speaker's name once they say it; Switch forgets names | `named-speakers` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-named-speakers.png` |
+| 11. Pinching "Recap" shows one short line per speaker in their color, summing up what they said so far; pinching again hides it | `c11-recap` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-recap.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -147,6 +149,15 @@ criterion 13) is built separately.
   clears it, so Switch forgets names. `setName` is the hook Live mode would call when the server
   reports a name. The privacy note (`PRIVACY_NOTE` in `OnboardingCard.ts`) now says names are
   forgotten when the conversation ends.
+
+- **Recap (criterion 11).** `RecapPanel.ts`: a read-only 13 x 10 cm panel at 60 cm, top left
+  (`RECAP_RIGHT_CM` -9.9, `RECAP_UP_CM` 12.5), up to four rows (`RECAP_ROWS`). Every scripted line has
+  `recap`: that speaker's summary so far. `CaptionController` now tracks the line each speaker is saying
+  in both conversations; once said it calls `RecapPanel.add(line)` (and `IntakeForm.fill` in the
+  hospital). Rows are "● name: summary" in the speaker color, in the order people first spoke, with
+  names from the cards. The `RecapButton` (`LanguagePicker`, `onRecap`, `setRecapOpen`) sits above the
+  bar's right end, mirroring the logo, so the bar's buttons keep their size. Cleared when the
+  conversation loops; Switch closes and clears it.
 
 ## Fixed in this session
 

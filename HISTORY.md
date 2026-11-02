@@ -12,6 +12,28 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: Recap, what everyone has said so far
+
+![The recap panel in the top left: one line each for Sam, Daniel and Lucía in their colors, with the Recap button above the language bar's right end](history/screenshots/2026-11-02-recap.png)
+
+- A **Recap** button now sits just above the right end of the language bar (the SubSpecs logo sits
+  above the left end). Pinching it opens a small panel in the top left of the view, above the people,
+  with **one short line per speaker in their color**: "● Daniel: Asked if you two are speaking on the
+  accessibility panel." Pinching it again closes it; the button turns green while it's open.
+- The summaries **grow as the conversation goes**: each line someone finishes updates their summary,
+  and names appear as soon as people say them. Before anyone has finished a line it says "Nothing said
+  yet." Switch closes it and the next conversation starts with an empty recap.
+- In the demo the summaries are pre-written for both conversations (in the hospital they read like a
+  handover: "Daughter, 6, about 20 kg: fever, vomiting, lower-right stomach pain; ibuprofen 6 am"). In
+  Live mode the SubSpecs server would write them; that isn't built yet.
+- **Changed from the plan:** the plan put Recap on the language bar. Adding it inside the bar would
+  have shrunk every language button by about 9%, so it sits just above the bar instead.
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks the button and panel are
+  inside the view, the panel opens and closes on each pinch, each speaker gets exactly one line in
+  their color, a summary grows with the speaker's next line, names show once said, and Switch empties
+  it. **All 16 automated tests pass** in order, including the full-arm reach test, which worked again
+  in this session.
+
 ## Nov 2, 2026: cards show a speaker's name once they say it
 
 ![Yuki Tanaka's and Amélie's cards labeled with their names, and the intake form titled "Intake · Amélie"](history/screenshots/2026-11-02-named-speakers.png)

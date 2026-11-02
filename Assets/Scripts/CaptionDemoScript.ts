@@ -60,6 +60,9 @@ export interface DemoLine {
   // card shows it instead of "Speaker N", for this conversation only. In Live mode the SubSpecs
   // server would report it.
   name?: string
+  // Recap: a one-line summary of everything this speaker has said so far, as of this line (in
+  // English). Scripted in Demo mode; in Live mode the SubSpecs server would write it.
+  recap?: string
 }
 
 // The fields on the hospital intake form, in the order shown.
@@ -82,7 +85,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "Hey! Is that really you? It's been, what, six years?",
     es: "¡Oye! ¿De verdad eres tú? Han pasado, ¿qué, seis años?",
     fr: "Hé ! C'est vraiment toi ? Ça fait quoi, six ans ?",
-    ja: "ねえ！本当に君？もう6年ぶりくらいかな？"
+    ja: "ねえ！本当に君？もう6年ぶりくらいかな？",
+    recap: "Recognized you; it's been about six years."
   },
   {
     speaker: 1,
@@ -90,7 +94,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "I almost didn't recognize you with the beard.",
     es: "Casi no te reconozco con la barba.",
     fr: "Je ne t'ai presque pas reconnu avec la barbe.",
-    ja: "ひげで危うく気づかないところだったよ。"
+    ja: "ひげで危うく気づかないところだったよ。",
+    recap: "Old friend, six years since you met; almost didn't recognize you with the beard."
   },
   {
     speaker: 2,
@@ -99,6 +104,7 @@ export const DEMO_LINES: DemoLine[] = [
     es: "Perdón por interrumpir, soy Daniel. ¿Ustedes dos hablan en el panel de accesibilidad?",
     fr: "Désolé de vous interrompre, je suis Daniel. Vous intervenez au panel sur l'accessibilité ?",
     ja: "割り込んでごめんなさい、ダニエルです。お二人はアクセシビリティのパネルで話す方ですか？",
+    recap: "Asked if you two are speaking on the accessibility panel.",
     name: "Daniel"
   },
   {
@@ -108,6 +114,7 @@ export const DEMO_LINES: DemoLine[] = [
     es: "Solo yo. Por cierto, soy Sam. Este es mi viejo amigo de la universidad.",
     fr: "Juste moi. Je suis Sam, au fait. Voici mon vieil ami de l'université.",
     ja: "私だけです。ちなみにサムです。こちらは大学時代の古い友人です。",
+    recap: "Old university friend, six years since you met; she's speaking on the accessibility panel.",
     name: "Sam"
   },
   {
@@ -118,6 +125,7 @@ export const DEMO_LINES: DemoLine[] = [
     es: "¿Les importa si me uno? Soy Lucía. La fila del café es interminable.",
     fr: "Je peux me joindre à vous ? Je m'appelle Lucía. La queue pour le café est interminable.",
     ja: "ご一緒してもいいですか？ルシアです。コーヒーの列が全然進まなくて。",
+    recap: "Joined the group to escape the long coffee line.",
     name: "Lucía"
   },
   {
@@ -126,7 +134,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "Of course. Did you catch the keynote this morning?",
     es: "Claro. ¿Viste la conferencia principal esta mañana?",
     fr: "Bien sûr. Tu as vu la keynote ce matin ?",
-    ja: "もちろん。今朝の基調講演は見ましたか？"
+    ja: "もちろん。今朝の基調講演は見ましたか？",
+    recap: "Asked about the accessibility panel and whether you saw this morning's keynote."
   },
   {
     speaker: 3,
@@ -135,7 +144,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "I did. The live subs demo was amazing.",
     es: "Sí. La demo de subtítulos en vivo fue increíble.",
     fr: "Oui. La démo de sous-titres en direct était incroyable.",
-    ja: "見ました。ライブ字幕のデモがすごかったです。"
+    ja: "見ました。ライブ字幕のデモがすごかったです。",
+    recap: "Joined to escape the coffee line; loved the keynote's live subs demo."
   },
   {
     speaker: 1,
@@ -143,7 +153,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "Funny you say that. My friend is wearing them right now.",
     es: "Qué curioso. Mi amigo los lleva puestos ahora mismo.",
     fr: "C'est drôle. Mon ami les porte en ce moment même.",
-    ja: "偶然ですね。友人がちょうど今それを着けているんです。"
+    ja: "偶然ですね。友人がちょうど今それを着けているんです。",
+    recap: "Old university friend; speaking on the accessibility panel; told them you're wearing live subs."
   },
   {
     speaker: 2,
@@ -151,7 +162,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "Wait, so you can read everything we're saying?",
     es: "Espera, ¿entonces puedes leer todo lo que decimos?",
     fr: "Attends, tu peux lire tout ce qu'on dit ?",
-    ja: "待って、じゃあ私たちの話が全部読めるの？"
+    ja: "待って、じゃあ私たちの話が全部読めるの？",
+    recap: "Asked about the panel and the keynote; surprised you can read everything they say."
   },
   {
     speaker: 3,
@@ -160,7 +172,8 @@ export const DEMO_LINES: DemoLine[] = [
     en: "That's brilliant. Let's grab a table and keep talking.",
     es: "Genial. Busquemos una mesa y sigamos hablando.",
     fr: "Génial. Trouvons une table et continuons à parler.",
-    ja: "すばらしい。テーブルを取って話を続けましょう。"
+    ja: "すばらしい。テーブルを取って話を続けましょう。",
+    recap: "Loved the live subs demo; suggests getting a table to keep talking."
   }
 ]
 
@@ -177,6 +190,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy Yuki Tanaka. Me duele el pecho. Empezó hace unas dos horas, después de bajar del avión.",
     fr: "Je m'appelle Yuki Tanaka. J'ai mal à la poitrine. Ça a commencé il y a environ deux heures, en descendant de l'avion.",
     ja: "田中ゆきです。胸が痛いです。2時間ほど前、飛行機を降りてから始まりました。",
+    recap: "Chest pain for about 2 hours, since getting off the plane.",
     name: "Yuki Tanaka",
     reply: {en: "Does the pain spread to your arm, jaw or back?", native: "痛みは腕、あご、背中に広がりますか？"},
     highlights: ["My chest hurts", "about two hours ago"],
@@ -190,6 +204,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy Carlos. Es mi hija, tiene seis años. Tiene fiebre desde anoche y vomitó dos veces.",
     fr: "Je suis Carlos. C'est ma fille, elle a six ans. Elle a de la fièvre depuis hier soir et a vomi deux fois.",
     ja: "カルロスです。娘です、6歳です。昨夜から熱があって、2回吐きました。",
+    recap: "Daughter, 6: fever since last night, vomited twice.",
     name: "Carlos",
     reply: {en: "How high was her temperature?", native: "¿Qué tan alta fue su temperatura?"},
     highlights: ["a fever", "since last night", "threw up twice"],
@@ -203,6 +218,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy Amélie. Creo que mi almuerzo tenía cacahuetes. Se me hinchan los labios y me pica todo el cuerpo.",
     fr: "Je m'appelle Amélie. Je crois qu'il y avait des cacahuètes dans mon déjeuner. Mes lèvres gonflent et ça me gratte partout.",
     ja: "アメリです。昼食にピーナッツが入っていたと思います。唇が腫れてきて、全身がかゆいです。",
+    recap: "Suspects peanuts at lunch; lips swelling, itchy all over.",
     name: "Amélie",
     reply: {en: "Are you having any trouble breathing?", native: "Avez-vous du mal à respirer ?"},
     highlights: ["peanuts", "My lips are swelling", "itchy all over"],
@@ -216,6 +232,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Se siente apretado, como una presión. Más o menos un 6 de 10.",
     fr: "Ça serre, comme une pression. Environ 6 sur 10.",
     ja: "締め付けられるような圧迫感です。10のうち6くらいです。",
+    recap: "Chest pain for 2 hours since the flight; tight pressure, 6 out of 10.",
     reply: {en: "Do you take any medicines?", native: "何かお薬を飲んでいますか？"},
     highlights: ["tight, like pressure", "a 6 out of 10"],
     intake: {pain: "6 / 10, tight pressure"}
@@ -228,6 +245,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Le di ibuprofeno a las seis de la mañana. No es alérgica a nada.",
     fr: "Je lui ai donné de l'ibuprofène à six heures ce matin. Elle n'est allergique à rien.",
     ja: "今朝6時にイブプロフェンを飲ませました。アレルギーは何もありません。",
+    recap: "Daughter, 6: fever since last night, vomited twice; ibuprofen at 6 am; no allergies.",
     reply: {en: "Does anything hurt her right now?", native: "¿Le duele algo ahora mismo?"},
     highlights: ["ibuprofen at six this morning", "not allergic to anything"],
     intake: {medicines: "Ibuprofen, 6 am", allergies: "None"}
@@ -240,6 +258,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy alérgica a los cacahuetes. Tomé un antihistamínico hace veinte minutos.",
     fr: "Je suis allergique aux arachides. J'ai pris un antihistaminique il y a vingt minutes.",
     ja: "ピーナッツアレルギーです。20分前に抗ヒスタミン薬を飲みました。",
+    recap: "Peanut allergy; lips swelling, itchy; antihistamine 20 minutes ago.",
     reply: {en: "Do you carry an epinephrine pen?", native: "Avez-vous un stylo d'adrénaline sur vous ?"},
     highlights: ["allergic to peanuts", "an antihistamine twenty minutes ago"],
     intake: {allergies: "Peanuts", medicines: "Antihistamine, 20 min ago"}
@@ -252,6 +271,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Tomo medicina para la presión todas las mañanas. Es amlodipino.",
     fr: "Je prends un médicament pour la tension tous les matins. C'est de l'amlodipine.",
     ja: "毎朝、血圧の薬を飲んでいます。アムロジピンです。",
+    recap: "Chest pain 6/10 for 2 hours since the flight; takes amlodipine daily.",
     reply: {en: "Are you allergic to any medicines?", native: "お薬のアレルギーはありますか？"},
     highlights: ["blood pressure medicine every morning", "amlodipine"],
     intake: {medicines: "Amlodipine (blood pressure), daily"}
@@ -264,6 +284,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Dice que le duele la barriga, aquí abajo a la derecha.",
     fr: "Elle dit qu'elle a mal au ventre, ici en bas à droite.",
     ja: "お腹が痛いと言っています。ここ、右下のあたりです。",
+    recap: "Daughter, 6: fever, vomited twice, now lower-right stomach pain; ibuprofen 6 am; no allergies.",
     reply: {en: "How much does she weigh?", native: "¿Cuánto pesa la niña?"},
     highlights: ["her stomach hurts", "down here on the right"],
     intake: {pain: "Stomach, lower right"}
@@ -276,6 +297,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Respiro bien, pero siento la garganta un poco cerrada.",
     fr: "Je respire bien, mais j'ai la gorge un peu serrée.",
     ja: "呼吸は大丈夫ですが、喉が少し締め付けられる感じがします。",
+    recap: "Peanut allergy; lips swelling, throat a little tight, breathing fine; antihistamine 20 min ago.",
     reply: {en: "Has this happened before?", native: "Est-ce déjà arrivé auparavant ?"},
     highlights: ["can breathe fine", "throat feels a little tight"],
     intake: {symptoms: "Lips swelling, itchy, throat a little tight; breathing fine"}
@@ -288,6 +310,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Además, soy alérgico a la penicilina.",
     fr: "Aussi, je suis allergique à la pénicilline.",
     ja: "それと、ペニシリンにアレルギーがあります。",
+    recap: "Chest pain 6/10 for 2 hours; takes amlodipine; allergic to penicillin.",
     reply: {en: "Please take a seat. A doctor will see you shortly.", native: "お掛けください。すぐに医師が診察します。"},
     highlights: ["allergic to penicillin"],
     intake: {allergies: "Penicillin"}
@@ -300,6 +323,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Pesa unos veinte kilos, por si sirve.",
     fr: "Elle pèse environ vingt kilos, si ça peut aider.",
     ja: "体重は20キロくらいです。参考になれば。",
+    recap: "Daughter, 6, about 20 kg: fever, vomiting, lower-right stomach pain; ibuprofen 6 am.",
     reply: {en: "Thank you. A nurse will call her name soon.", native: "Gracias. Una enfermera la llamará pronto."},
     highlights: ["about twenty kilos"]
   },
@@ -311,6 +335,7 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Gracias. Esto me pasó una vez antes, hace tres años.",
     fr: "Merci. C'est déjà arrivé une fois, il y a trois ans.",
     ja: "ありがとうございます。3年前にも一度こうなりました。",
+    recap: "Peanut reaction, throat a little tight, breathing fine; antihistamine taken; once before, 3 years ago.",
     reply: {en: "Thank you. Please wait here; a nurse is coming.", native: "Merci. Attendez ici, une infirmière arrive."},
     highlights: ["once before, three years ago"]
   }

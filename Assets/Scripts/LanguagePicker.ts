@@ -1,6 +1,6 @@
 // Small panel at the bottom of the view: Auto (detect other languages and translate them),
 // Off, or pinch a language to translate everything into it; plus the mode status
-// (Demo / Live / Reconnecting) and a Switch button back to the start card.
+// (Demo / Live / Reconnecting), a Switch button back to the start card, and a Recap button above.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {Button} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/Button"
@@ -17,6 +17,8 @@ const LABEL_W = 6.5
 const STATUS_W = 5.5
 // "Switch" at the right end goes back to the start card to pick another conversation.
 const SWITCH_W = 6.0
+// "Recap" above the right end opens the conversation recap.
+const RECAP_W = 6.0
 const PAD = 1.0
 const CONTENT_Z = 0.6
 // Small logo sitting just above the panel's left end, in panel cm before scaling.
@@ -31,6 +33,8 @@ export class LanguagePicker {
   private buttons: {code: LanguageCode; button: Button; label: Text; text: string}[] = []
   private listeners: ((code: LanguageCode) => void)[] = []
   private switchListeners: (() => void)[] = []
+  private recapListeners: (() => void)[] = []
+  private recapLabel: Text
   private selected: LanguageCode
   private statusText: Text
   private ready = false
@@ -100,6 +104,19 @@ export class LanguagePicker {
     switchButton.onTriggerUp.add(() => this.switchListeners.forEach((fn) => fn()))
     this.refreshSelection()
 
+    // "Recap" sits just above the bar's right end (the logo sits above its left end), so the
+    // bar's own buttons keep their size.
+    const recap = makeButton(
+      content,
+      "RecapButton",
+      "Recap",
+      new vec2(RECAP_W, BUTTON_H),
+      PICKER_DISTANCE_CM,
+      new vec3(width / 2 - PAD - RECAP_W / 2, height / 2 + LOGO_GAP + BUTTON_H / 2, 0)
+    )
+    this.recapLabel = recap.label
+    recap.button.onTriggerUp.add(() => this.recapListeners.forEach((fn) => fn()))
+
     if (logo) {
       const logoW = LOGO_HEIGHT * LOGO_ASPECT
       makeImage(content, "Logo", logo, new vec2(logoW, LOGO_HEIGHT),
@@ -138,6 +155,16 @@ export class LanguagePicker {
   // Pinching "Switch" asks to go back to the start card.
   onSwitch(fn: () => void): void {
     this.switchListeners.push(fn)
+  }
+
+  // Pinching "Recap" asks to open or close the recap.
+  onRecap(fn: () => void): void {
+    this.recapListeners.push(fn)
+  }
+
+  // The Recap button shows green while the recap is open.
+  setRecapOpen(open: boolean): void {
+    this.recapLabel.textFill.color = open ? SELECTED_COLOR : WHITE
   }
 
   show(): void {
