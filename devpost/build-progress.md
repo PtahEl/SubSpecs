@@ -15,6 +15,7 @@ which sits on the `CaptionController` scene object.
 | `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Auto (default) / Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label and a **Switch** button (`SwitchButton`) at the right end. Only the buttons are pinch targets; the background panel is not. Shown once a conversation starts. The bar is 58.6 cm wide before it is scaled down to 32 cm to fit the view. |
 | `OnboardingCard.ts` | Centered card about 1 m away: what SubSpecs does, the privacy note, and two buttons side by side, "Conference corridor" (`CorridorButton`) and "Hospital intake" (`HospitalButton`). Comes back when Switch is pinched. |
 | `CaptionUiKit.ts` | Shared text sizes, speaker colors, and text, button and placement helpers. |
+| `IntakeForm.ts` | Hospital only: a small form up and to the right (Allergies, Medicines, Pain, Since when, Symptoms) that fills from each patient's answers as they finish, one form per patient, filled fields flash lime. |
 | `SpeakerFigures.ts` | Demo only: each person plays their Talking animation while their speaker's words appear, and holds its first frame (a natural standing pose, not the rig's T-pose) otherwise. The clip loops for long lines. |
 
 ## Demo people
@@ -83,7 +84,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 12 LEAF scenarios pass when run in index order in Preview (Nov 2; the first eleven also after restarting Lens
+All 13 LEAF scenarios pass when run in index order in Preview (Nov 2; the first eleven also after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -98,11 +99,12 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 5. Onboarding shows what SubSpecs does and the privacy note; "Conference corridor" begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
 | 6. Start card offers both scenarios; "Hospital intake" gives three patients' cards with Japanese, Spanish, French detected and English underneath | `c6-hospital-intake-starts` | Pass | Yes, see `history/screenshots/2026-10-30-hospital-start-card.png` |
 | 7. Intake facts in the English translation are highlighted, other words aren't | `c7-hospital-highlights` | Pass (exact highlighted phrases checked on 6 answers; none when Japanese is picked by hand) | Yes, see `history/screenshots/2026-10-30-hospital-intake.png` |
-| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. | |
+| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. Same on Nov 2 with the intake form: failed twice in a long session, passed right after `c4-language-switch`. | |
 | Switch: "Switch" stops the corridor, clears cards and people, hides the bar, brings back the start card; "Hospital intake" then starts from its first line, language kept | `switch-scenario` | Pass | Yes, see `history/screenshots/2026-10-30-switch-button.png` |
 | Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
 | Demo people: a person talks only while their speaker's words appear | `figure-talks-while-speaking` | Pass (about 270 checks over a full round of the conversation) | Yes, see `devpost/screenshots/people-talking-preview.png` |
 | 14. Liquid glass cards: faint see-through tinted plate with a bright rim; words bright and readable | `c14-liquid-glass-cards` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-liquid-glass-cards.png` |
+| 8. Hospital intake: highlighted facts fill a small intake form (Allergies, Medicines, Pain, Since when, Symptoms) as each is said | `c8-intake-form` | Pass (Nov 2; six answers checked, form inside the view and above every head, hospital only) | Yes, see `history/screenshots/2026-11-02-intake-form.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -118,6 +120,16 @@ criterion 13) is built separately.
   35%). All card text gets a dark outline and shadow (`addTextOutline` in `CaptionUiKit.ts`;
   `setTextAlpha` fades them with the words). Cards and their text use render order 100/101 so the
   people never draw over the words. `glassLook` reports the plate for the test.
+
+- **Intake form (criterion 8).** `IntakeForm.ts`: a small read-only BackPlate (13 x 10 cm at 60 cm,
+  its collider and interactable turned off) placed up and to the right (`INTAKE_RIGHT_CM` 9.9,
+  `INTAKE_UP_CM` 12.5), above the people. Not beside the language bar as the brief suggested: the bar
+  spans the view and the cards sit just above it. Each hospital line in `CaptionDemoScript.ts` has an
+  `intake` map (fields from `INTAKE_FIELDS`) written from its highlighted facts. `CaptionController`
+  remembers the line each speaker is saying and, once that card stops typing, calls
+  `IntakeForm.fill(line)`; the form switches to the speaker when they start talking
+  (`showPatient`), keeps one form per patient, flashes filled fields lime for 1.5 s, empties when the
+  conversation loops, and is shown only in the hospital (hidden by Switch).
 
 ## Fixed in this session
 

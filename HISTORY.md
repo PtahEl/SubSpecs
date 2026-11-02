@@ -12,6 +12,29 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: the intake form fills itself in
+
+![The hospital intake form in the top right, filled in for patient 2: no allergies, ibuprofen at 6 am, fever since last night](history/screenshots/2026-11-02-intake-form.png)
+
+- In **Hospital intake**, a small **intake form** now sits in the top right of the view, above the
+  patients' heads: Allergies, Medicines, Pain, Since when, Symptoms.
+- As a patient finishes an answer, the facts highlighted in lime go straight into their form, and
+  each field that fills **flashes lime** for about a second and a half. "My chest hurts... about two
+  hours ago" fills Symptoms ("Chest pain") and Since when ("About 2 hours, after the flight").
+- Each patient has their own form. The form shows whoever is talking now, with their number in their
+  color ("Intake · Patient 2" in amber), and keeps everyone's answers when it switches.
+- It only appears in the hospital scenario, and Switch hides it. When the conversation loops, the
+  forms start empty again.
+- **Changed from the plan:** the plan put the form beside the language bar, but the bar already
+  fills the width of the view and the cards sit just above it, so there was no room there that
+  didn't cover a card. It sits in the empty space above the people instead.
+- **Checked:** no errors in Lens Studio's Preview, and a new test starts the hospital, checks the
+  form is inside the view and above every patient's head, then checks six answers: each fills
+  exactly its scripted fields the moment it's said, they flash, the flash settles, and each patient
+  keeps their own form. It also checks Switch hides the form and the corridor never shows it.
+  **All 13 automated tests pass** in order (the full-arm reach test failed twice first in this long
+  Lens Studio session and passed after another test ran, as seen before).
+
 ## Nov 2, 2026: liquid glass speaker cards
 
 ![Sophie seen through her own speaker card: a faint glass plate with a bright rim and white words](history/screenshots/2026-11-02-liquid-glass-cards.png)

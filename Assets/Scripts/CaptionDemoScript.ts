@@ -51,7 +51,20 @@ export interface DemoLine {
   // Intake facts to highlight in the English translation, each an exact phrase of `en`.
   // In Live mode the SubSpecs server would mark them.
   highlights?: string[]
+  // What this answer fills in on the patient's intake form, drawn from its highlighted facts.
+  intake?: Partial<Record<IntakeField, string>>
 }
+
+// The fields on the hospital intake form, in the order shown.
+export type IntakeField = "allergies" | "medicines" | "pain" | "since" | "symptoms"
+
+export const INTAKE_FIELDS: {field: IntakeField; label: string}[] = [
+  {field: "allergies", label: "Allergies"},
+  {field: "medicines", label: "Medicines"},
+  {field: "pain", label: "Pain"},
+  {field: "since", label: "Since when"},
+  {field: "symptoms", label: "Symptoms"}
+]
 
 // Speaker 1 is the old friend, then speakers 2 and 3 join. Speaker 3 speaks Spanish. Gaps between a speaker's
 // lines are longer than the 3 s hold so each card visibly hides and comes back.
@@ -154,7 +167,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Me duele el pecho. Empezó hace unas dos horas, después de bajar del avión.",
     fr: "J'ai mal à la poitrine. Ça a commencé il y a environ deux heures, en descendant de l'avion.",
     ja: "胸が痛いです。2時間ほど前、飛行機を降りてから始まりました。",
-    highlights: ["My chest hurts", "about two hours ago"]
+    highlights: ["My chest hurts", "about two hours ago"],
+    intake: {symptoms: "Chest pain", since: "About 2 hours, after the flight"}
   },
   {
     speaker: 2,
@@ -164,7 +178,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Es mi hija, tiene seis años. Tiene fiebre desde anoche y vomitó dos veces.",
     fr: "C'est ma fille, elle a six ans. Elle a de la fièvre depuis hier soir et a vomi deux fois.",
     ja: "娘です、6歳です。昨夜から熱があって、2回吐きました。",
-    highlights: ["a fever", "since last night", "threw up twice"]
+    highlights: ["a fever", "since last night", "threw up twice"],
+    intake: {symptoms: "Fever, vomited twice", since: "Last night"}
   },
   {
     speaker: 3,
@@ -174,7 +189,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Creo que mi almuerzo tenía cacahuetes. Se me hinchan los labios y me pica todo el cuerpo.",
     fr: "Je crois qu'il y avait des cacahuètes dans mon déjeuner. Mes lèvres gonflent et ça me gratte partout.",
     ja: "昼食にピーナッツが入っていたと思います。唇が腫れてきて、全身がかゆいです。",
-    highlights: ["peanuts", "My lips are swelling", "itchy all over"]
+    highlights: ["peanuts", "My lips are swelling", "itchy all over"],
+    intake: {symptoms: "Lips swelling, itchy all over", since: "After lunch", allergies: "Peanuts? (suspected)"}
   },
   {
     speaker: 1,
@@ -184,7 +200,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Se siente apretado, como una presión. Más o menos un 6 de 10.",
     fr: "Ça serre, comme une pression. Environ 6 sur 10.",
     ja: "締め付けられるような圧迫感です。10のうち6くらいです。",
-    highlights: ["tight, like pressure", "a 6 out of 10"]
+    highlights: ["tight, like pressure", "a 6 out of 10"],
+    intake: {pain: "6 / 10, tight pressure"}
   },
   {
     speaker: 2,
@@ -194,7 +211,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Le di ibuprofeno a las seis de la mañana. No es alérgica a nada.",
     fr: "Je lui ai donné de l'ibuprofène à six heures ce matin. Elle n'est allergique à rien.",
     ja: "今朝6時にイブプロフェンを飲ませました。アレルギーは何もありません。",
-    highlights: ["ibuprofen at six this morning", "not allergic to anything"]
+    highlights: ["ibuprofen at six this morning", "not allergic to anything"],
+    intake: {medicines: "Ibuprofen, 6 am", allergies: "None"}
   },
   {
     speaker: 3,
@@ -204,7 +222,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Soy alérgica a los cacahuetes. Tomé un antihistamínico hace veinte minutos.",
     fr: "Je suis allergique aux arachides. J'ai pris un antihistaminique il y a vingt minutes.",
     ja: "ピーナッツアレルギーです。20分前に抗ヒスタミン薬を飲みました。",
-    highlights: ["allergic to peanuts", "an antihistamine twenty minutes ago"]
+    highlights: ["allergic to peanuts", "an antihistamine twenty minutes ago"],
+    intake: {allergies: "Peanuts", medicines: "Antihistamine, 20 min ago"}
   },
   {
     speaker: 1,
@@ -214,7 +233,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Tomo medicina para la presión todas las mañanas. Es amlodipino.",
     fr: "Je prends un médicament pour la tension tous les matins. C'est de l'amlodipine.",
     ja: "毎朝、血圧の薬を飲んでいます。アムロジピンです。",
-    highlights: ["blood pressure medicine every morning", "amlodipine"]
+    highlights: ["blood pressure medicine every morning", "amlodipine"],
+    intake: {medicines: "Amlodipine (blood pressure), daily"}
   },
   {
     speaker: 2,
@@ -224,7 +244,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Dice que le duele la barriga, aquí abajo a la derecha.",
     fr: "Elle dit qu'elle a mal au ventre, ici en bas à droite.",
     ja: "お腹が痛いと言っています。ここ、右下のあたりです。",
-    highlights: ["her stomach hurts", "down here on the right"]
+    highlights: ["her stomach hurts", "down here on the right"],
+    intake: {pain: "Stomach, lower right"}
   },
   {
     speaker: 3,
@@ -234,7 +255,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Respiro bien, pero siento la garganta un poco cerrada.",
     fr: "Je respire bien, mais j'ai la gorge un peu serrée.",
     ja: "呼吸は大丈夫ですが、喉が少し締め付けられる感じがします。",
-    highlights: ["can breathe fine", "throat feels a little tight"]
+    highlights: ["can breathe fine", "throat feels a little tight"],
+    intake: {symptoms: "Lips swelling, itchy, throat a little tight; breathing fine"}
   },
   {
     speaker: 1,
@@ -244,7 +266,8 @@ export const HOSPITAL_LINES: DemoLine[] = [
     es: "Además, soy alérgico a la penicilina.",
     fr: "Aussi, je suis allergique à la pénicilline.",
     ja: "それと、ペニシリンにアレルギーがあります。",
-    highlights: ["allergic to penicillin"]
+    highlights: ["allergic to penicillin"],
+    intake: {allergies: "Penicillin"}
   },
   {
     speaker: 2,

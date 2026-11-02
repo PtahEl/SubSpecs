@@ -10,6 +10,7 @@ import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
 import {placeInFrontOfCamera} from "./CaptionUiKit"
 import {SpeakerFigures} from "./SpeakerFigures"
+import {IntakeForm, INTAKE_DISTANCE_CM, INTAKE_RIGHT_CM, INTAKE_UP_CM} from "./IntakeForm"
 
 const SPEAKER_COUNT = 3
 const PICKER_FIT_WIDTH_CM = 32
@@ -68,6 +69,9 @@ export class CaptionController extends BaseScriptComponent {
   private picker: LanguagePicker
   private onboarding: OnboardingCard
   private figures: SpeakerFigures
+  private intake: IntakeForm
+  // Lines being spoken now, by speaker; their facts go on the intake form once said.
+  private speaking = new Map<number, DemoLine>()
 
   private running = false
   private scenarioId: DemoScenarioId = "corridor"
@@ -80,6 +84,7 @@ export class CaptionController extends BaseScriptComponent {
 
     this.onboarding = new OnboardingCard(this.sceneObject, this.logoMaterial)
     this.picker = new LanguagePicker(this.sceneObject, this.startLanguage as LanguageCode, this.logoMaterial)
+    this.intake = new IntakeForm(this.sceneObject)
     for (let i = 1; i <= SPEAKER_COUNT; i++) {
       const card = new SpeakerCard(this.sceneObject, i, this.camera)
       card.setLanguage(this.startLanguage as LanguageCode)
@@ -132,21 +137,37 @@ export class CaptionController extends BaseScriptComponent {
     return this.cards[speaker - 1]
   }
 
+  get intakeForm(): IntakeForm {
+    return this.intake
+  }
+
   startDemo(scenario: DemoScenarioId = "corridor"): void {
     this.scenarioId = scenario
     this.lines = DEMO_SCENARIOS[scenario]
     this.picker.show()
     this.running = true
+    this.restartConversation()
+    if (scenario === "hospital") {
+      // Top right, above the patients' heads, so the form never covers a face.
+      placeInFrontOfCamera(this.intake.root, this.camera, INTAKE_RIGHT_CM, INTAKE_UP_CM, INTAKE_DISTANCE_CM)
+      this.intake.show()
+    }
+  }
+
+  // From the first line again: empty intake forms, nothing being said.
+  private restartConversation(): void {
     this.clock = 0
     this.nextLine = 0
+    this.speaking.clear()
+    this.intake.clear()
   }
 
   // The language bar's Switch: stop the conversation, clear every card and person, and bring
   // the start card back in front of the wearer. The language setting stays as it is.
   switchScenario(): void {
     this.running = false
-    this.clock = 0
-    this.nextLine = 0
+    this.restartConversation()
+    this.intake.hide()
     this.heard.clear()
     this.cards.forEach((c) => c.reset())
     this.figures.reset()
@@ -170,13 +191,17 @@ export class CaptionController extends BaseScriptComponent {
       if (this.nextLine >= this.lines.length && this.loopDemo) {
         const last = this.lines[this.lines.length - 1]
         const lastEnds = last.at + spokenWords(last).length / this.wordsPerSecond
-        if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) {
-          this.clock = 0
-          this.nextLine = 0
-        }
+        if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) this.restartConversation()
       }
     }
     this.cards.forEach((c) => c.update(dt, this.holdSeconds))
+    // A line is said once its card stops typing; its facts then fill the intake form.
+    this.speaking.forEach((line, speaker) => {
+      if (this.cards[speaker - 1].isSpeaking) return
+      this.speaking.delete(speaker)
+      this.intake.fill(line)
+    })
+    this.intake.update(dt)
     this.figures.update(this.cards.map((c) => c.isSpeaking))
   }
 
@@ -200,5 +225,9 @@ export class CaptionController extends BaseScriptComponent {
       card.placed = true
     }
     card.speak(line, isNew)
+    if (this.scenarioId === "hospital") {
+      this.intake.showPatient(line.speaker)
+      this.speaking.set(line.speaker, line)
+    }
   }
 }
