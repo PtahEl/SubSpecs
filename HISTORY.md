@@ -24,13 +24,12 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 - The language you picked is kept across the switch.
 - To make room, the bar's "Translate" label and "● DEMO" status are a little narrower, and the
   language buttons are about 4% smaller.
-- **Checked:** no errors in Lens Studio's Preview. 10 of the 11 automated tests pass, including a new
-  one that starts the corridor, picks French, pinches Switch, checks everything is cleared, then picks
-  Hospital intake and checks all three patients start fresh with French kept. The one that fails is
-  the full-arm reach test for the language buttons: since Lens Studio was restarted today, the
-  simulated arm can't settle on any button, even on the language bar exactly as it was before Switch,
-  so this change isn't the cause. It passed every run yesterday and needs a rerun after restarting
-  Lens Studio.
+- **Checked:** no errors in Lens Studio's Preview, and a new test starts the corridor, picks French,
+  pinches Switch, checks everything is cleared, then picks Hospital intake and checks all three
+  patients start fresh with French kept. On Oct 30 the full-arm reach test for the language buttons
+  failed in a long-running Lens Studio session. On Nov 2, after restarting Lens Studio, **all 11
+  automated tests pass** in order. The reach test only failed when run as the very first test right
+  after Lens Studio opened (the simulated arm was still settling); it passed twice more on its own.
 
 ## Oct 30, 2026: second demo, the hospital intake desk
 

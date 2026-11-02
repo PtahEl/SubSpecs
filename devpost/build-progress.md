@@ -81,10 +81,10 @@ the language bar hides, and the start card is placed in front of the wearer agai
 (`OnboardingCard.show()`). The picked conversation then starts from its first line. The language
 setting is kept.
 
-## Done criteria (checked in Lens Studio's Preview, Oct 30 with the Mixamo people)
+## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-Ten of the eleven LEAF scenarios pass when run in index order in Preview (Oct 30, after Switch; see
-the reach row). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
+All eleven LEAF scenarios pass when run in index order in Preview (Nov 2, after restarting Lens
+Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
 in `LeafIndex.ts` on the `LeafIndex` scene object.
@@ -98,7 +98,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 5. Onboarding shows what SubSpecs does and the privacy note; "Conference corridor" begins the demo | `c5-onboarding-starts-demo` | Pass | Yes |
 | 6. Start card offers both scenarios; "Hospital intake" gives three patients' cards with Japanese, Spanish, French detected and English underneath | `c6-hospital-intake-starts` | Pass | Yes, see `history/screenshots/2026-10-30-hospital-start-card.png` |
 | 7. Intake facts in the English translation are highlighted, other words aren't | `c7-hospital-highlights` | Pass (exact highlighted phrases checked on 6 answers; none when Japanese is picked by hand) | Yes, see `history/screenshots/2026-10-30-hospital-intake.png` |
-| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | **Fails since Lens Studio was restarted on Oct 30** (the simulated arm never settles on the button: "hoverEnter timed out ... convergence_timeout"; 3 of 3 runs, French and Japanese). Not caused by Switch: the bar exactly as it was before Switch, at its old size, fails the same way, and the PreviewInteractTool hand can't press any button in this session either, while every other test's direct pinch works. Widening the bar to 33.5 cm didn't help, so it stays at 32. Passed every run on Oct 29 (one miss in about 6). Rerun after restarting Lens Studio. | |
+| Reach: a full-arm reach can press a language button | `reach-language-picker-ik` | Pass (Nov 2, after restarting Lens Studio: in index order and twice more on its own). It can fail as the very first test run right after Lens Studio opens ("hoverEnter timed out ... convergence_timeout": the simulated arm doesn't settle), and failed all day Oct 30 in a long-running Lens Studio session; if it fails, run another test first or restart Lens Studio, then rerun. | |
 | Switch: "Switch" stops the corridor, clears cards and people, hides the bar, brings back the start card; "Hospital intake" then starts from its first line, language kept | `switch-scenario` | Pass | Yes, see `history/screenshots/2026-10-30-switch-button.png` |
 | Extra: Auto detects Spanish and translates it; manual choice overrides; Auto restores | `auto-detect-language` | Pass | Yes |
 | Demo people: a person talks only while their speaker's words appear | `figure-talks-while-speaking` | Pass (about 270 checks over a full round of the conversation) | Yes, see `devpost/screenshots/people-talking-preview.png` |
