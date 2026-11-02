@@ -37,6 +37,10 @@ export const DEMO_LANGUAGES: LanguageOption[] = [
   {code: "ja", label: "日本語"}
 ]
 
+// The fourth voice in each conversation (a passer-by, a nurse) speaks from outside the view, off
+// to the wearer's right; the who's-talking cue points toward them.
+export const OFF_VIEW_SPEAKER = 4
+
 export interface DemoLine {
   // Speaker number as the diarizer would report it (1-based, anonymous).
   speaker: number
@@ -146,6 +150,16 @@ export const DEMO_LINES: DemoLine[] = [
     fr: "Oui. La démo de sous-titres en direct était incroyable.",
     ja: "見ました。ライブ字幕のデモがすごかったです。",
     recap: "Joined to escape the coffee line; loved the keynote's live subs demo."
+  },
+  {
+    // A passer-by off to the wearer's right, outside the view.
+    speaker: 4,
+    at: 41.0,
+    en: "Excuse me! The accessibility panel is starting in Hall B!",
+    es: "¡Disculpen! ¡El panel de accesibilidad empieza en la sala B!",
+    fr: "Excusez-moi ! Le panel sur l'accessibilité commence dans la salle B !",
+    ja: "すみません！アクセシビリティのパネルがBホールで始まります！",
+    recap: "A passer-by: the accessibility panel is starting in Hall B."
   },
   {
     speaker: 1,
@@ -326,6 +340,16 @@ export const HOSPITAL_LINES: DemoLine[] = [
     recap: "Daughter, 6, about 20 kg: fever, vomiting, lower-right stomach pain; ibuprofen 6 am.",
     reply: {en: "Thank you. A nurse will call her name soon.", native: "Gracias. Una enfermera la llamará pronto."},
     highlights: ["about twenty kilos"]
+  },
+  {
+    // A nurse calling from off to the wearer's right, outside the view. Staff, not a patient.
+    speaker: 4,
+    at: 65.0,
+    en: "Carlos? We're ready for your daughter in room three.",
+    es: "¿Carlos? Estamos listos para su hija en la sala tres.",
+    fr: "Carlos ? Nous sommes prêts pour votre fille, salle trois.",
+    ja: "カルロスさん？娘さんの準備ができました、3番の部屋へどうぞ。",
+    recap: "A nurse: ready for Carlos's daughter in room three."
   },
   {
     speaker: 3,

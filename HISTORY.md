@@ -12,6 +12,31 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: an arrow points to whoever is talking outside your view
+
+![A coral arrow at the right edge of the view with "● Speaker 4" above it, pointing toward a passer-by off to the right](history/screenshots/2026-11-02-whos-talking-cue.png)
+
+- Each conversation now has a **fourth voice outside the view**, about 55 degrees to the wearer's
+  right: in the corridor a passer-by calls "Excuse me! The accessibility panel is starting in Hall B!",
+  and at the hospital a nurse calls "Carlos? We're ready for your daughter in room three."
+- While someone outside the view is talking (and for the few seconds their card stays up), a **soft,
+  gently pulsing arrow in their color** sits just inside the edge of the view on their side, with their
+  name above it. Their card waits where they are, so turning toward them shows it. The arrow goes as
+  soon as their card is in view. It works for anyone, not only the fourth voice: if the wearer looks
+  away from the group, the arrow points back to whoever is talking.
+- The fourth voice gets its own color, coral, and its own line in the Recap. The nurse isn't a
+  patient, so she has no intake facts or suggested question.
+- In the demo the direction is where the card was placed. On real glasses, knowing which way a voice
+  comes from is still an open question (see the design brief's Risks).
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks there's no arrow while the
+  people in view talk, an arrow on the right in coral once the passer-by talks (his card is more than
+  16 degrees right), the arrow itself inside the view, and that it goes once his card is in view.
+  Tests that check every hospital line has intake facts and a question now skip the nurse. **16 of 17
+  automated tests pass in order**; the full-arm reach test failed in order and passed when rerun at
+  the end, as it has on and off in this long Lens Studio session.
+
+---
+
 ## Nov 2, 2026: Recap, what everyone has said so far
 
 ![The recap panel in the top left: one line each for Sam, Daniel and Lucía in their colors, with the Recap button above the language bar's right end](history/screenshots/2026-11-02-recap.png)

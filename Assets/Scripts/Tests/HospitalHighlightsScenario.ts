@@ -6,7 +6,7 @@ import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
 import {sleep} from "Leaf.lspkg/Utils/common/Utils"
 import {DefaultLeafInteractor} from "Leaf.lspkg/Interactors/interactor/DefaultLeafInteractor"
-import {DemoLine, HOSPITAL_LINES} from "../CaptionDemoScript"
+import {DemoLine, HOSPITAL_LINES, OFF_VIEW_SPEAKER} from "../CaptionDemoScript"
 import {controller, ensureDemoRunning, finishedLine, interactable, pressHospital, waitFor} from "./CaptionTestUtils"
 
 // Two lines per patient: through the sixth line of the script.
@@ -21,7 +21,8 @@ export class HospitalHighlightsScenario extends Scenario {
   async run(): Promise<void> {
     // The script itself: every line has facts, each an exact phrase of the English, and
     // the facts never cover the whole line.
-    for (const line of HOSPITAL_LINES) {
+    // Every patient's line, that is; the nurse (the voice outside the view) isn't a patient.
+    for (const line of HOSPITAL_LINES.filter((l) => l.speaker !== OFF_VIEW_SPEAKER)) {
       expect((line.highlights ?? []).length).toBeGreaterThan(0)
       let rest = line.en
       for (const phrase of line.highlights) {

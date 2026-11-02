@@ -15,6 +15,7 @@ which sits on the `CaptionController` scene object.
 | `LanguagePicker.ts` | Panel about 0.6 m away at the bottom of the view (scaled to fit the view): Auto (default) / Off / Español / Français / 日本語 buttons, plus a "● DEMO" status label and a **Switch** button (`SwitchButton`) at the right end. Only the buttons are pinch targets; the background panel is not. Shown once a conversation starts. The bar is 58.6 cm wide before it is scaled down to 32 cm to fit the view. |
 | `OnboardingCard.ts` | Centered card about 1 m away: what SubSpecs does, the privacy note, and two buttons side by side, "Conference corridor" (`CorridorButton`) and "Hospital intake" (`HospitalButton`). Comes back when Switch is pinched. |
 | `CaptionUiKit.ts` | Shared text sizes, speaker colors, and text, button and placement helpers. |
+| `SpeakerCue.ts` | The who's-talking cue: a pulsing arrow in the speaker's color at the view's edge, pointing toward a talking speaker whose card is outside the view. |
 | `RecapPanel.ts` | The Recap panel: one line per speaker in their color, summing up what they said so far; opened and closed by the Recap button above the language bar. |
 | `IntakeForm.ts` | Hospital only: a small form up and to the right (Allergies, Medicines, Pain, Since when, Symptoms) that fills from each patient's answers as they finish, one form per patient, filled fields flash lime. |
 | `SpeakerFigures.ts` | Demo only: each person plays their Talking animation while their speaker's words appear, and holds its first frame (a natural standing pose, not the rig's T-pose) otherwise. The clip loops for long lines. |
@@ -85,7 +86,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 16 LEAF scenarios pass in index order in Preview (Nov 2, after Recap; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
+All 17 LEAF scenarios pass in Preview (Nov 2, after the who's-talking cue: 16 in index order, reach on a rerun; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -109,6 +110,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 12. Hospital intake: after an answer, a suggested next question in English with the patient's language underneath | `c12-reply-help` | Pass (Nov 2; script checked for all 12 answers, shown text checked on 3) | Yes, see `history/screenshots/2026-11-02-reply-help.png` |
 | Named speakers (added Nov 2 at the founder's request): a card shows a speaker's name once they say it; Switch forgets names | `named-speakers` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-named-speakers.png` |
 | 11. Pinching "Recap" shows one short line per speaker in their color, summing up what they said so far; pinching again hides it | `c11-recap` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-recap.png` |
+| 10. Someone outside the view talks: a cue at the view's edge in their color points toward them, gone once they're in view | `c10-whos-talking-cue` | Pass (Nov 2; a fourth voice 55 degrees right in each conversation) | Yes, see `history/screenshots/2026-11-02-whos-talking-cue.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -158,6 +160,15 @@ criterion 13) is built separately.
   names from the cards. The `RecapButton` (`LanguagePicker`, `onRecap`, `setRecapOpen`) sits above the
   bar's right end, mirroring the logo, so the bar's buttons keep their size. Cleared when the
   conversation loops; Switch closes and clears it.
+
+- **Who's-talking cue (criterion 10).** A fourth voice (`OFF_VIEW_SPEAKER` 4 in
+  `CaptionDemoScript.ts`: a passer-by at 41 s in the corridor, a nurse at 65 s in the hospital) whose card
+  is placed 55 degrees right (`OFF_VIEW_ANGLE_DEG`); `SPEAKER_COUNT` is now 4 and speaker 4 is coral.
+  `SpeakerCue.ts` runs every frame: among visible cards whose middle is more than 14 degrees across or
+  16 up/down from the view's center (`isInView`), it picks the one talking now (else any), and shows
+  a pulsing arrow and the speaker's name 13 degrees out on that side, 60 cm away, following the head.
+  The test brings the card in front of the wearer to stand in for turning the head (the Preview camera
+  can't be turned from a LEAF test). Patient-only checks in `c7` and `c12` skip speaker 4.
 
 ## Fixed in this session
 
