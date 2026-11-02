@@ -28,8 +28,7 @@ export function applyTextRole(t: Text, role: TextRole, distanceCm: number = 110)
 export const SPEAKER_COLORS: vec4[] = [
   new vec4(0.35, 0.85, 1.0, 1), // 1: sky blue
   new vec4(1.0, 0.78, 0.3, 1), // 2: amber
-  new vec4(0.85, 0.55, 1.0, 1), // 3: violet
-  new vec4(1.0, 0.55, 0.6, 1) // 4: coral (the voice outside the view)
+  new vec4(0.85, 0.55, 1.0, 1) // 3: violet
 ]
 
 export function speakerColor(speaker: number): vec4 {

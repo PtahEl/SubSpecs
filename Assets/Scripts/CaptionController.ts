@@ -4,20 +4,16 @@
 // Demo mode never uses AsrModule (it would turn on Bystander Speech Rejection).
 
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
-import {DEMO_SCENARIOS, OFF_VIEW_SPEAKER, DemoLine, DemoScenarioId, LanguageCode, spokenWords} from "./CaptionDemoScript"
+import {DEMO_SCENARIOS, DemoLine, DemoScenarioId, LanguageCode, spokenWords} from "./CaptionDemoScript"
 import {SpeakerCard, CARD_DISTANCE_CM} from "./SpeakerCard"
 import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM} from "./OnboardingCard"
 import {placeInFrontOfCamera} from "./CaptionUiKit"
 import {SpeakerFigures} from "./SpeakerFigures"
 import {IntakeForm, INTAKE_DISTANCE_CM, INTAKE_RIGHT_CM, INTAKE_UP_CM} from "./IntakeForm"
-import {SpeakerCue} from "./SpeakerCue"
 import {RecapPanel, RECAP_DISTANCE_CM, RECAP_RIGHT_CM, RECAP_UP_CM} from "./RecapPanel"
 
-// Three people in front of the wearer, plus a voice outside the view.
-const SPEAKER_COUNT = 4
-// Where the voice outside the view is: well past the right edge of the 32 degree view.
-const OFF_VIEW_ANGLE_DEG = 55
+const SPEAKER_COUNT = 3
 const PICKER_FIT_WIDTH_CM = 32
 
 @component
@@ -76,7 +72,6 @@ export class CaptionController extends BaseScriptComponent {
   private figures: SpeakerFigures
   private intake: IntakeForm
   private recap: RecapPanel
-  private cue: SpeakerCue
   // Lines being spoken now, by speaker; once said, they go into the recap (and the intake form).
   private speaking = new Map<number, DemoLine>()
 
@@ -99,8 +94,6 @@ export class CaptionController extends BaseScriptComponent {
       card.setWordsPerSecond(this.wordsPerSecond)
       this.cards.push(card)
     }
-
-    this.cue = new SpeakerCue(this.sceneObject, this.camera)
 
     this.picker.onLanguageChanged((code) => this.cards.forEach((c) => c.setLanguage(code)))
     this.onboarding.onStart((scenario) => this.startDemo(scenario))
@@ -150,10 +143,6 @@ export class CaptionController extends BaseScriptComponent {
 
   get intakeForm(): IntakeForm {
     return this.intake
-  }
-
-  get speakerCue(): SpeakerCue {
-    return this.cue
   }
 
   get recapPanel(): RecapPanel {
@@ -232,7 +221,6 @@ export class CaptionController extends BaseScriptComponent {
       if (this.scenarioId === "hospital") this.intake.fill(line)
     })
     this.intake.update(dt)
-    this.cue.update(dt, this.cards)
     this.figures.update(this.cards.map((c) => c.isSpeaking))
   }
 
@@ -245,9 +233,7 @@ export class CaptionController extends BaseScriptComponent {
       // A new speaker's card appears in an arc in front of the wearer, a little below
       // eye level, until the wearer moves it. After that it keeps its spot.
       // 10.2 degrees apart keeps all three inside the view with a small gap between them.
-      // The voice outside the view gets its card where they stand, off to the right.
-      const degrees = line.speaker === OFF_VIEW_SPEAKER ? OFF_VIEW_ANGLE_DEG : (line.speaker - 2) * 10.2
-      const angle = (degrees * Math.PI) / 180
+      const angle = ((line.speaker - 2) * 10.2 * Math.PI) / 180
       placeInFrontOfCamera(
         card.root,
         this.camera,

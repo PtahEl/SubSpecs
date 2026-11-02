@@ -16,7 +16,6 @@ import {IntakeFormScenario} from "./IntakeFormScenario"
 import {ReplyHelpScenario} from "./ReplyHelpScenario"
 import {NamedSpeakersScenario} from "./NamedSpeakersScenario"
 import {RecapScenario} from "./RecapScenario"
-import {WhosTalkingCueScenario} from "./WhosTalkingCueScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.
@@ -39,7 +38,6 @@ export class LeafIndex extends BaseScriptComponent {
     {id: "c8-intake-form", typename: IntakeFormScenario.getTypeName()},
     {id: "c12-reply-help", typename: ReplyHelpScenario.getTypeName()},
     {id: "named-speakers", typename: NamedSpeakersScenario.getTypeName()},
-    {id: "c11-recap", typename: RecapScenario.getTypeName()},
-    {id: "c10-whos-talking-cue", typename: WhosTalkingCueScenario.getTypeName()}
+    {id: "c11-recap", typename: RecapScenario.getTypeName()}
   ]
 }

@@ -4,7 +4,7 @@
 
 import {Scenario} from "Leaf.lspkg/Scenarios/scenario/Scenario"
 import {expect} from "Leaf.lspkg/Utils/common/Expect"
-import {DEMO_LINES, DemoLine, HOSPITAL_LINES, OFF_VIEW_SPEAKER} from "../CaptionDemoScript"
+import {DEMO_LINES, DemoLine, HOSPITAL_LINES} from "../CaptionDemoScript"
 import {REPLY_SECONDS} from "../SpeakerCard"
 import {cardText, controller, ensureDemoRunning, finishedLine, pressHospital, waitFor} from "./CaptionTestUtils"
 
@@ -15,8 +15,8 @@ const ANSWERS_TO_CHECK = 3
 export class ReplyHelpScenario extends Scenario {
   async run(): Promise<void> {
     // The script: every hospital answer has a question in English and in the patient's language;
-    // the corridor has none. The nurse (the voice outside the view) isn't a patient.
-    for (const line of HOSPITAL_LINES.filter((l) => l.speaker !== OFF_VIEW_SPEAKER)) {
+    // the corridor has none.
+    for (const line of HOSPITAL_LINES) {
       expect(line.reply !== undefined).toBe(true)
       expect(line.reply.en.length).toBeGreaterThan(0)
       expect(line.reply.native.length).toBeGreaterThan(0)
