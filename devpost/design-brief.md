@@ -27,7 +27,7 @@ benefits.
   language by hand works as in the corridor scenario.
 - Highlights: in the English translation, intake facts are shown in a highlight color. In Demo mode which
   words are highlighted is scripted; in Live mode the server would mark them.
-- Privacy matters even more here: subs are shown only to the wearer, audio is never stored, speakers are
+- Privacy matters even more here: subs are shown only to the wearer, audio is never stored, the camera is used only on the glasses to find bodies (never faces, never stored or sent), speakers are
   anonymous numbers.
 
 ## Why it belongs on glasses
@@ -78,11 +78,14 @@ Each one can be checked in Lens Studio's preview.
 Differentiating features (added Nov 2; see "Differentiating features" below):
 
 8. Hospital intake: as patients speak, their highlighted facts fill a small intake form card (Allergies, Medicines, Pain, Since when, Symptoms), each field filled the moment its fact is said.
-9. (Dropped Nov 2: cards following a moving person would need people tracking, which SubSpecs doesn't do.)
+9. Cards follow people: SubSpecs finds the people in view with an AI model running on the glasses (bodies only, no faces, nothing leaves the glasses); a card placed on a person stays above them as they move.
 10. (Dropped Nov 2: pointing to an unseen speaker needs to know where a voice comes from, which SubSpecs doesn't do.) When someone outside the wearer's view starts talking, a small cue at the edge of the view in that speaker's color points toward them, and disappears once they're in view.
 11. Pinching "Recap" shows a short summary of what each speaker said so far, one line per speaker in their color, and pinching it again hides it.
 12. Hospital intake: after a patient answers, a suggested next question appears for the wearer in English with the patient's language underneath, so the wearer can read it aloud or show it.
 13. Live mode: with the SubSpecs server running, choosing Live streams the microphone to the server and real subs from real speech appear on speaker cards, with the status showing Live, or Reconnecting when the link drops. (Checked with the server, not only in the preview.)
+15. Glow around the speaker: while someone is talking, a soft glow in their speaker color surrounds that person; it fades when they stop.
+16. Automatic card placement: when a new voice starts and one person is in view, their card goes to that person; with several people in view, it goes to the person nearest the center of the wearer's view. A drag still overrides it.
+17. Depth effect: the speaking person's card comes slightly forward at full brightness while quiet speakers' cards ease back and soften.
 14. Speaker cards have a "liquid glass" look: a faint, see-through tinted plate with a bright edge, so the person behind stays visible, while the words stay bright and readable.
 
 Server criterion (checked outside the preview, with the SubSpecs server): at least 80% of words transcribed correctly on a multi-speaker test clip. "That is better than the wearer never being able to understand in the first place." (Measured on Oct 29: about 98% on a two-speaker clip.)
@@ -94,8 +97,12 @@ transcribing it. Defaults below are CLAD's (default) unless the learner chose th
 
 1. Intake form auto-fill (hospital): a small form card beside the language bar fills in from the
    highlighted facts as they're said, with the field flashing briefly when filled (default).
-2. Card follows the person: dropped. It would need people tracking, which SubSpecs doesn't do; the
-   demo shouldn't suggest abilities the app doesn't have. Cards stay where the wearer puts them.
+2. Card follows the person (Route 1, decided Nov 2): an on-glasses person detector (SnapML, a small
+   COCO-trained "person" model) finds bodies in the camera feed; Snap's MLSpatializer pattern plus the
+   depth sensor turns each detection into a 3D position. Cards placed on a person follow them. On the
+   glasses only: no server, no faces, no identity, nothing stored or sent. The glow (criterion 15) and
+   automatic placement (criterion 16) build on the same detections. Whether the Preview's 3D people are
+   detected is unknown until tried; real tracking quality can only be judged on real glasses.
 3. Who's-talking cue: dropped. It would need to know which direction a voice comes from, which
    SubSpecs doesn't do; the demo shouldn't suggest abilities the app doesn't have.
 4. Conversation recap: a "Recap" button on the language bar; scripted summaries in Demo mode, server
@@ -107,7 +114,7 @@ transcribing it. Defaults below are CLAD's (default) unless the learner chose th
 7. Liquid glass cards: see done criterion 14; no real-time blur (SPECS can't blur the real world).
 
 ## Out of scope
-- Knowing where a speaker is standing (camera vision, face tracking or directional audio). Cards are placed by hand.
+- Knowing where a voice comes from (directional audio), and face tracking. People are found only as bodies in view, on the glasses (criterion 9).
 - Face recognition or identifying anyone; speakers are anonymous numbers.
 - Storing audio or transcripts; audio is never saved.
 - Everyone in the conversation wearing glasses and sharing subs (the future vision for the video, not this build).
