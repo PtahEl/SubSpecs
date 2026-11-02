@@ -54,8 +54,12 @@ export interface DemoLine {
   // What this answer fills in on the patient's intake form, drawn from its highlighted facts.
   intake?: Partial<Record<IntakeField, string>>
   // Reply help (hospital): a suggested next question for the wearer, in English and in the
-  // patient's own language, shown under the patient's card once this answer is said.
+  // patient's own language, shown on the patient's card under the answer once it is said.
   reply?: {en: string; native: string}
+  // The name the speaker introduces themselves with in this line. Once the line is said, their
+  // card shows it instead of "Speaker N", for this conversation only. In Live mode the SubSpecs
+  // server would report it.
+  name?: string
 }
 
 // The fields on the hospital intake form, in the order shown.
@@ -91,27 +95,30 @@ export const DEMO_LINES: DemoLine[] = [
   {
     speaker: 2,
     at: 14.0,
-    en: "Sorry to jump in. Are you two speaking on the accessibility panel?",
-    es: "Perdón por interrumpir. ¿Ustedes dos hablan en el panel de accesibilidad?",
-    fr: "Désolé de vous interrompre. Vous intervenez au panel sur l'accessibilité ?",
-    ja: "割り込んでごめんなさい。お二人はアクセシビリティのパネルで話す方ですか？"
+    en: "Sorry to jump in, I'm Daniel. Are you two speaking on the accessibility panel?",
+    es: "Perdón por interrumpir, soy Daniel. ¿Ustedes dos hablan en el panel de accesibilidad?",
+    fr: "Désolé de vous interrompre, je suis Daniel. Vous intervenez au panel sur l'accessibilité ?",
+    ja: "割り込んでごめんなさい、ダニエルです。お二人はアクセシビリティのパネルで話す方ですか？",
+    name: "Daniel"
   },
   {
     speaker: 1,
     at: 21.0,
-    en: "Just me. This is my old friend from university.",
-    es: "Solo yo. Este es mi viejo amigo de la universidad.",
-    fr: "Juste moi. Voici mon vieil ami de l'université.",
-    ja: "私だけです。こちらは大学時代の古い友人です。"
+    en: "Just me. I'm Sam, by the way. This is my old friend from university.",
+    es: "Solo yo. Por cierto, soy Sam. Este es mi viejo amigo de la universidad.",
+    fr: "Juste moi. Je suis Sam, au fait. Voici mon vieil ami de l'université.",
+    ja: "私だけです。ちなみにサムです。こちらは大学時代の古い友人です。",
+    name: "Sam"
   },
   {
     speaker: 3,
     at: 27.0,
     spoken: "es",
-    en: "Mind if I join you? The coffee line is endless.",
-    es: "¿Les importa si me uno? La fila del café es interminable.",
-    fr: "Je peux me joindre à vous ? La queue pour le café est interminable.",
-    ja: "ご一緒してもいいですか？コーヒーの列が全然進まなくて。"
+    en: "Mind if I join you? I'm Lucía. The coffee line is endless.",
+    es: "¿Les importa si me uno? Soy Lucía. La fila del café es interminable.",
+    fr: "Je peux me joindre à vous ? Je m'appelle Lucía. La queue pour le café est interminable.",
+    ja: "ご一緒してもいいですか？ルシアです。コーヒーの列が全然進まなくて。",
+    name: "Lucía"
   },
   {
     speaker: 2,
@@ -166,10 +173,11 @@ export const HOSPITAL_LINES: DemoLine[] = [
     speaker: 1,
     at: 1.0,
     spoken: "ja",
-    en: "My chest hurts. It started about two hours ago, after I got off the plane.",
-    es: "Me duele el pecho. Empezó hace unas dos horas, después de bajar del avión.",
-    fr: "J'ai mal à la poitrine. Ça a commencé il y a environ deux heures, en descendant de l'avion.",
-    ja: "胸が痛いです。2時間ほど前、飛行機を降りてから始まりました。",
+    en: "I'm Yuki Tanaka. My chest hurts. It started about two hours ago, after I got off the plane.",
+    es: "Soy Yuki Tanaka. Me duele el pecho. Empezó hace unas dos horas, después de bajar del avión.",
+    fr: "Je m'appelle Yuki Tanaka. J'ai mal à la poitrine. Ça a commencé il y a environ deux heures, en descendant de l'avion.",
+    ja: "田中ゆきです。胸が痛いです。2時間ほど前、飛行機を降りてから始まりました。",
+    name: "Yuki Tanaka",
     reply: {en: "Does the pain spread to your arm, jaw or back?", native: "痛みは腕、あご、背中に広がりますか？"},
     highlights: ["My chest hurts", "about two hours ago"],
     intake: {symptoms: "Chest pain", since: "About 2 hours, after the flight"}
@@ -178,10 +186,11 @@ export const HOSPITAL_LINES: DemoLine[] = [
     speaker: 2,
     at: 7.5,
     spoken: "es",
-    en: "It's my daughter, she's six. She's had a fever since last night and threw up twice.",
-    es: "Es mi hija, tiene seis años. Tiene fiebre desde anoche y vomitó dos veces.",
-    fr: "C'est ma fille, elle a six ans. Elle a de la fièvre depuis hier soir et a vomi deux fois.",
-    ja: "娘です、6歳です。昨夜から熱があって、2回吐きました。",
+    en: "I'm Carlos. It's my daughter, she's six. She's had a fever since last night and threw up twice.",
+    es: "Soy Carlos. Es mi hija, tiene seis años. Tiene fiebre desde anoche y vomitó dos veces.",
+    fr: "Je suis Carlos. C'est ma fille, elle a six ans. Elle a de la fièvre depuis hier soir et a vomi deux fois.",
+    ja: "カルロスです。娘です、6歳です。昨夜から熱があって、2回吐きました。",
+    name: "Carlos",
     reply: {en: "How high was her temperature?", native: "¿Qué tan alta fue su temperatura?"},
     highlights: ["a fever", "since last night", "threw up twice"],
     intake: {symptoms: "Fever, vomited twice", since: "Last night"}
@@ -190,10 +199,11 @@ export const HOSPITAL_LINES: DemoLine[] = [
     speaker: 3,
     at: 14.0,
     spoken: "fr",
-    en: "I think there were peanuts in my lunch. My lips are swelling and I'm itchy all over.",
-    es: "Creo que mi almuerzo tenía cacahuetes. Se me hinchan los labios y me pica todo el cuerpo.",
-    fr: "Je crois qu'il y avait des cacahuètes dans mon déjeuner. Mes lèvres gonflent et ça me gratte partout.",
-    ja: "昼食にピーナッツが入っていたと思います。唇が腫れてきて、全身がかゆいです。",
+    en: "I'm Amélie. I think there were peanuts in my lunch. My lips are swelling and I'm itchy all over.",
+    es: "Soy Amélie. Creo que mi almuerzo tenía cacahuetes. Se me hinchan los labios y me pica todo el cuerpo.",
+    fr: "Je m'appelle Amélie. Je crois qu'il y avait des cacahuètes dans mon déjeuner. Mes lèvres gonflent et ça me gratte partout.",
+    ja: "アメリです。昼食にピーナッツが入っていたと思います。唇が腫れてきて、全身がかゆいです。",
+    name: "Amélie",
     reply: {en: "Are you having any trouble breathing?", native: "Avez-vous du mal à respirer ?"},
     highlights: ["peanuts", "My lips are swelling", "itchy all over"],
     intake: {symptoms: "Lips swelling, itchy all over", since: "After lunch", allergies: "Peanuts? (suspected)"}

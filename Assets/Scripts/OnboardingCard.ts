@@ -21,7 +21,8 @@ export const ONBOARDING_BODY =
 
 export const PRIVACY_NOTE =
   "Privacy: subs are shown only to you. Audio is never stored. " +
-  "Speakers are anonymous numbers, with no face recognition."
+  "Speakers are numbers until they say their name, which is forgotten when the conversation ends. " +
+  "No face recognition."
 
 export class OnboardingCard {
   readonly root: SceneObject

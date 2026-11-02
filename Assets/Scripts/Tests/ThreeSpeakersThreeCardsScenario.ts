@@ -7,7 +7,8 @@ import {cardText, controller, ensureDemoRunning, pressStart, waitFor} from "./Ca
 
 function findSpeakerColor(speaker: number): vec4 {
   const t = cardText(speaker, "SpeakerLabel")
-  expect(t.text).toBe("● Speaker " + speaker)
+  // "Speaker N" until they say their name in a finished line.
+  expect(t.text).toBe("● " + controller().getCard(speaker).name)
   return t.textFill.color
 }
 

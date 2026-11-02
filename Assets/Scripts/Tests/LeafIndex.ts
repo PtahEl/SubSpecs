@@ -14,6 +14,7 @@ import {SwitchScenarioScenario} from "./SwitchScenarioScenario"
 import {LiquidGlassCardsScenario} from "./LiquidGlassCardsScenario"
 import {IntakeFormScenario} from "./IntakeFormScenario"
 import {ReplyHelpScenario} from "./ReplyHelpScenario"
+import {NamedSpeakersScenario} from "./NamedSpeakersScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.
@@ -34,6 +35,7 @@ export class LeafIndex extends BaseScriptComponent {
     {id: "switch-scenario", typename: SwitchScenarioScenario.getTypeName()},
     {id: "c14-liquid-glass-cards", typename: LiquidGlassCardsScenario.getTypeName()},
     {id: "c8-intake-form", typename: IntakeFormScenario.getTypeName()},
-    {id: "c12-reply-help", typename: ReplyHelpScenario.getTypeName()}
+    {id: "c12-reply-help", typename: ReplyHelpScenario.getTypeName()},
+    {id: "named-speakers", typename: NamedSpeakersScenario.getTypeName()}
   ]
 }

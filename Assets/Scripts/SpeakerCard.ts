@@ -84,6 +84,7 @@ export class SpeakerCard {
 
   private backPlate: BackPlate
   private glassHover = false
+  private spokenName = ""
   private ready = false
   private wantVisible = false
 
@@ -383,7 +384,20 @@ export class SpeakerCard {
     this.refreshLanguageTag()
     this.refreshTranslation()
     this.showReply(false)
+    // Names are forgotten when the conversation ends.
+    this.setName("")
     this.hide()
+  }
+
+  // The speaker's name once they've said it, for this conversation; "" goes back to "Speaker N".
+  setName(name: string): void {
+    this.spokenName = name
+    this.speakerLabel.text = "● " + this.name
+  }
+
+  // What the card calls this speaker: their name if they've said it, otherwise "Speaker N".
+  get name(): string {
+    return this.spokenName !== "" ? this.spokenName : "Speaker " + this.speaker
   }
 
   show(): void {
@@ -444,6 +458,7 @@ export class SpeakerCard {
     setTextAlpha(this.currentText, 1)
     this.refreshTranslation()
     this.showReply(this.line.reply !== undefined)
+    if (this.line.name) this.setName(this.line.name)
   }
 
   // Shows the current line's suggested next question under the card, or hides it.

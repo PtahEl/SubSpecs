@@ -84,7 +84,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 14 LEAF scenarios pass in index order in Preview except `reach-language-picker-ik` in the long Nov 2 session (see its row; the first eleven also passed after restarting Lens
+All 15 LEAF scenarios pass in index order in Preview except `reach-language-picker-ik` in the long Nov 2 session (see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -106,6 +106,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | 14. Liquid glass cards: faint see-through tinted plate with a bright rim; words bright and readable | `c14-liquid-glass-cards` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-liquid-glass-cards.png` |
 | 8. Hospital intake: highlighted facts fill a small intake form (Allergies, Medicines, Pain, Since when, Symptoms) as each is said | `c8-intake-form` | Pass (Nov 2; six answers checked, form inside the view and above every head, hospital only) | Yes, see `history/screenshots/2026-11-02-intake-form.png` |
 | 12. Hospital intake: after an answer, a suggested next question in English with the patient's language underneath | `c12-reply-help` | Pass (Nov 2; script checked for all 12 answers, shown text checked on 3) | Yes, see `history/screenshots/2026-11-02-reply-help.png` |
+| Named speakers (added Nov 2 at the founder's request): a card shows a speaker's name once they say it; Switch forgets names | `named-speakers` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-named-speakers.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -138,6 +139,14 @@ criterion 13) is built separately.
   bottom strip (from -4.2 cm, sized as if 90 cm away) and clears the fading older line; the hold
   becomes at least `REPLY_SECONDS` (6). Not under the plate as the brief suggested: below card 1 it
   overlapped the logo above the language bar.
+
+- **Named speakers (founder's request).** `DemoLine.name` is the name a speaker says in that line
+  (Daniel, Sam, Lucía in the corridor; Yuki Tanaka, Carlos, Amélie in the hospital, each in their
+  first answer). When the card finishes the line it calls `SpeakerCard.setName`; `name` is
+  "Speaker N" until then and is what the intake form title (`nameOf` callback) shows. `reset()`
+  clears it, so Switch forgets names. `setName` is the hook Live mode would call when the server
+  reports a name. The privacy note (`PRIVACY_NOTE` in `OnboardingCard.ts`) now says names are
+  forgotten when the conversation ends.
 
 ## Fixed in this session
 

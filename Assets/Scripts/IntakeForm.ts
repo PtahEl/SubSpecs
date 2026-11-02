@@ -36,7 +36,8 @@ export class IntakeForm {
   private ready = false
   private wantVisible = false
 
-  constructor(parent: SceneObject) {
+  // `nameOf` gives what a patient's card calls them: their name once said, otherwise "Speaker N".
+  constructor(parent: SceneObject, private nameOf: (patient: number) => string) {
     this.root = global.scene.createSceneObject("IntakeForm")
     this.root.setParent(parent)
     this.root.createComponent("Component.Canvas")
@@ -115,7 +116,7 @@ export class IntakeForm {
   showPatient(patient: number): void {
     if (patient === this.shownPatient) return
     this.shownPatient = patient
-    this.title.text = "Intake · Patient " + patient
+    this.title.text = "Intake · " + this.nameOf(patient)
     this.title.textFill.color = speakerColor(patient)
     const form = this.forms.get(patient) ?? {}
     this.rows.forEach((row, field) => {
@@ -131,6 +132,8 @@ export class IntakeForm {
     const form = this.forms.get(line.speaker) ?? {}
     this.forms.set(line.speaker, form)
     this.showPatient(line.speaker)
+    // The answer may have just told us their name.
+    this.title.text = "Intake · " + this.nameOf(line.speaker)
     for (const {field} of INTAKE_FIELDS) {
       const value = line.intake[field]
       if (value === undefined) continue

@@ -12,6 +12,27 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: cards show a speaker's name once they say it
+
+![Yuki Tanaka's and Amélie's cards labeled with their names, and the intake form titled "Intake · Amélie"](history/screenshots/2026-11-02-named-speakers.png)
+
+- Added at the founder's request. When someone says their name ("I'm Daniel", "Soy Lucía", "田中ゆきです"),
+  their card's label changes from "● Speaker 2" to "● Daniel", in the same color, once that line is
+  said. The hospital intake form uses the name too ("Intake · Amélie").
+- In the demo the names are scripted into the conversations: in the corridor Daniel and Lucía introduce
+  themselves, and the old friend says "I'm Sam, by the way". In the hospital each patient opens with
+  their name: Yuki Tanaka (Japanese), Carlos (Spanish), Amélie (French). In Live mode the SubSpecs
+  server would report a name it hears; that part isn't built yet.
+- Names last only for the conversation: Switch forgets them and the cards go back to "Speaker N".
+  The start card's privacy note now says so: "Speakers are numbers until they say their name, which
+  is forgotten when the conversation ends. No face recognition."
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks Daniel's card says
+  "Speaker 2" while he's talking and "Daniel" once he's said it, in his color, that Sam and Lucía get
+  their names, that Switch forgets them, and that Yuki Tanaka's name shows on her card and on the
+  intake form. The three-cards and start-card tests were updated for the new label and privacy note.
+  14 of the 15 automated tests pass. The full-arm reach test still fails in this long Lens Studio session
+  (see below).
+
 ## Nov 2, 2026: reply help, a suggested next question
 
 ![Brian's card with his answer, then "Ask: Does anything hurt her right now?" and the Spanish "¿Le duele algo ahora mismo?" underneath](history/screenshots/2026-11-02-reply-help.png)

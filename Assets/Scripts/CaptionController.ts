@@ -84,7 +84,7 @@ export class CaptionController extends BaseScriptComponent {
 
     this.onboarding = new OnboardingCard(this.sceneObject, this.logoMaterial)
     this.picker = new LanguagePicker(this.sceneObject, this.startLanguage as LanguageCode, this.logoMaterial)
-    this.intake = new IntakeForm(this.sceneObject)
+    this.intake = new IntakeForm(this.sceneObject, (patient) => this.cards[patient - 1].name)
     for (let i = 1; i <= SPEAKER_COUNT; i++) {
       const card = new SpeakerCard(this.sceneObject, i, this.camera)
       card.setLanguage(this.startLanguage as LanguageCode)

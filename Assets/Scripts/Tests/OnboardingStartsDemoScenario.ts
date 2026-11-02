@@ -15,7 +15,8 @@ export class OnboardingStartsDemoScenario extends Scenario {
     expect(controller().isRunning).toBe(false)
     expect(textOf("Description").includes("Live subs for every voice")).toBe(true)
     expect(textOf("PrivacyNote").includes("Audio is never stored")).toBe(true)
-    expect(textOf("PrivacyNote").includes("no face recognition")).toBe(true)
+    expect(textOf("PrivacyNote").includes("No face recognition")).toBe(true)
+    expect(textOf("PrivacyNote").includes("forgotten when the conversation ends")).toBe(true)
 
     expect(textOf("CorridorButtonLabel")).toBe("Conference corridor")
     expect(textOf("HospitalButtonLabel")).toBe("Hospital intake")
