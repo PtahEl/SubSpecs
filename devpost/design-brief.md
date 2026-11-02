@@ -78,8 +78,8 @@ Each one can be checked in Lens Studio's preview.
 Differentiating features (added Nov 2; see "Differentiating features" below):
 
 8. Hospital intake: as patients speak, their highlighted facts fill a small intake form card (Allergies, Medicines, Pain, Since when, Symptoms), each field filled the moment its fact is said.
-9. A card dropped onto a person is pinned to them: when that person moves, the card moves with them and stays above their head.
-10. When someone outside the wearer's view starts talking, a small cue at the edge of the view in that speaker's color points toward them, and disappears once they're in view.
+9. (Dropped Nov 2: cards following a moving person would need people tracking, which SubSpecs doesn't do.)
+10. (On hold, not built unless the learner approves.) When someone outside the wearer's view starts talking, a small cue at the edge of the view in that speaker's color points toward them, and disappears once they're in view.
 11. Pinching "Recap" shows a short summary of what each speaker said so far, one line per speaker in their color, and pinching it again hides it.
 12. Hospital intake: after a patient answers, a suggested next question appears for the wearer in English with the patient's language underneath, so the wearer can read it aloud or show it.
 13. Live mode: with the SubSpecs server running, choosing Live streams the microphone to the server and real subs from real speech appear on speaker cards, with the status showing Live, or Reconnecting when the link drops. (Checked with the server, not only in the preview.)
@@ -94,10 +94,9 @@ transcribing it. Defaults below are CLAD's (default) unless the learner chose th
 
 1. Intake form auto-fill (hospital): a small form card beside the language bar fills in from the
    highlighted facts as they're said, with the field flashing briefly when filled (default).
-2. Card follows the person: dropping a card on a figure pins it there; in the demo one patient shifts
-   a step during the conversation and the card follows (default). Real glasses would need people
-   tracking, which stays future work; SubSpecs never identifies anyone.
-3. Who's-talking cue: a soft arrow at the view's edge in the speaker's color. In the demo a fourth
+2. Card follows the person: dropped. It would need people tracking, which SubSpecs doesn't do; the
+   demo shouldn't suggest abilities the app doesn't have. Cards stay where the wearer puts them.
+3. On hold: who's-talking cue: a soft arrow at the view's edge in the speaker's color. In the demo a fourth
    voice (a nurse calling from off to the side in the hospital, a passer-by in the corridor) speaks
    from outside the view (default). Real direction finding is an open question (see Risks).
 4. Conversation recap: a "Recap" button on the language bar; scripted summaries in Demo mode, server
