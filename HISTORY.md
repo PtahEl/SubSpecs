@@ -12,6 +12,23 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: liquid glass speaker cards
+
+![Sophie seen through her own speaker card: a faint glass plate with a bright rim and white words](history/screenshots/2026-11-02-liquid-glass-cards.png)
+
+- The speaker cards now look like **liquid glass**: a very see-through plate with a faint cool tint
+  (about a quarter opaque, lighter at the top left), a thin bright rim so the card's shape still reads,
+  and the same rounded corners. The person behind the card stays visible through it.
+- The words stay fully bright white, with a soft dark outline and shadow so they read over a busy
+  background. Each speaker's color stays on their label and translation. Hovering a card makes the
+  glass a touch brighter. There is no blur: SPECS can't blur the real world.
+- Cards draw after the people, so a person standing behind a card never paints over its words.
+- This reuses the look first tried on Oct 30 and set aside then; the founder now wants it. The start
+  card and language bar are unchanged.
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks the plate is see-through
+  (between 15% and 40% opaque) with a rim, the words are opaque white with an outline, the speaker
+  label keeps its color, and hover brightens the glass. **All 12 automated tests pass** in order.
+
 ## Oct 30, 2026: a Switch button to change conversations
 
 ![The language bar with the green "● DEMO" status and the new Switch button at its right end](history/screenshots/2026-10-30-switch-button.png)
