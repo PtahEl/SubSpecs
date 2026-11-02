@@ -86,7 +86,7 @@ setting is kept.
 
 ## Done criteria (checked in Lens Studio's Preview, Nov 2 with Switch)
 
-All 17 LEAF scenarios pass in Preview (Nov 2, after the who's-talking cue: 16 in index order, reach on a rerun; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
+All 18 LEAF scenarios pass in index order in Preview (Nov 2, after the card-follows-person feature; `reach-language-picker-ik` failed for a while in the same long session, see its row; the first eleven also passed after restarting Lens
 Studio). Each run resets the Lens and presses a start-card button itself: "Conference corridor"
 for the original eight, "Hospital intake" for c6 and c7; `switch-scenario` starts the corridor, then
 switches to the hospital. Test files are in `Assets/Scripts/Tests/`, one scenario per file, registered
@@ -111,6 +111,7 @@ in `LeafIndex.ts` on the `LeafIndex` scene object.
 | Named speakers (added Nov 2 at the founder's request): a card shows a speaker's name once they say it; Switch forgets names | `named-speakers` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-named-speakers.png` |
 | 11. Pinching "Recap" shows one short line per speaker in their color, summing up what they said so far; pinching again hides it | `c11-recap` | Pass (Nov 2) | Yes, see `history/screenshots/2026-11-02-recap.png` |
 | 10. Someone outside the view talks: a cue at the view's edge in their color points toward them, gone once they're in view | `c10-whos-talking-cue` | Pass (Nov 2; a fourth voice 55 degrees right in each conversation) | Yes, see `history/screenshots/2026-11-02-whos-talking-cue.png` |
+| 9. A card dropped onto a person is pinned to them and follows them, staying above their head | `c9-card-follows-person` | Pass (Nov 2; Daniel steps 22 cm, his card moves 5.8 cm and stays within a degree of above his head) | Yes, see `history/screenshots/2026-11-02-card-follows-person.png` |
 
 Every done criterion has a test. Logic proven in Preview; feel unproven until real glasses
 (reading while keeping eye contact, the 3-second hold, card size at real distance, real hand tracking).
@@ -169,6 +170,14 @@ criterion 13) is built separately.
   a pulsing arrow and the speaker's name 13 degrees out on that side, 60 cm away, following the head.
   The test brings the card in front of the wearer to stand in for turning the head (the Preview camera
   can't be turned from a LEAF test). Patient-only checks in `c7` and `c12` skip speaker 4.
+
+- **Card follows the person (criterion 9).** `SpeakerCard.onDropped` fires on drag end;
+  `CaptionController.pinIfOnPerson` pins the card (`SpeakerCard.pinTo`) to the person whose head top
+  (`SpeakerFigures.headTop`) is nearest, within `PIN_ANGLE_DEG` (12) as seen from the wearer. A pinned
+  card keeps the offset from the person's root (not the head, which bobs while talking) along the
+  wearer's line of sight, at its own distance; drag start and `reset()` unpin. `SpeakerFigures`
+  moves speaker `STEP_SPEAKER` (2) 22 cm to the wearer's left from `STEP_AT_SECONDS` (corridor 34,
+  hospital 28), eased over 1.5 s, back again when the conversation restarts, at once on Switch.
 
 ## Fixed in this session
 

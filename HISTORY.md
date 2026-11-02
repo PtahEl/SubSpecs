@@ -12,6 +12,28 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: a card dropped on a person follows them
+
+![Daniel's card pinned above his head after he stepped to the left](history/screenshots/2026-11-02-card-follows-person.png)
+
+- Dropping a card onto a person (within about 12 degrees of their head, as the wearer sees it) now
+  **pins it to them**. When that person moves, the card moves with them: same spot above their head,
+  same distance from the wearer. Picking the card up again unpins it; dropping it anywhere else leaves
+  it where it was dropped, as before.
+- In the demo, **Daniel (the man in the middle) takes a step to the wearer's left** while he's talking
+  (34 seconds into the corridor, 28 into the hospital, where he's Carlos), sliding smoothly over a
+  second and a half; the people only have a Talking animation. He steps back when the conversation
+  starts over, and Switch puts him straight back.
+- On real glasses this would need people tracking, which stays future work; SubSpecs never
+  identifies anyone.
+- **Checked:** no errors in Lens Studio's Preview, and a new test drags Daniel's card just above his
+  head, checks it's pinned and holds still while he stands still, then checks that when he steps
+  (22 cm) his card goes with him (5.8 cm, at its closer distance) and stays above his head (within a
+  degree as the wearer sees it), while a card that wasn't pinned doesn't move. The existing drag test
+  still passes. **All 18 automated tests pass in order.**
+
+---
+
 ## Nov 2, 2026: an arrow points to whoever is talking outside your view
 
 ![A coral arrow at the right edge of the view with "● Speaker 4" above it, pointing toward a passer-by off to the right](history/screenshots/2026-11-02-whos-talking-cue.png)

@@ -81,10 +81,16 @@ export class SpeakerCard {
   placed = false
   // True while the wearer is dragging the card.
   dragging = false
+  // Called when the wearer lets go of the card after dragging it.
+  onDropped: (() => void) | null = null
 
   private backPlate: BackPlate
   private glassHover = false
   private spokenName = ""
+  // The person this card is pinned to, and where the card sits relative to them.
+  private pinAnchor: SceneObject | null = null
+  private pinOffset = vec3.zero()
+  private pinDistance = 0
   private ready = false
   private wantVisible = false
 
@@ -253,9 +259,12 @@ export class SpeakerCard {
     manipulation.onManipulationStart.add(() => {
       this.dragging = true
       this.placed = true
+      // Picking the card up unpins it; dropping it decides again.
+      this.unpin()
     })
     manipulation.onManipulationEnd.add(() => {
       this.dragging = false
+      this.onDropped?.()
     })
 
     // Start hidden. This must run after BackPlate init, or the plate never initializes.
@@ -377,6 +386,7 @@ export class SpeakerCard {
     this.badgeAge = -1
     this.placed = false
     this.dragging = false
+    this.unpin()
     this.currentText.text = ""
     this.previousText.text = ""
     this.badge.getSceneObject().enabled = false
@@ -387,6 +397,27 @@ export class SpeakerCard {
     // Names are forgotten when the conversation ends.
     this.setName("")
     this.hide()
+  }
+
+  // Pins the card to a person: it keeps the same place relative to them, as the wearer sees it,
+  // at the same distance from the wearer, wherever they move.
+  pinTo(anchor: SceneObject): void {
+    const eye = this.camera.getWorldPosition()
+    const cardPos = this.root.getTransform().getWorldPosition()
+    const toAnchor = anchor.getTransform().getWorldPosition().sub(eye)
+    this.pinDistance = cardPos.sub(eye).length
+    // The point on the wearer's line of sight through the card, as far away as the person.
+    const atPerson = eye.add(cardPos.sub(eye).normalize().uniformScale(toAnchor.length))
+    this.pinOffset = atPerson.sub(anchor.getTransform().getWorldPosition())
+    this.pinAnchor = anchor
+  }
+
+  unpin(): void {
+    this.pinAnchor = null
+  }
+
+  get pinnedTo(): SceneObject | null {
+    return this.pinAnchor
   }
 
   // The speaker's name once they've said it, for this conversation; "" goes back to "Speaker N".
@@ -449,6 +480,12 @@ export class SpeakerCard {
       }
     }
 
+    if (this.pinAnchor && !this.dragging) {
+      // Follow the person: same spot relative to them, same distance from the wearer.
+      const eye = this.camera.getWorldPosition()
+      const target = this.pinAnchor.getTransform().getWorldPosition().add(this.pinOffset)
+      this.root.getTransform().setWorldPosition(eye.add(target.sub(eye).normalize().uniformScale(this.pinDistance)))
+    }
     if (this.root.enabled && !this.dragging) faceCamera(this.root, this.camera)
   }
 
