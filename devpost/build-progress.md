@@ -1,4 +1,4 @@
-# SubSpecs build progress (Demo mode)
+# SubSpecs build progress (Demo and Live mode)
 
 Hand-over notes from the build sessions on Oct 29, 2026.
 
@@ -169,6 +169,38 @@ criterion 13) is built separately.
   quiet. `spot` is the card's place without the shift (tests compare it), `rebase()` is called when a
   card is placed afresh, and the shift is held while dragging so a dropped card stays where it lands.
 
+## Live mode (Nov 2)
+
+Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
+
+| File | What it does |
+|---|---|
+| `LiveAudio.ts` | `MicrophoneSource` reads the `Live Microphone` track (`Assets/Live/Live Microphone.micaudio`, 16 kHz); `FileSource` plays a recorded clip in real time for Preview (`CaptionController.previewClip`, editor only). `SpeechCutter` cuts speech at 0.7 s pauses (max 10 s, min 0.4 s voiced) with a threshold that follows the room's noise. `wavBytes` makes a 16-bit WAV. |
+| `LiveTranslator.ts` | The AI interface (`translate(clip, {summary}) → LiveHeard`), `LiveError` and `errorFor(status)`: plain words plus a code (`NO_INTERNET`, `AUTH_401/403`, `BUSY_429`, `BAD_REQUEST_400`, `SERVICE_5xx`, `BAD_ANSWER`, `NO_KEY`, `NO_MIC`). |
+| `GeminiTranslator.ts` | `gemini-2.5-flash` through RSG `Gemini.models`, audio inline as `audio/wav`, JSON answer with a schema (text, language, en/es/fr/ja, nameSaid, summary, reply), no thinking time. |
+| `FakeTranslator.ts` | Scripted answers or errors after a delay, for LEAF. |
+| `LiveSession.ts` | Mic → cutter → one request at a time (3 waiting at most, older dropped) → `lineFromHeard` turns the answer into a `DemoLine` for speaker 1, so cards, recap and reply help work as in Demo mode. Watches `deviceInfoSystem.isInternetAvailable()`; retries after 3 s (10 s when busy); stops on errors that need a fix. |
+| `LiveNotice.ts` | The notice above the bar. |
+
+- **No AsrModule, no VoiceML.** Both turn on Bystander Speech Rejection (only the wearer is heard). The
+  RSG example objects were removed from the scene for that reason (their MicrophoneRecorder loads VoiceML).
+- One card, labeled "Speaking" (`SpeakerCard.setAnonymousName`), no new-speaker badge; names said show
+  on that line's tag (`DemoLine.heard.nameSaid`); the recap row is "Conversation". The intake form is
+  Demo-only, since Live mode can't tell a patient from staff.
+- `DemoLine.heard` carries any spoken language (code, name, no-spaces flag) so Live lines aren't limited
+  to the four demo languages.
+- **Packages:** Remote Service Gateway **2.0.1** (matches SIK/UIKit 2.0; 4.0.0 needs the renamed v4 kits)
+  in `Packages/RemoteServiceGateway.lspkg` (the folder must have no spaces), plus Utilities and SnapDecorators.
+- **Internet Module** (`Assets/Live/Internet Module.internetModule`) is wired to `CaptionController.internetModule`:
+  Snap's Transparent Permission table says Remote API + microphone needs an Internet descriptor to publish.
+- **Access key:** `Assets/LocalOnly/LiveAccessKey.ts` (git-ignored) sets the Google RSG token at start
+  (scene object "LiveAccessKey (local only)"). Snap's docs say these tokens don't expire but can be
+  revoked. Making it needs Lens Studio signed in; on Nov 2 the request got 401 (not signed in), so the key
+  is still empty and Live mode shows "isn't set up yet (NO_KEY)" until then. A fresh clone has no such file.
+- **Device-only, untested:** the glasses' microphone, the launch permission prompt, Gemini's speed
+  and accuracy on real speech, battery and heat, usage limits and cost (Snap doesn't publish them).
+- Test: `live-mode` (last in `LeafIndex.ts`; `screenshot=true` stops with Lucía's line showing).
+
 ## Fixed in this session
 
 - LEAF and the AI preview helper packages were made for a newer, renamed Interaction Kit
@@ -188,7 +220,7 @@ criterion 13) is built separately.
    (`Assets/Branding/SubSpecsLogo_White.png`, unlit material `SubSpecsLogo.mat`, wired to
    `CaptionController`'s `logoMaterial`) replaces the title on the start card and sits small above the
    left end of the language bar. No 3D model version was made.
-2. Live mode (streaming to the SubSpecs server) is not built.
+2. ~~Live mode.~~ Built Nov 2 on Snap's Remote Service Gateway (see "Live mode" above). Still to do: sign Lens Studio in and make the access key, test a real conversation, test on Specs.
 3. Watch it in Interactive Preview yourself and judge the feel (see "After the build: judge it" in
    the design brief).
 

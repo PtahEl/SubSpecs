@@ -17,6 +17,7 @@ import {ReplyHelpScenario} from "./ReplyHelpScenario"
 import {NamedSpeakersScenario} from "./NamedSpeakersScenario"
 import {RecapScenario} from "./RecapScenario"
 import {DepthEffectScenario} from "./DepthEffectScenario"
+import {LiveModeScenario} from "./LiveModeScenario"
 
 // Order matters: onboarding starts the demo, and the new-speaker check needs the start
 // of the conversation. Ids are prefixed with the done-criterion number from the brief.
@@ -40,6 +41,7 @@ export class LeafIndex extends BaseScriptComponent {
     {id: "c12-reply-help", typename: ReplyHelpScenario.getTypeName()},
     {id: "named-speakers", typename: NamedSpeakersScenario.getTypeName()},
     {id: "c11-recap", typename: RecapScenario.getTypeName()},
-    {id: "depth-effect", typename: DepthEffectScenario.getTypeName()}
+    {id: "depth-effect", typename: DepthEffectScenario.getTypeName()},
+    {id: "live-mode", typename: LiveModeScenario.getTypeName(), parameters: {screenshot: "false"}}
   ]
 }

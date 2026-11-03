@@ -12,6 +12,41 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: Live mode, real speech on one honest card
+
+![Live mode in Preview with the test AI: one "Speaking" card with Lucía's Spanish words, the English translation, "Spanish detected / Name said: Lucía", reply help, the recap and ● LIVE on the bar](history/screenshots/2026-11-02-live-mode.png)
+
+- At the founder's request, SubSpecs now has **Live mode**: a third button, **Live**, on the start card.
+  It listens through the glasses' microphone, cuts the sound at the pauses, and sends each bit of speech
+  to Google's Gemini through **Snap's Remote Service Gateway**, Snap's own cloud. No API key is in the
+  Lens, and nothing runs on a laptop. Gemini writes down what was said, in any language, translates it
+  and keeps a running summary.
+- **Why not Snap's speech-to-text (AsrModule):** Snap's docs say using it turns on the glasses'
+  *Bystander Speech Rejection*, which ignores speech that isn't the wearer's, the opposite of what
+  SubSpecs needs. There is no setting to turn it off, so Live mode uses neither AsrModule nor VoiceML.
+- **Honest about what it can't do:** nothing here can tell voices apart, so Live mode uses a single
+  **"● Speaking"** card. It never says "New speaker detected" and never opens a second card. A name
+  someone says shows with that line only ("Name said: Lucía"), and the recap is one line, "Conversation".
+  Translation, the language tag and reply help work as in the demos.
+- The bar's status now reads **● DEMO**, **● LIVE**, **● OFFLINE** (no internet: nothing is sent) or
+  **● PAUSED** (a problem that needs fixing). A small notice above the bar says what's wrong in plain
+  words with a code, for example "No internet. Live subs need Wi-Fi; they come back when you're online.
+  (NO_INTERNET)" or "The AI service is busy. Live subs will pause for a moment. (BUSY_429)".
+- **Privacy note rewritten** to be true: the demos use no microphone; in Live mode what the microphone
+  hears goes to Snap's cloud and Google's Gemini AI; SubSpecs itself saves no audio or text. The old
+  "Audio is never stored" is gone, because SubSpecs can't promise what Snap or Google keep.
+- The access key stays off GitHub: it lives in `Assets/LocalOnly/`, which git ignores, never in the scene.
+- **Checked:** no errors in Lens Studio's Preview. A new test runs Live mode with a stand-in AI and
+  made-up speech sound, because the real microphone and AI service only work on the glasses. It checks
+  the card, translation, name, reply help and recap, that each bit of speech is sent once with the
+  summary so far, that nothing is sent without internet, the error notices, and that Switch goes back to
+  Demo mode. **All 18 automated tests pass**, twice in a row (including the full-arm reach test).
+- **Not checked yet:** a real conversation through Gemini. That needs Lens Studio signed in (to make the
+  access key) and a test on Specs; the glasses' microphone, permission prompt and speed can only be
+  checked on a real pair.
+
+---
+
 ## Nov 2, 2026: the speaking card comes forward
 
 ![Daniel's card, speaking, slightly forward and bright; Lucía's quiet card set back with a softer label](history/screenshots/2026-11-02-depth-effect.png)

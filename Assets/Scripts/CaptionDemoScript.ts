@@ -61,8 +61,12 @@ export interface DemoLine {
   // server would report it.
   name?: string
   // Recap: a one-line summary of everything this speaker has said so far, as of this line (in
-  // English). Scripted in Demo mode; in Live mode the SubSpecs server would write it.
+  // English). Scripted in Demo mode; in Live mode the AI writes it.
   recap?: string
+  // Live mode only: the words as heard, in whatever language was spoken (which may be none of
+  // the demo languages). When set, it replaces `spoken` and the matching field above.
+  // `nameSaid` is a name the speaker said for themselves in this bit of speech, if any.
+  heard?: {text: string; code: string; languageName: string; noSpaces: boolean; nameSaid?: string}
 }
 
 // The fields on the hospital intake form, in the order shown.
@@ -349,13 +353,19 @@ export const DEMO_SCENARIOS: Record<DemoScenarioId, DemoLine[]> = {
 // Every scripted line in every scenario.
 export const ALL_DEMO_LINES: DemoLine[] = DEMO_LINES.concat(HOSPITAL_LINES)
 
-export function spokenLanguageOf(line: DemoLine): SpokenLanguage {
-  return line.spoken ?? "en"
+// The language code the speaker talked in: a demo language, or any code Live mode heard.
+export function spokenLanguageOf(line: DemoLine): string {
+  return line.heard?.code ?? line.spoken ?? "en"
+}
+
+// The language's name for the card's "… detected" tag.
+export function spokenLanguageName(line: DemoLine): string {
+  return line.heard?.languageName ?? SPOKEN_LANGUAGE_NAMES[line.spoken ?? "en"]
 }
 
 // The words as the speaker said them.
 export function spokenText(line: DemoLine): string {
-  return line[spokenLanguageOf(line)]
+  return line.heard?.text ?? line[line.spoken ?? "en"]
 }
 
 // Japanese has no spaces between words; it is revealed a few characters at a time instead.
@@ -364,7 +374,7 @@ const JA_CHUNK = 3
 // The pieces the live line reveals one at a time, as words arrive from the speaker.
 export function spokenWords(line: DemoLine): string[] {
   const text = spokenText(line)
-  if (spokenLanguageOf(line) !== "ja") return text.split(" ")
+  if (!hasNoSpaces(line)) return text.split(" ")
   const chars = Array.from(text)
   const chunks: string[] = []
   for (let i = 0; i < chars.length; i += JA_CHUNK) chunks.push(chars.slice(i, i + JA_CHUNK).join(""))
@@ -373,7 +383,12 @@ export function spokenWords(line: DemoLine): string[] {
 
 // The first revealed pieces of `line` joined back into text.
 export function joinWords(line: DemoLine, words: string[]): string {
-  return words.join(spokenLanguageOf(line) === "ja" ? "" : " ")
+  return words.join(hasNoSpaces(line) ? "" : " ")
+}
+
+// Japanese (and, in Live mode, Chinese, Thai and the like) is written without spaces between words.
+function hasNoSpaces(line: DemoLine): boolean {
+  return line.heard ? line.heard.noSpaces : spokenLanguageOf(line) === "ja"
 }
 
 // What goes under the caption for this setting; "" when no translation line is needed.

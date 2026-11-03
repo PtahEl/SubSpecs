@@ -28,6 +28,18 @@ const LOGO_GAP = 0.6
 
 const SELECTED_COLOR = new vec4(0.45, 0.9, 0.55, 1)
 const STATUS_DEMO_COLOR = new vec4(0.45, 0.9, 0.55, 1)
+const STATUS_LIVE_COLOR = new vec4(1.0, 0.35, 0.35, 1)
+const STATUS_WAIT_COLOR = new vec4(1.0, 0.75, 0.3, 1)
+
+// What the status on the bar shows: the scripted demo, Live mode listening, Live mode without
+// internet, or Live mode stopped by a problem it can't retry.
+export type BarStatus = "demo" | "live" | "offline" | "stopped"
+const STATUS_LOOK: Record<BarStatus, {text: string; color: vec4}> = {
+  demo: {text: "● DEMO", color: STATUS_DEMO_COLOR},
+  live: {text: "● LIVE", color: STATUS_LIVE_COLOR},
+  offline: {text: "● OFFLINE", color: STATUS_WAIT_COLOR},
+  stopped: {text: "● PAUSED", color: STATUS_WAIT_COLOR}
+}
 
 export class LanguagePicker {
   readonly root: SceneObject
@@ -158,6 +170,11 @@ export class LanguagePicker {
 
   get status(): string {
     return this.statusText.text
+  }
+
+  setStatus(status: BarStatus): void {
+    this.statusText.text = STATUS_LOOK[status].text
+    this.statusText.textFill.color = STATUS_LOOK[status].color
   }
 
   onLanguageChanged(fn: (code: LanguageCode) => void): void {

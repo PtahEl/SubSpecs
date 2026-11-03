@@ -48,3 +48,6 @@ leaf_plugin_settings.json
 
 # Raw downloads waiting to be imported (e.g. ML models); the imported copy lives in Assets/
 downloads/
+
+# Live mode: the AI service access key lives only on this computer (see Assets/LocalOnly/LiveAccessKey.ts)
+Assets/LocalOnly/

@@ -7,10 +7,10 @@ import {InteractableManipulation} from "SpectaclesInteractionKit.lspkg/Component
 import {
   DemoLine,
   LanguageCode,
-  SPOKEN_LANGUAGE_NAMES,
   WEARER_LANGUAGE,
   highlightedTranslation,
   joinWords,
+  spokenLanguageName,
   spokenLanguageOf,
   spokenText,
   spokenWords,
@@ -69,6 +69,8 @@ export class SpeakerCard {
   private backPlate: BackPlate
   private glassHover = false
   private spokenName = ""
+  // What the label says before a name is heard: "Speaker N" in Demo mode, "Speaking" in Live mode.
+  private anonymousName: string
   // Depth effect: 0 quiet, 1 speaking (eased), and how far along the line of sight the card is
   // shifted from its spot right now (negative: toward the wearer).
   private depthAmount = 0
@@ -99,6 +101,7 @@ export class SpeakerCard {
 
   constructor(parent: SceneObject, speaker: number, private camera: Transform) {
     this.speaker = speaker
+    this.anonymousName = "Speaker " + speaker
     this.root = global.scene.createSceneObject("SpeakerCard_" + speaker)
     this.root.setParent(parent)
 
@@ -144,7 +147,9 @@ export class SpeakerCard {
       distanceCm: d,
       rect: Rect.create(-1, INNER_RIGHT, top - 2.2, top),
       align: HorizontalAlignment.Right,
-      color: new vec4(1, 1, 1, 0.8)
+      color: new vec4(1, 1, 1, 0.8),
+      // Live mode can add a second line (a name it heard); it shrinks to fit beside the label.
+      wrap: true
     })
     this.languageTag.getSceneObject().enabled = false
 
@@ -346,7 +351,11 @@ export class SpeakerCard {
       setTextAlpha(this.badge, 1)
     }
     const spoken = spokenLanguageOf(line)
-    this.languageTag.text = spoken === WEARER_LANGUAGE ? "" : SPOKEN_LANGUAGE_NAMES[spoken] + " detected"
+    const tags: string[] = []
+    if (spoken !== WEARER_LANGUAGE) tags.push(spokenLanguageName(line) + " detected")
+    // Live mode can't tell voices apart, so a name it hears is shown with that line only.
+    if (line.heard?.nameSaid) tags.push("Name said: " + line.heard.nameSaid)
+    this.languageTag.text = tags.join("\n")
     this.refreshLanguageTag()
     this.show()
   }
@@ -384,9 +393,16 @@ export class SpeakerCard {
     this.speakerLabel.text = "● " + this.name
   }
 
-  // What the card calls this speaker: their name if they've said it, otherwise "Speaker N".
+  // What the card calls this speaker: their name if they've said it, otherwise "Speaker N"
+  // (or "Speaking" in Live mode).
   get name(): string {
-    return this.spokenName !== "" ? this.spokenName : "Speaker " + this.speaker
+    return this.spokenName !== "" ? this.spokenName : this.anonymousName
+  }
+
+  // Live mode's single card is labeled "Speaking" rather than with a speaker number.
+  setAnonymousName(name: string): void {
+    this.anonymousName = name
+    this.speakerLabel.text = "● " + this.name
   }
 
   show(): void {

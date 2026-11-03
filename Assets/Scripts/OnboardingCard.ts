@@ -1,4 +1,5 @@
-// Start card: what SubSpecs does, the privacy note, and a button for each demo conversation.
+// Start card: what SubSpecs does, the privacy note, a button for each demo conversation and one
+// for Live mode.
 
 import {BackPlate} from "SpectaclesUIKit.lspkg/Scripts/BackPlate"
 import {LOGO_ASPECT, makeButton, makeImage, makeText} from "./CaptionUiKit"
@@ -6,27 +7,30 @@ import {DemoScenarioId} from "./CaptionDemoScript"
 
 export const ONBOARDING_DISTANCE_CM = 100
 
+// What the start card can begin: one of the scripted demos, or Live mode.
+export type StartChoice = DemoScenarioId | "live"
+
 const WIDTH = 36
 const HEIGHT = 25
 const PAD = 2.0
 const CONTENT_Z = 0.6
 const LOGO_HEIGHT = 3.8
-const BUTTON_WIDTH = 15
-const BUTTON_OFFSET = 8
+const BUTTON_WIDTH = 10.4
+const BUTTON_OFFSET = 11
 
 export const ONBOARDING_BODY =
-  "Live subs for every voice around you. Each new speaker gets their own color-coded card. " +
-  "Pinch and drag a card over the person talking; it stays there for the rest of the conversation. " +
+  "Live subs for every voice around you. In the demos each speaker gets their own color-coded card; " +
+  "Live mode puts what it hears on one \"Speaking\" card, since it can't tell voices apart. " +
   "Anyone speaking another language is translated automatically; pick a language at the bottom to change it."
 
 export const PRIVACY_NOTE =
-  "Privacy: subs are shown only to you. Audio is never stored. " +
-  "Speakers are numbers until they say their name, which is forgotten when the conversation ends. " +
-  "No face recognition."
+  "Privacy: subs are shown only to you. The demos use no microphone. In Live mode, what the " +
+  "microphone hears is sent to Snap's cloud and Google's Gemini AI to be written down and translated. " +
+  "SubSpecs itself saves no audio or text; names are forgotten when the conversation ends. No face recognition."
 
 export class OnboardingCard {
   readonly root: SceneObject
-  private listeners: ((scenario: DemoScenarioId) => void)[] = []
+  private listeners: ((choice: StartChoice) => void)[] = []
   private started = false
 
   // `logo` replaces the "SubSpecs" title text when given.
@@ -58,7 +62,7 @@ export class OnboardingCard {
         align: HorizontalAlignment.Center
       })
     }
-    makeText(content, "ModeLabel", "Demo mode · scripted conversation, no server needed", {
+    makeText(content, "ModeLabel", "Demo: scripted conversations · Live: real speech, needs internet", {
       role: "Caption",
       distanceCm: d,
       rect: Rect.create(left, right, top - 6, top - 4),
@@ -81,11 +85,12 @@ export class OnboardingCard {
       wrap: true
     })
 
-    // One button per scripted conversation, side by side.
+    // One button per scripted conversation, then Live mode, side by side.
     const buttonY = -HEIGHT / 2 + PAD + 1.8
-    const choices: [string, string, DemoScenarioId, number][] = [
+    const choices: [string, string, StartChoice, number][] = [
       ["CorridorButton", "Conference corridor", "corridor", -BUTTON_OFFSET],
-      ["HospitalButton", "Hospital intake", "hospital", BUTTON_OFFSET]
+      ["HospitalButton", "Hospital intake", "hospital", 0],
+      ["LiveButton", "Live", "live", BUTTON_OFFSET]
     ]
     for (const [name, label, scenario, x] of choices) {
       const {button} = makeButton(content, name, label, new vec2(BUTTON_WIDTH, 3.6), d, new vec3(x, buttonY, 0))
@@ -93,7 +98,7 @@ export class OnboardingCard {
     }
   }
 
-  onStart(fn: (scenario: DemoScenarioId) => void): void {
+  onStart(fn: (choice: StartChoice) => void): void {
     this.listeners.push(fn)
   }
 
@@ -107,10 +112,10 @@ export class OnboardingCard {
     return this.root.enabled
   }
 
-  start(scenario: DemoScenarioId): void {
+  start(choice: StartChoice): void {
     if (this.started) return
     this.started = true
     this.root.enabled = false
-    this.listeners.forEach((fn) => fn(scenario))
+    this.listeners.forEach((fn) => fn(choice))
   }
 }

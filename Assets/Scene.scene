@@ -8,7 +8,8 @@
     - !<own> cc0b6165-5997-40d0-9cde-58b725afdec9
     - !<own> abb8b205-76a0-492e-88a8-f0a9061f40ca
     - !<own> 64bb5d8c-eaa2-4c6c-b394-522d18ba1c99
-    - !<own> 55049aef-c9cb-46a7-84d6-cb4ea4dcb82b
+    - !<own> a2cc588c-2ec3-46b5-a392-8ff801115bf6
+    - !<own> fa6cbfe7-b9b9-4d5c-bc21-6394a3f8003c
   layers: !<Layers/267ee9a7-aff2-4f9d-9a49-f71214747d03>
     userLayers:
       - id: 1
@@ -610,22 +611,6 @@
     - !<own> 5ffc0845-d784-4f38-953d-dfa7451964c5
   Components:
     []
-- !<ScriptComponent/0cd69697-ae70-4456-a3b5-eb869e46a3f0>
-  PrefabRemaps:
-    []
-  Name: MessagingBridge
-  Enabled: true
-  ScriptAsset: !<reference> 9aa407db-2872-4afc-a162-cf7faf2a0f29
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      {}
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/0cffb60e-73f6-43c5-bb4f-286d39e0f1f6>
   PrefabRemaps:
     []
@@ -2165,6 +2150,22 @@
     - !<own> 9f641474-68c6-4547-ade9-ac961358b4ac
   Components:
     []
+- !<ScriptComponent/4b8b75fb-8eaa-48a0-835c-6640eaf65393>
+  PrefabRemaps:
+    []
+  Name: LiveAccessKey
+  Enabled: true
+  ScriptAsset: !<reference> d255c86b-51b2-420a-9275-095a25b10065
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/4b93a044-df15-4ae5-ab6b-4348d5b8fc69>
   PrefabRemaps:
     []
@@ -2347,21 +2348,6 @@
     - !<own> 46b79537-a269-46f1-9483-500d7a4170d6
   Components:
     []
-- !<SceneObject/55049aef-c9cb-46a7-84d6-cb4ea4dcb82b>
-  PrefabRemaps:
-    []
-  Name: LEAF Plugin Bridge
-  Enabled: true
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> 0cd69697-ae70-4456-a3b5-eb869e46a3f0
 - !<SceneObject/5675a823-52d8-4b08-9c3d-031e3e768912>
   PrefabRemaps:
     []
@@ -2578,6 +2564,7 @@
     wordsPerSecond: true
     loopDemo: true
     loopPauseSeconds: true
+    previewClip: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2591,6 +2578,9 @@
         - !<reference> 4a6f7ebf-d095-48aa-a672-35ec7a49635c
         - !<reference> 8f3cfd86-5e4f-4527-98e4-aa9cfb6c192f
         - !<reference> a133f1be-85ec-4a67-b32f-6cd4f544cb4a
+      microphoneTrack: !<reference.AudioTrackAsset> ce5a0d18-ae9f-406e-b341-8a40d32e5e35
+      previewClip: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
+      internetModule: !<reference.InternetModule> 0c82c6f4-38f7-4c21-bbfb-58ac45e33f2b
       logoMaterial: !<reference.Material> 06dd9961-e7fe-4785-ab70-b21e762791ab
   ScriptTypes:
     "":
@@ -3903,6 +3893,22 @@
     []
   Components:
     - !<own> 199a0239-96b4-46ff-9870-f33433780dcf
+- !<ScriptComponent/884457c8-4a38-482d-b7e1-3abe30f5b6fd>
+  PrefabRemaps:
+    []
+  Name: MessagingBridge
+  Enabled: true
+  ScriptAsset: !<reference> 9aa407db-2872-4afc-a162-cf7faf2a0f29
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/88847548-ec75-4374-a484-06c90e862c83>
   PrefabRemaps:
     []
@@ -4687,6 +4693,21 @@
     - !<own> 0c6c87d4-b346-4729-b589-1b0501291403
   Components:
     []
+- !<SceneObject/a2cc588c-2ec3-46b5-a392-8ff801115bf6>
+  PrefabRemaps:
+    []
+  Name: LEAF Plugin Bridge
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 884457c8-4a38-482d-b7e1-3abe30f5b6fd
 - !<SceneObject/a42dae3f-9695-4d79-83ba-c6467d6da253>
   PrefabRemaps:
     []
@@ -7187,6 +7208,21 @@
     - !<own> 7890571e-ca46-4d9e-a164-75ca2861ec24
   Components:
     []
+- !<SceneObject/fa6cbfe7-b9b9-4d5c-bc21-6394a3f8003c>
+  PrefabRemaps:
+    []
+  Name: LiveAccessKey (local only)
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 4b8b75fb-8eaa-48a0-835c-6640eaf65393
 - !<SceneObject/fcc185fc-4e88-4e9e-9c71-40bd83b1b0ed>
   PrefabRemaps:
     []
