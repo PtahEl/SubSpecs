@@ -4,6 +4,12 @@ status: approved
 
 # Design brief: SubSpecs
 
+> **Updated Nov 3, 2026.** This is the plan the build followed, kept with its history. Where the plan
+> changed, the change and the reason are marked **(Changed Nov …)** in place. The biggest change: Live
+> mode no longer uses a SubSpecs server on the learner's PC. It runs on the glasses and Snap's own cloud
+> (Snap's Remote Service Gateway to Google's Gemini), with nothing hosted on a laptop. See
+> "Live mode as built" below.
+
 <!-- Filled in by plan-lens from the learner's interview. Use the learner's words. Mark any value they didn't choose as (default). -->
 
 ## The one spatial moment
@@ -26,9 +32,11 @@ benefits.
 - Translation: Auto (the default) detects each patient's language and translates into English. Picking a
   language by hand works as in the corridor scenario.
 - Highlights: in the English translation, intake facts are shown in a highlight color. In Demo mode which
-  words are highlighted is scripted; in Live mode the server would mark them.
-- Privacy matters even more here: subs are shown only to the wearer, audio is never stored, the camera is used only on the glasses to find bodies (never faces, never stored or sent), speakers are
-  anonymous numbers.
+  words are highlighted is scripted. (Changed Nov 2: the intake form and highlights are Demo-only, because
+  Live mode can't tell a patient from the worker.)
+- Privacy matters even more here: subs are shown only to the wearer, SubSpecs itself saves no audio or
+  text, the camera is not used at all, and speakers are anonymous until they say their name.
+  (Changed Nov 2: the plan to use the camera to find bodies was dropped with "cards follow people".)
 
 ## Why it belongs on glasses
 - Uses: leaves your body free (eyes up on the people, not down at a phone); draws in the world (each person's words sit where the wearer placed them, over or beside that person).
@@ -36,7 +44,10 @@ benefits.
 
 ## Product or overlay
 - Type: overlay: it responds to real people speaking.
-- What the real version would sense: live speech from the people around the wearer, split by speaker (who is talking) and transcribed, then translated into the wearer's language of choice. This is Live mode: the Lens streams microphone audio to the SubSpecs GPU server (Nemotron diarization + ASR + translation).
+- What the real version would sense: live speech from the people around the wearer, split by speaker (who is talking) and transcribed, then translated into the wearer's language of choice. (Changed Nov 2: originally Live mode streamed audio to a SubSpecs GPU server on the learner's PC. The
+  learner ruled out anything hosted on a laptop, so Live mode now runs on the glasses and Snap's cloud, and
+  because nothing available to a Lens can tell voices apart, it puts what it hears on one honest
+  "Speaking" card instead of one card per voice. See "Live mode as built".)
 - Stand-in for the preview: Demo mode. A scripted conference-corridor conversation plays on its own with no server: three speakers, the old friend first and then two others who join. Each line arrives on a timer as if spoken, with pre-written translations for the demo languages. Three 3D figures stand in the room as the people; the learner will provide rigged, animated models (FBX or GLB), and CLAD uses simple placeholder figures until they arrive. The figures are scenery: SubSpecs doesn't know where they stand, just as it wouldn't know where real people stand. The wearer places each card on a figure by hand.
 
 ## Where things live
@@ -48,7 +59,9 @@ benefits.
 - A placed card stays where the wearer put it for that speaker for the rest of the session.
 - Language picker: a small panel below the cards, at the bottom of the view, about 0.6 m away (default).
 - Onboarding card: centered in front of the wearer, about 1 m away, at the start (default).
-- Status indicator (Demo / Live / Reconnecting): small, at the bottom edge next to the language picker (default).
+- Status indicator: small, at the bottom edge next to the language picker (default). As built: ● DEMO,
+  ● LIVE, ● OFFLINE (no internet) or ● PAUSED (a problem that needs fixing), with a plain-words notice
+  above the bar.
 
 ## Hands and input
 - Move a card: pinch and drag a speaker's card anywhere in view, over a person or arranged however the wearer needs. The app is about the wearer's control and customization.
@@ -78,17 +91,19 @@ Each one can be checked in Lens Studio's preview.
 Differentiating features (added Nov 2; see "Differentiating features" below):
 
 8. Hospital intake: as patients speak, their highlighted facts fill a small intake form card (Allergies, Medicines, Pain, Since when, Symptoms), each field filled the moment its fact is said.
-9. Cards follow people: SubSpecs finds the people in view with an AI model running on the glasses (bodies only, no faces, nothing leaves the glasses); a card placed on a person stays above them as they move.
+9. (Dropped Nov 2: built, then removed at the learner's request, "let's not hint at things that we can't do"; it also needed the camera.) Cards follow people: SubSpecs finds the people in view with an AI model running on the glasses (bodies only, no faces, nothing leaves the glasses); a card placed on a person stays above them as they move.
 10. (Dropped Nov 2: pointing to an unseen speaker needs to know where a voice comes from, which SubSpecs doesn't do.) When someone outside the wearer's view starts talking, a small cue at the edge of the view in that speaker's color points toward them, and disappears once they're in view.
 11. Pinching "Recap" shows a short summary of what each speaker said so far, one line per speaker in their color, and pinching it again hides it.
 12. Hospital intake: after a patient answers, a suggested next question appears for the wearer in English with the patient's language underneath, so the wearer can read it aloud or show it.
-13. Live mode: with the SubSpecs server running, choosing Live streams the microphone to the server and real subs from real speech appear on speaker cards, with the status showing Live, or Reconnecting when the link drops. (Checked with the server, not only in the preview.)
-15. Glow around the speaker: while someone is talking, a soft glow in their speaker color surrounds that person; it fades when they stop.
-16. Automatic card placement: when a new voice starts and one person is in view, their card goes to that person; with several people in view, it goes to the person nearest the center of the wearer's view. A drag still overrides it.
+13. (Changed Nov 2.) Live mode: choosing Live listens to the microphone on the glasses and sends each bit of speech to Gemini through Snap's Remote Service Gateway; what was said, its translation, a name said and reply help appear on one "Speaking" card, the recap shows the conversation, and the bar shows ● LIVE, ● OFFLINE or ● PAUSED with plain-words notices. Checked in the preview with a stand-in AI (Snap's gateway only answers on real Specs).
+18. (Added Nov 2.) Demo voices: each scripted line plays a recorded voice in the speaker's language, and its words type out in time with the voice; no two voices overlap.
+19. (Added Nov 2.) Live mode hides the wearer's own speech when it can tell: speech far louder than other people's is not sent, and a suggested reply read out by the wearer is not shown.
+15. (Not built: depended on the dropped person detection.) Glow around the speaker: while someone is talking, a soft glow in their speaker color surrounds that person; it fades when they stop.
+16. (Not built: depended on the dropped person detection.) Automatic card placement: when a new voice starts and one person is in view, their card goes to that person; with several people in view, it goes to the person nearest the center of the wearer's view. A drag still overrides it.
 17. Depth effect: the speaking person's card comes slightly forward at full brightness while quiet speakers' cards ease back and soften.
 14. Speaker cards have a "liquid glass" look: a faint, see-through tinted plate with a bright edge, so the person behind stays visible, while the words stay bright and readable.
 
-Server criterion (checked outside the preview, with the SubSpecs server): at least 80% of words transcribed correctly on a multi-speaker test clip. "That is better than the wearer never being able to understand in the first place." (Measured on Oct 29: about 98% on a two-speaker clip.)
+Server criterion (checked outside the preview, with the SubSpecs server): at least 80% of words transcribed correctly on a multi-speaker test clip. "That is better than the wearer never being able to understand in the first place." (Measured on Oct 29: about 98% on a two-speaker clip.) (Changed Nov 2: the server is no longer part of SubSpecs, so this no longer applies; Live mode's accuracy with Gemini can only be measured on real Specs.)
 
 ## Differentiating features (added Nov 2)
 What sets SubSpecs apart from caption and translation glasses: one card per voice pinned to that
@@ -97,7 +112,7 @@ transcribing it. Defaults below are CLAD's (default) unless the learner chose th
 
 1. Intake form auto-fill (hospital): a small form card beside the language bar fills in from the
    highlighted facts as they're said, with the field flashing briefly when filled (default).
-2. Card follows the person (Route 1, decided Nov 2): an on-glasses person detector (SnapML, a small
+2. (Dropped Nov 2, see criterion 9.) Card follows the person (Route 1, decided Nov 2): an on-glasses person detector (SnapML, a small
    COCO-trained "person" model) finds bodies in the camera feed; Snap's MLSpatializer pattern plus the
    depth sensor turns each detection into a 3D position. Cards placed on a person follow them. On the
    glasses only: no server, no faces, no identity, nothing stored or sent. The glow (criterion 15) and
@@ -105,27 +120,48 @@ transcribing it. Defaults below are CLAD's (default) unless the learner chose th
    detected is unknown until tried; real tracking quality can only be judged on real glasses.
 3. Who's-talking cue: dropped. It would need to know which direction a voice comes from, which
    SubSpecs doesn't do; the demo shouldn't suggest abilities the app doesn't have.
-4. Conversation recap: a "Recap" button on the language bar; scripted summaries in Demo mode, server
-   summaries in Live mode.
+4. Conversation recap: a "Recap" button on the language bar; scripted summaries in Demo mode, a running
+   summary of the whole conversation written by the AI in Live mode.
 5. Reply help (hospital): suggested next question in English plus the patient's language, shown small
    under that patient's card for a few seconds (default).
-6. Live mode end to end: mic audio streamed to the SubSpecs server (no AsrModule), real subs and
-   translation back, status Live / Reconnecting. Demo mode must still carry the demo.
+6. Live mode end to end: (Changed Nov 2) on the glasses and Snap's cloud, no AsrModule, no server, no
+   laptop; see "Live mode as built". Demo mode must still carry the demo.
 7. Liquid glass cards: see done criterion 14; no real-time blur (SPECS can't blur the real world).
+8. (Added Nov 2.) Recorded demo voices: ElevenLabs clips for all 22 lines, words in time with each voice.
+9. (Added Nov 2.) Hiding the wearer's own speech in Live mode, automatically and honestly ("when it can tell").
+
+## Live mode as built (Nov 2)
+- Where it runs: on the glasses, plus Snap's Remote Service Gateway, which passes each bit of speech to
+  Google's Gemini. No SubSpecs server, no bridge, no tunnel, nothing on a laptop; Lens Studio is only
+  used to build and publish.
+- Why not Snap's speech-to-text (AsrModule): it turns on Bystander Speech Rejection, which ignores
+  everyone but the wearer. Live mode reads the microphone directly and never loads AsrModule or VoiceML.
+- One card, honestly: nothing available to a Lens can tell voices apart (a Lens gets one mixed
+  microphone channel; Snap's speech-to-text doesn't label speakers), so everything goes on one
+  "Speaking" card. No "New speaker detected", names said appear with that line only, and the recap is
+  one line for the conversation.
+- Status and errors: ● LIVE, ● OFFLINE, ● PAUSED, with plain-words notices and codes (NO_INTERNET,
+  BUSY_429, AUTH_401 …).
+- Privacy note, as shown: "subs are shown only to you. The demos use no microphone. In Live mode, what
+  the microphone hears is sent to Snap's cloud and Google's Gemini AI to be written down and
+  translated. SubSpecs itself saves no audio or text; names are forgotten when the conversation ends.
+  No face recognition."
+- Tested in the preview with a stand-in AI; Snap's gateway answers only on real Specs, so real
+  transcription is unproven until then.
 
 ## Out of scope
 - Knowing where a voice comes from (directional audio), and face tracking. People are found only as bodies in view, on the glasses (criterion 9).
 - Face recognition or identifying anyone; speakers are anonymous numbers.
-- Storing audio or transcripts; audio is never saved.
+- Storing audio or transcripts; SubSpecs itself saves neither.
 - Everyone in the conversation wearing glasses and sharing subs (the future vision for the video, not this build).
 - Remembering card placements between sessions.
 
 ## Risks and open questions
-- Directional cues: the learner hoped SPECS could tell which direction a voice comes from. No Lens API for this was found (Snap's documentation search was unavailable when checked), and the preview can't simulate it. Feel unproven; explore on real glasses later.
+- Directional cues: the learner hoped SPECS could tell which direction a voice comes from. (Confirmed Nov 2: a Lens only gets one mixed microphone channel, so it can't.) An idea to try on real glasses: Snap's speech-to-text hears only the wearer, so it might flag the wearer's own speech without muting everyone else.
 - Snap's on-device speech recognition (AsrModule) turns on Bystander Speech Rejection, which ignores speech that isn't the wearer's. SubSpecs needs bystanders' speech, so Demo mode must not rely on AsrModule, and Live mode should stream raw microphone audio with no AsrModule in the same Lens. Confirm during the build.
-- Live mode depends on the learner's PC running the SubSpecs server and a secure wss:// tunnel; judges may test while the PC is off, so Demo mode must carry the demo.
-- Translation in Demo mode is pre-written for a few languages (Spanish, French, Japanese) (default); the full language list works only in Live mode.
-- Other people's speech is shown as subs. Subs are shown only to the wearer, audio is never stored, speakers are anonymous numbers, and there's no face recognition. The demo uses figures, not real people.
+- (Changed Nov 2.) Live mode no longer depends on the learner's PC. It needs internet and Snap's gateway, which only answers on real Specs, so Demo mode still carries the demo and video. Snap doesn't publish the gateway's usage limits or cost.
+- Translation in Demo mode is pre-written for a few languages (Spanish, French, Japanese) (default). Live mode hears any language Gemini knows, but translates into English, Spanish, French and Japanese, with English as the wearer's language.
+- Other people's speech is shown as subs. Subs are shown only to the wearer, SubSpecs itself saves no audio or text, speakers are anonymous until they say their name, and there's no face recognition. In Live mode their speech is sent to Snap's cloud and Gemini, which the privacy note says. The demo uses figures, not real people.
 - Feel unproven: reading speed while keeping eye contact, the 3-second hold, and card size at real conversation distance.
 
 ## Build notes for CLAD

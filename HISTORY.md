@@ -12,6 +12,25 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 3, 2026: ready for the Devpost rules (repo still private)
+
+- Checked against the hackathon's rules and judging criteria (Design, Technical implementation,
+  Innovation, Presentation). The repo stays **private** for now; it must be public at submission.
+- The **design brief** (`devpost/design-brief.md`) now matches the Lens as built. Every change from the
+  plan is marked in place with the reason: Live mode runs on the glasses and Snap's cloud instead of a
+  server on the learner's PC, cards following people and the glow were dropped, demo voices and hiding
+  your own speech were added. A new section, "Live mode as built", describes it.
+- **README** rewritten for judges: who it's for, what it does, the two modes, privacy, how it was built
+  with CLAD, the Lens Studio MCP and LEAF, and what we learned.
+- Drafts for the submission: `devpost/description.md` (the Devpost write-up) and
+  `devpost/video-script.md` (a shot-by-shot script under 3 minutes).
+- Code comments and build notes no longer mention a "SubSpecs server". The old `caption-server` lives
+  outside this repo and isn't used.
+- **Checked:** the whole git history (37 commits) has no keys, tokens, `.mcp.json`, local-only files or
+  private keys. TypeScript still compiles.
+
+---
+
 ## Nov 2, 2026: Live mode hides your own speech when it can tell
 
 ![The start card: "Live mode puts what it hears on one Speaking card, since it can't tell voices apart, and hides your own speech when it can tell."](history/screenshots/2026-11-02-own-voice.png)

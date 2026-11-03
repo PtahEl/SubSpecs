@@ -1,6 +1,6 @@
 // Demo mode conversations: a scripted conference-corridor chat and a hospital intake desk,
 // each with three speakers. Each line arrives on a timer as if spoken. Translations are pre-written for the demo
-// languages; the full language list only exists in Live mode (SubSpecs server).
+// languages; in Live mode the AI hears any language (see Live/LiveSession.ts).
 
 // Translation setting. "auto": subs in the wearer's language (English in the demo);
 // anyone speaking another language is detected and translated automatically.
@@ -8,7 +8,7 @@
 export type LanguageCode = "auto" | "off" | "es" | "fr" | "ja"
 
 // A language a speaker can talk in. In Demo mode detection is scripted; in Live mode the
-// SubSpecs server reports the language it hears.
+// AI reports the language it hears (as `heard` below).
 export type SpokenLanguage = "en" | "es" | "fr" | "ja"
 
 // The wearer's own language in Demo mode.
@@ -49,7 +49,7 @@ export interface DemoLine {
   fr: string
   ja: string
   // Intake facts to highlight in the English translation, each an exact phrase of `en`.
-  // In Live mode the SubSpecs server would mark them.
+  // Demo mode only: Live mode doesn't fill the intake form.
   highlights?: string[]
   // What this answer fills in on the patient's intake form, drawn from its highlighted facts.
   intake?: Partial<Record<IntakeField, string>>

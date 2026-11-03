@@ -506,7 +506,7 @@ export class SpeakerCard {
   }
 
   private refreshTranslation(): void {
-    // Translations arrive with the final line, as they would from the SubSpecs server.
+    // Translations arrive with the final line, as they do from the AI in Live mode.
     const show = this.line !== null && !this.typing
     const text = show ? translationFor(this.line, this.language) : ""
     this.translationText.getSceneObject().enabled = text !== ""

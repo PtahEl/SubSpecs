@@ -54,9 +54,9 @@ speaks another language, their card shows what they said, a "Spanish detected" t
 English translation underneath. English speakers get no translation line. Picking a language by
 hand overrides Auto and translates everyone into that language (no line when the speaker already
 speaks it); pinching Auto brings detection back. In Demo mode detection is scripted. In Live mode
-the SubSpecs server's Nemotron ASR reports the language of every sub (`lang`), and the server
-skips translating subs already in the chosen language (it sends an empty `translation` with
-`same_language: true`). For Auto, the Lens sets the target to the wearer's language.
+the AI reports the language of each bit of speech (`DemoLine.heard.code`), and `translationFor`
+shows no translation when it is already in the chosen language. (Until Nov 2 this paragraph described
+a SubSpecs server on the learner's PC; that server is no longer part of SubSpecs.)
 
 ## The Specs view is narrow
 
@@ -269,8 +269,9 @@ Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
 
 - The app is named **SubSpecs** and the feature is called **subs**. Internal names keep the old
   "Caption" wording on purpose (script and class names such as `CaptionController`, the project
-  folder `CaptionSpecs`, the `caption-server` folder, its `CAPTION_` settings and its `caption`
-  message type) so nothing breaks in Lens Studio or the server.
+  folder `CaptionSpecs`) so nothing breaks in Lens Studio. The old `caption-server` (a laptop GPU
+  server from the first plan) lives outside this repo and is not used by SubSpecs: Live mode runs on
+  the glasses and Snap's cloud.
 
 - `.virtual-scene.json` is a generated scene snapshot and is ignored by git.
 - `leaf_plugin_settings.json` is local LEAF panel state and is ignored by git.
