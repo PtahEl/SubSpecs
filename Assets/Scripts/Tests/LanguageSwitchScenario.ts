@@ -19,6 +19,8 @@ export class LanguageSwitchScenario extends Scenario {
       await new DefaultLeafInteractor().trigger(interactable("Lang_" + code))
       await sleep(300)
       expect(c.language).toBe(code)
+      // With recorded voices someone is nearly always talking; wait for a finished line to check.
+      await waitFor("a card with a finished line", () => [1, 2, 3].some((s) => finishedLine(s) !== null), 30000)
       let checked = 0
       for (const s of [1, 2, 3]) {
         const line = finishedLine(s)

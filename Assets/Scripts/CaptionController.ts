@@ -14,6 +14,7 @@ import {SpeakerFigures} from "./SpeakerFigures"
 import {IntakeForm, INTAKE_DISTANCE_CM, INTAKE_RIGHT_CM, INTAKE_UP_CM} from "./IntakeForm"
 import {RecapPanel, RECAP_DISTANCE_CM, RECAP_RIGHT_CM, RECAP_UP_CM} from "./RecapPanel"
 import {LiveSession} from "./Live/LiveSession"
+import {DemoVoices, TimedLine} from "./DemoVoices"
 import {LiveTranslator} from "./Live/LiveTranslator"
 import {GeminiTranslator} from "./Live/GeminiTranslator"
 import {AudioSource, FileSource, MicrophoneSource} from "./Live/LiveAudio"
@@ -73,6 +74,11 @@ export class CaptionController extends BaseScriptComponent {
 
   @input
   @allowUndefined
+  @hint("Demo voices: one recorded clip per scripted line, corridor lines then hospital lines (Assets/Demo/Voices). Words type out in time with each clip.")
+  demoVoices: AudioTrackAsset[] = []
+
+  @input
+  @allowUndefined
   @hint("Live mode: an Audio Track asset set to Microphone Audio. Live mode can't start without it.")
   microphoneTrack: AudioTrackAsset
 
@@ -80,6 +86,11 @@ export class CaptionController extends BaseScriptComponent {
   @allowUndefined
   @hint("Preview only: a recorded clip Live mode listens to instead of the microphone, to test without the glasses. Leave empty for the glasses.")
   previewClip: AudioTrackAsset
+
+  @input
+  @allowUndefined
+  @hint("Live mode: the Remote Service Gateway's Gemini_Sync service module (in the RemoteServiceGateway package).")
+  geminiService: RemoteServiceModule
 
   @input
   @allowUndefined
@@ -110,6 +121,9 @@ export class CaptionController extends BaseScriptComponent {
   private running = false
   private scenarioId: DemoScenarioId = "corridor"
   private lines: DemoLine[] = DEMO_SCENARIOS.corridor
+  // This conversation's lines with when each starts and how long its voice lasts.
+  private timed: TimedLine[] = []
+  private voices: DemoVoices
   private clock = 0
   private nextLine = 0
 
@@ -133,6 +147,7 @@ export class CaptionController extends BaseScriptComponent {
     this.picker.onSwitch(() => this.switchScenario())
     this.picker.onRecap(() => this.toggleRecap())
     this.figures = new SpeakerFigures(this.speakerFigures ?? [])
+    this.voices = new DemoVoices(this.sceneObject, this.demoVoices ?? [], SPEAKER_COUNT)
 
     this.createEvent("OnStartEvent").bind(() => {
       placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
@@ -186,6 +201,15 @@ export class CaptionController extends BaseScriptComponent {
     return this.cards[speaker - 1]
   }
 
+  get demoVoice(): DemoVoices {
+    return this.voices
+  }
+
+  // When each line of the conversation running now starts, and how long it lasts.
+  get timedLines(): TimedLine[] {
+    return this.timed
+  }
+
   get intakeForm(): IntakeForm {
     return this.intake
   }
@@ -206,6 +230,10 @@ export class CaptionController extends BaseScriptComponent {
     this.liveForTests = {translator, source, online}
   }
 
+  clearLiveForTests(): void {
+    this.liveForTests = null
+  }
+
   private begin(choice: StartChoice): void {
     const t = this.liveForTests
     if (choice === "live" && t) this.startLive(t.translator, t.source, t.online)
@@ -218,6 +246,7 @@ export class CaptionController extends BaseScriptComponent {
     this.picker.setStatus("demo")
     this.scenarioId = scenario
     this.lines = DEMO_SCENARIOS[scenario]
+    this.timed = this.voices.schedule(this.lines, (line) => spokenWords(line).length / this.wordsPerSecond)
     this.picker.show()
     this.running = true
     this.restartConversation()
@@ -247,7 +276,12 @@ export class CaptionController extends BaseScriptComponent {
       this.notice.set("Live mode isn't set up: no microphone track in the Lens. (NO_MIC_TRACK)")
       return
     }
-    this.live = new LiveSession(audio, translator ?? new GeminiTranslator(), online)
+    if (!translator && !this.geminiService) {
+      this.picker.setStatus("stopped")
+      this.notice.set("Live mode isn't set up: the AI service module is missing from the Lens. (NO_SERVICE)")
+      return
+    }
+    this.live = new LiveSession(audio, translator ?? new GeminiTranslator(this.geminiService), online)
     this.live.onLine((line) => this.deliverLine(line))
     this.live.onChange(() => this.showLiveState())
     this.live.start()
@@ -279,6 +313,7 @@ export class CaptionController extends BaseScriptComponent {
 
   // From the first line again: empty intake forms and recap, nothing being said.
   private restartConversation(): void {
+    this.voices.stopAll()
     this.clock = 0
     this.nextLine = 0
     this.speaking.clear()
@@ -312,13 +347,13 @@ export class CaptionController extends BaseScriptComponent {
     const dt = getDeltaTime()
     if (this.running) {
       this.clock += dt
-      while (this.nextLine < this.lines.length && this.lines[this.nextLine].at <= this.clock) {
+      while (this.nextLine < this.timed.length && this.timed[this.nextLine].start <= this.clock) {
         this.deliver(this.nextLine)
         this.nextLine++
       }
-      if (this.nextLine >= this.lines.length && this.loopDemo) {
-        const last = this.lines[this.lines.length - 1]
-        const lastEnds = last.at + spokenWords(last).length / this.wordsPerSecond
+      if (this.nextLine >= this.timed.length && this.loopDemo) {
+        const last = this.timed[this.timed.length - 1]
+        const lastEnds = last.start + last.seconds
         if (this.clock > lastEnds + this.holdSeconds + this.loopPauseSeconds) this.restartConversation()
       }
     }
@@ -335,8 +370,13 @@ export class CaptionController extends BaseScriptComponent {
     this.figures.update(this.cards.map((c) => c.isSpeaking))
   }
 
+  // A scripted line: its voice plays and its words type out over the clip's length.
   private deliver(index: number): void {
-    this.deliverLine(this.lines[index])
+    const t = this.timed[index]
+    const card = this.cards[t.line.speaker - 1]
+    card.setWordsPerSecond(spokenWords(t.line).length / t.seconds)
+    if (t.clip) this.voices.play(t.line.speaker, t.clip)
+    this.deliverLine(t.line)
   }
 
   private deliverLine(line: DemoLine): void {

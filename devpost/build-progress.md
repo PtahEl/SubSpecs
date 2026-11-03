@@ -201,6 +201,33 @@ Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
   and accuracy on real speech, battery and heat, usage limits and cost (Snap doesn't publish them).
 - Test: `live-mode` (last in `LeafIndex.ts`; `screenshot=true` stops with Lucía's line showing).
 
+## Demo voices (Nov 2)
+
+- 22 ElevenLabs clips (model `eleven_v4`) in `Assets/Demo/Voices/` (`corridor-01..10.mp3`,
+  `hospital-01..12.mp3`, 1.8 MB), wired in order to `CaptionController.demoVoices` (ALL_DEMO_LINES
+  order). Voices: Sam = Jessica, Daniel = Chris, Lucía = Catalina, Yuki = Kiyomi, Carlos = Adrián,
+  Amélie = Emma.
+- `DemoVoices.ts`: one AudioComponent per speaker; `schedule()` gives each line
+  `start = max(at, previous start + previous clip length + 0.4 s)` and `seconds` = clip length
+  (`FileAudioTrackProvider.duration`); the controller sets the card's words-per-second to
+  words / seconds so typing ends with the voice. `restartConversation` stops all voices.
+- Test: `demo-voices`, last in `LeafIndex.ts`.
+
+## Live mode in Preview (Nov 2)
+
+- RSG 2.0.1's `setApiToken` only stores the Snap key, so `LiveAccessKey.ts` (local only) creates a
+  `RemoteServiceGatewayCredentials` component at runtime on a disabled object, sets `googleToken`,
+  then enables it. The key is never in the scene file.
+- `GeminiTranslator` calls RSG's `Gemini_Sync` remote service module directly
+  (`CaptionController.geminiService`) so the gateway's status code maps to plain words
+  (`GATEWAY_STATUS`: 3→400, 4→401, 5→404, 6→504, 7→413, 8→500, 11→429).
+- In Lens Studio Preview (device SPECS 27) every request, even text-only, returns status 10 (internal
+  error in the remote API framework). Snap: "The APIs are only available on Spectacles." The real
+  Gemini path is therefore untested until a Specs run. `live-mode` with `real=true` runs it and prints
+  what came back; use it on device.
+- **Before publishing:** clear `CaptionController.previewClip` (`Assets/Live/PreviewClip.wav`, a Windows
+  text-to-speech test clip) so it isn't shipped.
+
 ## Fixed in this session
 
 - LEAF and the AI preview helper packages were made for a newer, renamed Interaction Kit

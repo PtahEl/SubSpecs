@@ -61,6 +61,8 @@ export function errorFor(status: number, detail: string = ""): LiveError {
     return new LiveError("AUTH_" + status, "Live mode isn't set up: the AI service didn't accept SubSpecs' access key.", false)
   }
   if (status === 429) return new LiveError("BUSY_429", "The AI service is busy. Live subs will pause for a moment.", true)
+  if (status === 404) return new LiveError("NOT_FOUND_404", "The AI service doesn't offer what SubSpecs asked for. Live mode needs an update.", false)
+  if (status === 413) return new LiveError("TOO_LONG_413", "That bit of speech was too long to send. It was skipped.", true)
   if (status === 400) return new LiveError("BAD_REQUEST_400", "The AI service couldn't use that bit of speech. It was skipped.", true)
   if (status >= 500) return new LiveError("SERVICE_" + status, "The AI service is having trouble. Trying again.", true)
   if (detail === "PARSE") return new LiveError("BAD_ANSWER", "Couldn't read the AI's answer. One bit of speech was skipped.", true)

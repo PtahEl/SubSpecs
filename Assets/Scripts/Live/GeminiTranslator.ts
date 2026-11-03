@@ -2,7 +2,6 @@
 // own cloud, no API key in the Lens and nothing on a laptop). One request per bit of speech
 // writes down what was said, translates it and updates the conversation summary.
 
-import {Gemini} from "RemoteServiceGateway.lspkg/HostedExternal/Gemini"
 import {AvaliableApiTypes, RemoteServiceGatewayCredentials} from "RemoteServiceGateway.lspkg/RemoteServiceGatewayCredentials"
 import {wavBytes} from "./LiveAudio"
 import {LiveContext, LiveError, LiveHeard, LiveTranslator, SpeechClip, errorFor} from "./LiveTranslator"
@@ -51,31 +50,52 @@ export function hasAccessKey(): boolean {
   return key !== "" && !key.startsWith("[INSERT")
 }
 
+// The gateway's status codes (RemoteApiResponse.statusCode) as the HTTP-style codes errorFor knows.
+const GATEWAY_STATUS: Record<number, number> = {3: 400, 4: 401, 5: 404, 6: 504, 7: 413, 8: 500, 11: 429}
+
 export class GeminiTranslator implements LiveTranslator {
+  // `service` is RSG's Gemini_Sync remote service module, the same one RSG's Gemini.models uses.
+  // Calling it directly keeps the status code, so errors can be told apart in plain words.
+  constructor(private service: RemoteServiceModule) {}
+
   translate(clip: SpeechClip, context: LiveContext): Promise<LiveHeard> {
     if (!hasAccessKey()) return Promise.reject(errorFor(0, "NO_KEY"))
     const audio = Base64.encode(wavBytes(clip))
     const previous = context.summary === "" ? "Nothing has been said yet." : "Summary so far: " + context.summary
-    return Gemini.models({
+    const body = {
+      systemInstruction: {parts: [{text: INSTRUCTIONS}]},
+      contents: [{role: "user", parts: [{text: previous}, {inlineData: {mimeType: "audio/wav", data: audio}}]}],
+      generationConfig: {
+        temperature: 0.2,
+        responseMimeType: "application/json",
+        responseSchema: SCHEMA,
+        // Captions must keep up with speech: no extra thinking time.
+        thinkingConfig: {thinkingBudget: 0}
+      }
+    }
+    const request = RemoteApiRequest.create()
+    request.endpoint = "models"
+    request.parameters = {
+      "api-token": RemoteServiceGatewayCredentials.getApiToken(AvaliableApiTypes.Google),
       model: MODEL,
-      type: "generateContent",
-      body: {
-        systemInstruction: {parts: [{text: INSTRUCTIONS}]},
-        contents: [{role: "user", parts: [{text: previous}, {inlineData: {mimeType: "audio/wav", data: audio}}]}],
-        generationConfig: {
-          temperature: 0.2,
-          responseMimeType: "application/json",
-          responseSchema: SCHEMA,
-          // Captions must keep up with speech: no extra thinking time.
-          thinkingConfig: {thinkingBudget: 0}
+      type: "generateContent"
+    }
+    request.body = JSON.stringify(body)
+    return new Promise((resolve, reject) => {
+      this.service.performApiRequest(request, (response) => {
+        if (response.statusCode !== 1) {
+          print("[GeminiTranslator] gateway status " + response.statusCode + ": " + response.body.slice(0, 300))
+          reject(toLiveError(response.body, GATEWAY_STATUS[response.statusCode] ?? 0))
+          return
         }
-      }
-    }).then(
-      (response) => parseHeard(response?.candidates?.[0]?.content?.parts?.[0]?.text),
-      (body) => {
-        throw toLiveError(body)
-      }
-    )
+        try {
+          const o = JSON.parse(response.body)
+          resolve(parseHeard(o?.candidates?.[0]?.content?.parts?.[0]?.text))
+        } catch (e) {
+          reject(e instanceof LiveError ? e : errorFor(0, "PARSE"))
+        }
+      })
+    })
   }
 }
 
@@ -105,7 +125,7 @@ export function parseHeard(raw: string | undefined): LiveHeard {
 }
 
 // The gateway rejects with the error body; Google's errors carry {error: {code}}.
-function toLiveError(body: any): LiveError {
+function toLiveError(body: any, gatewayStatus: number = 0): LiveError {
   if (body instanceof LiveError) return body
   let status = 0
   try {
@@ -115,5 +135,5 @@ function toLiveError(body: any): LiveError {
     const m = /\b(4\d\d|5\d\d)\b/.exec(String(body))
     if (m) status = Number(m[1])
   }
-  return errorFor(status)
+  return errorFor(status || gatewayStatus)
 }

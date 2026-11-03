@@ -12,6 +12,32 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: the demo people speak, and the words keep time
+
+![The hospital demo: Yuki Tanaka's Japanese words typing as her recorded voice plays, Amélie's finished French line with its English translation and reply help, and her intake form](history/screenshots/2026-11-02-demo-voices.png)
+
+- At the founder's request, the demo conversations now have **real recorded voices**, made with
+  ElevenLabs: one clip for each of the 22 lines, each in the speaker's own language. Sam (Jessica),
+  Daniel (Chris), Lucía (Catalina, Spanish), Yuki Tanaka (Kiyomi, Japanese), Carlos (Adrián, Spanish)
+  and Amélie (Emma, French).
+- **The words keep time with the voice:** each card types its line over exactly the length of the
+  clip, so the last word appears as the voice finishes.
+- **No one talks over anyone:** each line starts once the voice before it has finished, plus a short
+  breath, and never before its scripted time. The conversations run a few seconds longer.
+- Switch stops any voice that is playing. Demo mode still uses no microphone: it only plays sound.
+- **Live mode in Preview, tried for real:** SubSpecs now has its access key (kept in the local-only
+  file), and with a recorded test clip as the microphone, Live mode cut the speech correctly and sent it
+  to Gemini through Snap's gateway. The gateway answered every request, even a tiny text-only one, with
+  status 10 ("internal error"). Snap's docs say these APIs are only available on Spectacles, so the
+  real Gemini step can only be checked on glasses. The notice now says "not found", "too long" and the
+  like in plain words when the gateway gives those codes.
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks every line has its clip, no
+  two voices overlap, the voice plays while the words type and they finish together, the hospital
+  voices play, and Switch stops the sound. The language test now waits for a finished line at each
+  step, because with voices someone is nearly always talking. **All 19 automated tests pass.**
+
+---
+
 ## Nov 2, 2026: Live mode, real speech on one honest card
 
 ![Live mode in Preview with the test AI: one "Speaking" card with Lucía's Spanish words, the English translation, "Spanish detected / Name said: Lucía", reply help, the recap and ● LIVE on the bar](history/screenshots/2026-11-02-live-mode.png)

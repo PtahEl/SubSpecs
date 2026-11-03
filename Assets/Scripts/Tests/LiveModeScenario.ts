@@ -14,6 +14,7 @@ import {AudioSource, LIVE_SAMPLE_RATE, wavBytes} from "../Live/LiveAudio"
 import {FakeTranslator, speechLikeSamples} from "../Live/FakeTranslator"
 import {LiveHeard, errorFor} from "../Live/LiveTranslator"
 import {parseHeard} from "../Live/GeminiTranslator"
+import {AvaliableApiTypes, RemoteServiceGatewayCredentials} from "RemoteServiceGateway.lspkg/RemoteServiceGatewayCredentials"
 import {LIVE_CARD_NAME, LIVE_RECAP_NAME} from "../CaptionController"
 import {PRIVACY_NOTE} from "../OnboardingCard"
 import {cardText, controller, interactable, textOf, waitFor} from "./CaptionTestUtils"
@@ -65,11 +66,43 @@ const THANKS = heard({
 
 @component
 export class LiveModeScenario extends Scenario {
+  // real=true: Live mode as it really runs, with Gemini through the Remote Service Gateway and the
+  // Preview clip as the microphone. Needs the access key and internet; reports what came back.
+  private async realRun(c: ReturnType<typeof controller>, tap: (name: string) => Promise<void>): Promise<void> {
+    if (!c.startCardVisible) {
+      await tap("SwitchButton")
+      await sleep(300)
+    }
+    c.clearLiveForTests()
+    // A tiny text-only request first, to tell "Preview can't reach the gateway" from "the audio request is wrong".
+    const probe = await new Promise<string>((resolve) => {
+      const req = RemoteApiRequest.create()
+      req.endpoint = "models"
+      req.parameters = {"api-token": RemoteServiceGatewayCredentials.getApiToken(AvaliableApiTypes.Google), model: "gemini-2.5-flash", type: "generateContent"}
+      req.body = JSON.stringify({contents: [{role: "user", parts: [{text: "Reply with the single word: ready"}]}]})
+      c.geminiService.performApiRequest(req, (r) => resolve(r.statusCode + " " + r.body.slice(0, 200)))
+    })
+    print("[live-real] text probe: " + probe)
+    await tap("LiveButton")
+    await sleep(300)
+    await tap("Lang_es")
+    const card = c.getCard(1)
+    await waitFor("an answer from Gemini, or a notice", () => (card.currentLineText !== "" && !card.isSpeaking) || c.liveNotice.visible, 45000)
+    print("[live-real] status=" + c.status + " notice=" + c.liveNotice.message)
+    print("[live-real] heard=" + card.currentLineText + " | translation=" + card.translationLineText + " | tag=" + card.languageTagText.replace("\n", " / "))
+    await waitFor("second bit of speech", () => c.liveSession !== null && c.liveSession.sent >= 2 && !card.isSpeaking, 30000).catch(() => {})
+    print("[live-real] heard2=" + card.currentLineText + " | translation=" + card.translationLineText + " | summary=" + (c.liveSession?.conversationSummary ?? ""))
+    expect(c.liveNotice.visible).toBe(false)
+    expect(card.currentLineText !== "").toBe(true)
+    await tap("Lang_auto")
+  }
+
   // With screenshot=true it stops once Lucía's line and the recap are showing, for the history picture.
   async run(config?: ScenarioConfig): Promise<void> {
     const forScreenshot = config?.get("screenshot") === "true"
     const c = controller()
     const tap = (name: string) => new DefaultLeafInteractor().trigger(interactable(name))
+    if (config?.get("real") === "true") return this.realRun(c, tap)
 
     // The AI's answer is checked field by field; a broken answer is a plain-words error.
     expect(parseHeard(JSON.stringify(LUCIA)).languageName).toBe("Spanish")
