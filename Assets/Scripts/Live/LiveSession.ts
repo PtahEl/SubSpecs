@@ -5,6 +5,7 @@
 import {DemoLine} from "../CaptionDemoScript"
 import {AudioSource, SpeechCutter} from "./LiveAudio"
 import {LiveError, LiveHeard, LiveTranslator, NO_INTERNET, SpeechClip, errorFor} from "./LiveTranslator"
+import {OwnVoiceFilter} from "./OwnVoice"
 
 // Live mode can't tell voices apart, so everything goes on one card.
 export const LIVE_SPEAKER = 1
@@ -19,6 +20,9 @@ export type LiveState = "off" | "listening" | "offline" | "stopped"
 
 export class LiveSession {
   private cutter = new SpeechCutter()
+  // Best-effort hiding of the wearer's own speech (see OwnVoice.ts).
+  readonly ownVoice = new OwnVoiceFilter()
+  private clock = 0
   private waiting: SpeechClip[] = []
   private busy = false
   private pauseSeconds = 0
@@ -67,6 +71,8 @@ export class LiveSession {
 
   start(): void {
     this.summary = ""
+    this.ownVoice.reset()
+    this.clock = 0
     this.waiting = []
     this.pauseSeconds = 0
     try {
@@ -87,6 +93,7 @@ export class LiveSession {
 
   update(dt: number): void {
     if (this.stateNow === "off" || this.stateNow === "stopped") return
+    this.clock += dt
     const online = this.internetAvailable()
     if (!online && this.stateNow !== "offline") this.set("offline", NO_INTERNET.notice)
     if (online && this.stateNow === "offline") this.set("listening", "")
@@ -103,6 +110,8 @@ export class LiveSession {
       this.dropped++
       return
     }
+    // Probably the wearer: far louder than other people. Not sent, so not shown.
+    if (this.ownVoice.isWearerByLoudness(clip.level)) return
     this.waiting.push(clip)
     while (this.waiting.length > MAX_WAITING) {
       this.waiting.shift()
@@ -119,7 +128,10 @@ export class LiveSession {
         if (this.stateNow === "off") return
         if (this.noticeNow !== "" && this.stateNow === "listening") this.set("listening", "")
         if (!heard.speech) return
+        // Probably the wearer reading out a suggested question: not shown.
+        if (this.ownVoice.isWearerReadingReply(heard.text, this.clock)) return
         if (heard.summary !== "") this.summary = heard.summary
+        if (heard.reply) this.ownVoice.rememberReply([heard.reply.en, heard.reply.native], this.clock)
         const line = lineFromHeard(heard)
         this.lineListeners.forEach((fn) => fn(line))
       },

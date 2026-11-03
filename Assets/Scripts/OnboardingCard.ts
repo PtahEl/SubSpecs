@@ -20,7 +20,7 @@ const BUTTON_OFFSET = 11
 
 export const ONBOARDING_BODY =
   "Live subs for every voice around you. In the demos each speaker gets their own color-coded card; " +
-  "Live mode puts what it hears on one \"Speaking\" card, since it can't tell voices apart. " +
+  "Live mode puts what it hears on one \"Speaking\" card, since it can't tell voices apart, and hides your own speech when it can tell. " +
   "Anyone speaking another language is translated automatically; pick a language at the bottom to change it."
 
 export const PRIVACY_NOTE =

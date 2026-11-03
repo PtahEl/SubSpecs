@@ -12,6 +12,33 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 2, 2026: Live mode hides your own speech when it can tell
+
+![The start card: "Live mode puts what it hears on one Speaking card, since it can't tell voices apart, and hides your own speech when it can tell."](history/screenshots/2026-11-02-own-voice.png)
+
+- At the founder's request, Live mode now tries to leave out the **wearer's own speech**, with
+  nothing to remember to press. Nothing on the glasses can tell voices apart, so these are honest
+  best guesses, and the start card says so: "hides your own speech when it can tell".
+- **Loudness:** the wearer's mouth is a few centimetres from the mics, so their voice arrives much
+  louder than other people's. Speech more than about 3.5 times (11 dB) louder than the usual level
+  of other people is not sent to the AI at all, so it is never shown (or sent anywhere). The usual
+  level is learned from the last dozen bits of others' speech, from the quieter end, after the first three.
+- **Reading out reply help:** when what was heard matches a question or reply SubSpecs suggested in
+  the last 30 seconds (in English or the speaker's language), the wearer is most likely reading it
+  out, so it isn't shown.
+- **Can miss:** someone shouting close by may be hidden, and a quiet wearer may still show. Direction
+  of the voice would be better, but a Lens only gets one mixed microphone channel. A later test on
+  real Specs: whether Snap's speech-to-text (which hears only the wearer) can flag the wearer's
+  speech without muting everyone else's.
+- **Checked:** no errors in Lens Studio's Preview, and a new test checks the two checks on their
+  own, then runs Live mode with a stand-in AI and test sounds: three people at a normal level are
+  shown, a much louder voice is not sent, a read-out suggestion is not shown, and the next person
+  shows as usual. 19 of the 20 automated tests pass; the full-arm reach test failed 3 times (the
+  simulated pinch doesn't land on the language button, as seen before in long Lens Studio sessions;
+  this change doesn't touch the language bar).
+
+---
+
 ## Nov 2, 2026: the demo people speak, and the words keep time
 
 ![The hospital demo: Yuki Tanaka's Japanese words typing as her recorded voice plays, Amélie's finished French line with its English translation and reply help, and her intake form](history/screenshots/2026-11-02-demo-voices.png)

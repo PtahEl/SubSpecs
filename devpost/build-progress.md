@@ -228,6 +228,20 @@ Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
 - **Before publishing:** clear `CaptionController.previewClip` (`Assets/Live/PreviewClip.wav`, a Windows
   text-to-speech test clip) so it isn't shipped.
 
+## Wearer's own speech in Live mode (Nov 2)
+
+- `Live/OwnVoice.ts` (`OwnVoiceFilter`, owned by `LiveSession.ownVoice`): `SpeechCutter` now gives each
+  clip a `level` (RMS of its loud blocks). `isWearerByLoudness`: after 3 clips, a clip louder than
+  `OWN_VOICE_RATIO` (3.5) x the 25th-percentile level of the last 12 non-wearer clips is not sent.
+  `rememberReply` / `isWearerReadingReply`: heard text whose word overlap with a reply suggested in the
+  last 30 s is at least 0.6 (both ways; Japanese/Chinese compared as character pairs) is not shown and
+  doesn't update the summary. Counters `hiddenByLoudness` / `hiddenByReply`.
+- The thresholds are guesses until tried on Specs (mic gain and distances are unknown in Preview).
+- Test: `live-own-voice`, last in `LeafIndex.ts`.
+- Idea to test on device: run AsrModule (Bystander Speech Rejection = wearer only) alongside the raw
+  mic and drop Gemini text that matches what ASR heard. Works only if the Voice profile doesn't also
+  filter the raw MicrophoneAudioProvider stream; the docs don't say.
+
 ## Fixed in this session
 
 - LEAF and the AI preview helper packages were made for a newer, renamed Interaction Kit

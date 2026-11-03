@@ -32,10 +32,10 @@ export function silence(): LiveHeard {
   return {speech: false, text: "", language: "en", languageName: "English", en: "", es: "", fr: "", ja: "", nameSaid: "", summary: "", reply: null}
 }
 
-// A tone that the speech cutter takes for speech: `seconds` long, then `pauseSeconds` of quiet.
-export function speechLikeSamples(seconds: number, pauseSeconds: number, sampleRate: number): Float32Array {
+// A tone that the speech cutter takes for speech: `seconds` long at `loudness`, then `pauseSeconds` of quiet.
+export function speechLikeSamples(seconds: number, pauseSeconds: number, sampleRate: number, loudness: number = 0.2): Float32Array {
   const voiced = Math.floor(seconds * sampleRate)
   const out = new Float32Array(voiced + Math.floor(pauseSeconds * sampleRate))
-  for (let i = 0; i < voiced; i++) out[i] = 0.2 * Math.sin((2 * Math.PI * 220 * i) / sampleRate)
+  for (let i = 0; i < voiced; i++) out[i] = loudness * Math.sin((2 * Math.PI * 220 * i) / sampleRate)
   return out
 }

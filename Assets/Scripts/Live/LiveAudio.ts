@@ -97,6 +97,9 @@ export class SpeechCutter {
   private inSpeech = false
   private quietSeconds = 0
   private speechSeconds = 0
+  // Loudness of the bit of speech so far: summed over its loud blocks only.
+  private voicedEnergy = 0
+  private voicedBlocks = 0
   private pending: number[] = []
   private listeners: ((clip: SpeechClip) => void)[] = []
 
@@ -136,6 +139,12 @@ export class SpeechCutter {
       this.clip = this.lead.slice()
       this.speechSeconds = 0
       this.quietSeconds = 0
+      this.voicedEnergy = 0
+      this.voicedBlocks = 0
+    }
+    if (loud) {
+      this.voicedEnergy += rms * rms
+      this.voicedBlocks++
     }
     for (const s of b) this.clip.push(s)
     this.speechSeconds += seconds
@@ -152,7 +161,8 @@ export class SpeechCutter {
     if (voiced < MIN_SECONDS) return
     const pcm = new Int16Array(samples.length)
     for (let i = 0; i < samples.length; i++) pcm[i] = Math.max(-32768, Math.min(32767, Math.round(samples[i] * 32767)))
-    this.listeners.forEach((fn) => fn({samples: pcm, sampleRate: LIVE_SAMPLE_RATE}))
+    const level = this.voicedBlocks > 0 ? Math.sqrt(this.voicedEnergy / this.voicedBlocks) : 0
+    this.listeners.forEach((fn) => fn({samples: pcm, sampleRate: LIVE_SAMPLE_RATE, level}))
   }
 }
 

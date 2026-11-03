@@ -6,6 +6,8 @@
 export interface SpeechClip {
   samples: Int16Array
   sampleRate: number
+  // How loud the speech was (RMS of its spoken parts, 0..1); used to spot the wearer's own voice.
+  level?: number
 }
 
 // What the conversation looked like before this clip, so the AI can keep its summary going.
