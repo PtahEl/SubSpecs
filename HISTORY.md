@@ -12,6 +12,22 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 
 ---
 
+## Nov 7, 2026: final checks from a fresh clone
+
+- Cloned the repo onto a second Windows PC and opened it the way a judge would, with no local files.
+  It opens and runs in Lens Studio's Preview with no script errors; the only warnings are editor
+  plugins asking for permissions (Icon Atlas, the Gemini access-key maker), which the Lens doesn't need.
+- **Fixed: the start card could be missing.** In some Preview worlds (Sunlit Room, the default here)
+  the camera moves just after the Lens starts, so the start card and language bar were placed out of
+  view. Until the first pick, they now come back in front of you if the camera moves more than 20 cm
+  away from them (`CaptionController.keepStartUiInView`). Checked in Sunlit Room and Plane, several resets.
+- **Test clip removed:** `CaptionController.previewClip` (a Windows text-to-speech clip used to try Live
+  mode in Preview) is cleared, so it isn't shipped with the Lens.
+- Both demos checked by eye: the corridor starts, cards type in time with the voices, Lucía's Spanish
+  shows "Spanish detected" with the English underneath.
+
+---
+
 ## Nov 3, 2026: ready for the Devpost rules (repo still private)
 
 - Checked against the hackathon's rules and judging criteria (Design, Technical implementation,

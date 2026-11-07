@@ -9,7 +9,7 @@ import {DEMO_SCENARIOS, DemoLine, DemoScenarioId, LanguageCode, spokenWords} fro
 import {SpeakerCard, CARD_DISTANCE_CM} from "./SpeakerCard"
 import {LanguagePicker, PICKER_DISTANCE_CM} from "./LanguagePicker"
 import {OnboardingCard, ONBOARDING_DISTANCE_CM, StartChoice} from "./OnboardingCard"
-import {placeInFrontOfCamera} from "./CaptionUiKit"
+import {placeInFrontOfCamera, spotInFrontOfCamera} from "./CaptionUiKit"
 import {SpeakerFigures} from "./SpeakerFigures"
 import {IntakeForm, INTAKE_DISTANCE_CM, INTAKE_RIGHT_CM, INTAKE_UP_CM} from "./IntakeForm"
 import {RecapPanel, RECAP_DISTANCE_CM, RECAP_RIGHT_CM, RECAP_UP_CM} from "./RecapPanel"
@@ -26,6 +26,9 @@ export const LIVE_RECAP_NAME = "Conversation"
 
 const SPEAKER_COUNT = 3
 const PICKER_FIT_WIDTH_CM = 32
+// Some Preview worlds (e.g. Sunlit Room) move the camera after the Lens starts, which left the start
+// card out of view. Until the first pick, the start card and bar follow if the camera moves this far.
+const START_UI_DRIFT_CM = 20
 // Live words arrive all at once after the AI answers, so they type out faster than the demo voices.
 const LIVE_WORDS_PER_SECOND = 8
 
@@ -119,6 +122,7 @@ export class CaptionController extends BaseScriptComponent {
   private speaking = new Map<number, DemoLine>()
 
   private running = false
+  private everStarted = false
   private scenarioId: DemoScenarioId = "corridor"
   private lines: DemoLine[] = DEMO_SCENARIOS.corridor
   // This conversation's lines with when each starts and how long its voice lasts.
@@ -150,9 +154,7 @@ export class CaptionController extends BaseScriptComponent {
     this.voices = new DemoVoices(this.sceneObject, this.demoVoices ?? [], SPEAKER_COUNT)
 
     this.createEvent("OnStartEvent").bind(() => {
-      placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
-      // Low in the view but inside it: the view's bottom edge is about 18 degrees down.
-      placeInFrontOfCamera(this.picker.root, this.camera, 0, -15, PICKER_DISTANCE_CM)
+      this.placeStartUi()
       // At 60 cm the view is only about 35 cm wide; shrink the picker to fit with a margin.
       const scale = Math.min(1, PICKER_FIT_WIDTH_CM / this.picker.width)
       this.picker.root.getTransform().setLocalScale(vec3.one().uniformScale(scale))
@@ -234,7 +236,21 @@ export class CaptionController extends BaseScriptComponent {
     this.liveForTests = null
   }
 
+  private placeStartUi(): void {
+    placeInFrontOfCamera(this.onboarding.root, this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
+    // Low in the view but inside it: the view's bottom edge is about 18 degrees down.
+    placeInFrontOfCamera(this.picker.root, this.camera, 0, -15, PICKER_DISTANCE_CM)
+  }
+
+  // Before the first pick only: if the camera has moved away from the start card, bring it back.
+  private keepStartUiInView(): void {
+    if (this.everStarted || !this.onboarding.visible) return
+    const spot = spotInFrontOfCamera(this.camera, 0, 0, ONBOARDING_DISTANCE_CM)
+    if (spot.distance(this.onboarding.root.getTransform().getWorldPosition()) > START_UI_DRIFT_CM) this.placeStartUi()
+  }
+
   private begin(choice: StartChoice): void {
+    this.everStarted = true
     const t = this.liveForTests
     if (choice === "live" && t) this.startLive(t.translator, t.source, t.online)
     else if (choice === "live") this.startLive()
@@ -345,6 +361,7 @@ export class CaptionController extends BaseScriptComponent {
 
   private onUpdate(): void {
     const dt = getDeltaTime()
+    this.keepStartUiInView()
     if (this.running) {
       this.clock += dt
       while (this.nextLine < this.timed.length && this.timed[this.nextLine].start <= this.clock) {

@@ -2594,6 +2594,7 @@
     wordsPerSecond: true
     loopDemo: true
     loopPauseSeconds: true
+    previewClip: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2631,7 +2632,7 @@
         - !<reference> 09e0fbd7-1fe5-419a-9b65-794c85095545
         - !<reference> f8d28b98-dbbf-42de-a0f1-801388c07008
       microphoneTrack: !<reference.AudioTrackAsset> ce5a0d18-ae9f-406e-b341-8a40d32e5e35
-      previewClip: !<reference.AudioTrackAsset> b52d42e6-9189-4aac-b610-617e02210e53
+      previewClip: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
       geminiService: !<reference.RemoteServiceModule> 47d8cc06-d4e4-46cc-8fce-ae0a8be4677e
       internetModule: !<reference.InternetModule> 0c82c6f4-38f7-4c21-bbfb-58ac45e33f2b
       logoMaterial: !<reference.Material> 06dd9961-e7fe-4785-ab70-b21e762791ab

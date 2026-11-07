@@ -217,16 +217,20 @@ export function makeButton(
 
 // Places `so` relative to the camera: right/up/forward offsets in cm, facing the camera.
 export function placeInFrontOfCamera(so: SceneObject, camera: Transform, right: number, up: number, forward: number): void {
+  so.getTransform().setWorldPosition(spotInFrontOfCamera(camera, right, up, forward))
+  faceCamera(so, camera)
+}
+
+// Where placeInFrontOfCamera would put something, without moving it.
+export function spotInFrontOfCamera(camera: Transform, right: number, up: number, forward: number): vec3 {
   const flatForward = new vec3(camera.forward.x, 0, camera.forward.z)
   // Lens Studio cameras look down -Z, so the view direction is -forward.
   const view = flatForward.length > 0.001 ? flatForward.normalize().uniformScale(-1) : new vec3(0, 0, -1)
   const rightDir = view.cross(vec3.up()).normalize()
-  const pos = camera.getWorldPosition()
+  return camera.getWorldPosition()
     .add(view.uniformScale(forward))
     .add(rightDir.uniformScale(right))
     .add(vec3.up().uniformScale(up))
-  so.getTransform().setWorldPosition(pos)
-  faceCamera(so, camera)
 }
 
 // Turns `so` so its front (+Z) faces the camera.

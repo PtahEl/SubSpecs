@@ -225,8 +225,8 @@ Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
   error in the remote API framework). Snap: "The APIs are only available on Spectacles." The real
   Gemini path is therefore untested until a Specs run. `live-mode` with `real=true` runs it and prints
   what came back; use it on device.
-- **Before publishing:** clear `CaptionController.previewClip` (`Assets/Live/PreviewClip.wav`, a Windows
-  text-to-speech test clip) so it isn't shipped.
+- **Done Nov 7:** cleared `CaptionController.previewClip` (it was `Assets/Live/PreviewClip.wav`, a Windows
+  text-to-speech test clip) so it isn't shipped. To try Live mode in Preview again, set it back locally.
 
 ## Wearer's own speech in Live mode (Nov 2)
 
@@ -275,3 +275,10 @@ Runs only on the glasses and Snap's cloud. Files in `Assets/Scripts/Live/`:
 
 - `.virtual-scene.json` is a generated scene snapshot and is ignored by git.
 - `leaf_plugin_settings.json` is local LEAF panel state and is ignored by git.
+
+## Start card in moving Preview worlds (Nov 7)
+
+- Some Preview worlds (Sunlit Room) move the camera after `OnStartEvent`, leaving the start card and
+  bar out of view. `keepStartUiInView()` runs each frame until the first pick (`everStarted`): if the
+  card is more than `START_UI_DRIFT_CM` (20) from `spotInFrontOfCamera(camera, 0, 0, ONBOARDING_DISTANCE_CM)`,
+  `placeStartUi()` re-places the card and the bar. After Switch the card is placed once, as before.
