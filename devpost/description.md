@@ -1,4 +1,7 @@
-# SubSpecs: Devpost description (draft)
+# SubSpecs: Devpost description
+
+**Demo video:** https://youtu.be/Tm1-vk3SC84  
+**Code:** https://github.com/PtahEl/SubSpecs
 
 ## Tagline
 Live subs for the conversation around you on SPECS, with a suggested reply and a running recap, for
