@@ -51,3 +51,6 @@ downloads/
 
 # Live mode: the AI service access key lives only on this computer (see Assets/LocalOnly/LiveAccessKey.ts)
 Assets/LocalOnly/
+
+# Local agent brief (kept off GitHub)
+CLAUDE_CODE_START.md

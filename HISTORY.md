@@ -351,7 +351,7 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
   the language bar during the conversation. Not yet hooked up in Lens Studio or tested.
 - The name is now spelled **SubSpecs** (two capital S's) everywhere people see it.
 
-## Oct 30, 2026: real-looking people replace the grey stand-ins ([`d3fc4e0`](../../commit/d3fc4e0))
+## Oct 30, 2026: real-looking people replace the grey stand-ins ([`4116491`](../../commit/4116491))
 
 ![Three people talking in Preview, with speaker 1's sub card and the language bar](history/screenshots/2026-10-30-people-talking.png)
 
@@ -368,29 +368,29 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 - **Checked:** all 8 automated tests pass in Lens Studio's Preview.
 - These people exist only for the demo and video. The real app captions real people, with no models.
 
-## Oct 30, 2026: plan for the demo people ([`335ec36`](../../commit/335ec36))
+## Oct 30, 2026: plan for the demo people ([`433e2f6`](../../commit/433e2f6))
 
 - Notes that the Mixamo people (Sophie, Brian, Meghan) will be committed on purpose so judges see them.
 
-## Oct 29, 2026: the name becomes SubSpecs ([`d0d649b`](../../commit/d0d649b))
+## Oct 29, 2026: the name becomes SubSpecs ([`f85ef29`](../../commit/f85ef29))
 
 - The app was renamed from "Caption" to SubSpecs, and the feature from "captions" to **subs**, in
   everything people see. Internal code names keep "Caption" so nothing breaks in Lens Studio or the
   server.
 
-## Oct 29, 2026: how Live mode avoids pointless translation ([`267d46e`](../../commit/267d46e))
+## Oct 29, 2026: how Live mode avoids pointless translation ([`b293905`](../../commit/b293905))
 
 - Notes that in Live mode the SubSpecs server skips translating subs that are already in the wearer's
   chosen language.
 
-## Oct 29, 2026: Auto translation ([`9ab57ac`](../../commit/9ab57ac))
+## Oct 29, 2026: Auto translation ([`ac934e2`](../../commit/ac934e2))
 
 - New default setting, **Auto**: subs stay in the wearer's language, and when someone speaks another
   language their card shows a "Spanish detected" tag with the English translation underneath.
 - Picking a language by hand translates everyone into it; pinching Auto brings detection back.
 - **Checked:** a new automated test, `auto-detect-language`, passes.
 
-## Oct 29, 2026: Demo mode checked in Preview ([`782b0b0`](../../commit/782b0b0))
+## Oct 29, 2026: Demo mode checked in Preview ([`ed52a13`](../../commit/ed52a13))
 
 - All five done criteria from the design brief pass as automated tests (LEAF) in Lens Studio's
   Preview: three voices make three color-coded cards; a card can be dragged over a person and stays
@@ -402,7 +402,7 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
   pinches meant for its buttons.
 - The test tools were made for a newer Interaction Kit and were adapted to the installed one.
 
-## Oct 29, 2026: Demo mode built ([`3f96e8e`](../../commit/3f96e8e))
+## Oct 29, 2026: Demo mode built ([`972eb57`](../../commit/972eb57))
 
 - A scripted three-person corridor conversation plays on its own, with no server needed.
 - One card per speaker: its own color and number, words appearing as they are spoken, the previous
@@ -411,12 +411,12 @@ in `history/screenshots/` (and `devpost/screenshots/`). The detailed engineering
 - A language bar at the bottom of the view and a start card with the privacy note and a Start button.
 - Three simple grey stand-in figures mark where the speakers stand.
 
-## Oct 29, 2026: large files go through Git LFS ([`8d87eb6`](../../commit/8d87eb6))
+## Oct 29, 2026: large files go through Git LFS ([`2a4571c`](../../commit/2a4571c))
 
 - Lens Studio's own git settings adopted; images, models and packages are stored with Git LFS so the
   repository stays fast.
 
-## Oct 29, 2026: project started ([`907925a`](../../commit/907925a))
+## Oct 29, 2026: project started ([`d8b4541`](../../commit/d8b4541))
 
 - New Lens Studio project from the SPECS Base Template.
 - The design brief was written and approved: what the app does, what the preview can and can't show,
