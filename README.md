@@ -74,6 +74,28 @@ Live mode needs an access key for Snap's gateway, kept in a local-only file that
 - **Every step** is in [`HISTORY.md`](HISTORY.md) with screenshots, and the engineering notes are in
   [`devpost/build-progress.md`](devpost/build-progress.md).
 
+## Credits and pre-existing work
+
+Everything in `Assets/Scripts/` (the SubSpecs Lens: cards, language bar, demo conversations, recap,
+intake form, reply help, Live mode and its 20 LEAF tests), the `devpost/` docs and `tools/` were
+written for this project during the contest (from Oct 29, 2026). The project started from Lens
+Studio's SPECS Base Template. Pre-existing work it uses:
+
+| What | From | Where | Changes |
+|---|---|---|---|
+| Spectacles Interaction Kit, Spectacles UI Kit, Remote Service Gateway, Utilities, Snap Decorators, Motion, Icons, Bitmoji 3D | Snap (Lens Studio Asset Library) | `Packages/` | None |
+| LEAF (test scenarios and simulated hands) and its editor plugin | Snap (Lens Studio Asset Library) | `Assets/Leaf.lspkg`, `Plugins/` | Unpacked; imports pointed at the installed Interaction Kit |
+| AI Preview Agent Inspect and Interact | Snap (Lens Studio Asset Library) | `Assets/AiPreviewAgent*.lspkg` | Unpacked; imports pointed at the installed kits |
+| Icon Atlas editor plugin | Snap (Lens Studio) | `Plugins/` | None |
+| `plan-lens` skill | Devpost Learn skill pack | `agent/skills/plan-lens` | None |
+| Echopark HDR lighting | Lens Studio assets | `Assets/Render/Echopark.hdr` | None |
+| Three people (Sophie, Brian, Meghan) and their Talking animation | Mixamo (Adobe) | `Assets/People/` | Textures resized to 1024 px; demo stand-ins only |
+| Demo voices for the 22 scripted lines | Generated with ElevenLabs | `Assets/Demo/Voices/` | None |
+
+Live mode calls an AI model through Snap's Remote Service Gateway under Snap's terms; no AI service
+key is in this repo. The old laptop `caption-server` from the first plan is not part of SubSpecs and
+is not in this repo.
+
 ## What we learned
 
 - **Design for what the glasses can really do.** Snap's own speech-to-text only hears the wearer, which

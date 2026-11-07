@@ -68,6 +68,13 @@ hospital intake worker.
 - Choosing your own language and any translation language.
 - Final character models for the demo.
 
+## Credits and pre-existing work
+Our code is everything in `Assets/Scripts/` plus the docs, written during the contest from Lens
+Studio's SPECS Base Template. Pre-existing work used: Snap's Spectacles Interaction Kit, UI Kit,
+Remote Service Gateway and other Asset Library packages; Snap's LEAF testing framework and AI Preview
+Agent packages (unpacked, imports adjusted); the Devpost Learn `plan-lens` skill; Mixamo characters as
+demo stand-ins; demo voices generated with ElevenLabs. The full table is in the README.
+
 ## Built with
 Lens Studio, CLAD, Lens Studio MCP, LEAF, TypeScript, Spectacles Interaction Kit, Spectacles UI Kit,
 Snap Remote Service Gateway, Google Gemini, ElevenLabs, Mixamo, Blender.
