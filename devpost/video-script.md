@@ -1,6 +1,6 @@
 # SubSpecs: demo video (final, Nov 7, 2026)
 
-**Watch:** https://youtu.be/Tm1-vk3SC84 (2:55)
+**Watch:** https://youtu.be/fT5fMKIegGk (2:55)
 
 Recorded as a screen capture of Lens Studio's Preview (Plane world) from a fresh clone of this repo,
 then cut, zoomed in on the Lens so the subs are readable, and narrated. Narration, music and the demo

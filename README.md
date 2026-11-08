@@ -5,7 +5,7 @@ hearing, with translation, a suggested reply and a running recap. Built in Lens 
 agent through CLAD and the Lens Studio MCP for the
 [**Learn AR with SPECS**](https://learn-specs.devpost.com/) Devpost hackathon.
 
-**Demo video (2:55):** https://youtu.be/Tm1-vk3SC84
+**Demo video (2:55):** https://youtu.be/fT5fMKIegGk
 
 ![SubSpecs in Lens Studio's Preview: the hospital demo, Yuki Tanaka's Japanese words typing as her voice plays, Amélie's French line translated with a suggested reply, and the intake form filling itself in](history/screenshots/2026-11-02-demo-voices.png)
 

@@ -1,6 +1,6 @@
 # SubSpecs: Devpost description
 
-**Demo video:** https://youtu.be/Tm1-vk3SC84  
+**Demo video:** https://youtu.be/fT5fMKIegGk  
 **Code:** https://github.com/PtahEl/SubSpecs
 
 ## Tagline
